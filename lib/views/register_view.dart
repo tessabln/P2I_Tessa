@@ -1,15 +1,17 @@
-// ignore_for_file: unused_local_variable, use_build_context_synchronously
+// ignore_for_file: use_build_context_synchronously
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/components/my_button.dart';
+import 'package:flutter_app/components/my_checkbox.dart';
 import 'package:flutter_app/components/my_textfield.dart';
 import 'package:flutter_app/helper/helper_functions.dart';
 
 class RegisterView extends StatefulWidget {
   final void Function()? onTap;
 
-  const RegisterView({super.key, required this.onTap});
+  const RegisterView({Key? key, required this.onTap}) : super(key: key);
 
   @override
   State<RegisterView> createState() => _RegisterViewState();
@@ -24,41 +26,75 @@ class _RegisterViewState extends State<RegisterView> {
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController confirmPwController = TextEditingController();
 
+  @override
+  void dispose() {
+    userlastnameController.dispose();
+    userfirstnameController.dispose();
+    userfamilyController.dispose();
+    emailController.dispose();
+    passwordController.dispose();
+    confirmPwController.dispose();
+    super.dispose();
+  }
+
+  bool admin = false;
+
   //register method
-  void registerUser() async {
+  Future registerUser() async {
     // show loading circle
     showDialog(
       context: context,
       builder: (context) => const Center(child: CircularProgressIndicator()),
     );
 
-    // make sure passwords match
-    if (passwordController.text != confirmPwController.text) {
+    if (passwordConfirmed()) {
+      try {
+        // create the user
+        UserCredential? userCredential = await FirebaseAuth.instance
+            .createUserWithEmailAndPassword(
+                email: emailController.text, password: passwordController.text);
+
+        // pop loading circle
+        Navigator.pop(context);
+
+        // add user details
+        addUserDetails(
+          userlastnameController.text.trim(),
+        );
+
+        // Display UID in console
+        print('User UID: ${userCredential.user!.uid}');
+      } on FirebaseAuthException catch (e) {
+        // pop loading circle
+        Navigator.pop(context);
+
+        // display error message to user
+        displayMessageToUser(e.code, context);
+      }
+    } else {
       // pop loading circle
       Navigator.pop(context);
 
       // show error message to user
       displayMessageToUser("Les mots de passe ne sont pas les mêmes", context);
     }
+  }
 
-    // if password do match
-    else {
-      // try creating the user
-    try {
-      // create the user
-      UserCredential? userCredential = await FirebaseAuth.instance
-          .createUserWithEmailAndPassword(
-              email: emailController.text, password: passwordController.text);
+  Future addUserDetails(
+      String lastName, String firstName, String family, String email) async {
+    await FirebaseFirestore.instance.collection('users').add({
+      'last name': lastName,
+      'first name': firstName,
+      'family': family,
+      'email': email,
+    });
+  }
 
-      // pop loading circle
-      Navigator.pop(context);
-    } on FirebaseAuthException catch (e) {
-      // pop loading circle
-      Navigator.pop(context);
-
-      // display error message to user
-      displayMessageToUser(e.code, context);
-    }
+  bool passwordConfirmed() {
+    if (passwordController.text.trim() == confirmPwController.text.trim()) {
+      return true;
+    } else {
+      return false;
     }
   }
 
@@ -73,13 +109,18 @@ class _RegisterViewState extends State<RegisterView> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               // logo
-              Icon(
-                Icons.gps_fixed,
-                size: 80,
-                color: Theme.of(context).colorScheme.inversePrimary,
+              Container(
+                width: 121,
+                height: 124,
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    image: AssetImage("assets/images/logo.png"),
+                    fit: BoxFit.fill,
+                  ),
+                ),
               ),
 
-              const SizedBox(height: 25),
+              const SizedBox(height: 10),
 
               // app name
               Text(
@@ -87,7 +128,7 @@ class _RegisterViewState extends State<RegisterView> {
                 style: TextStyle(fontSize: 20),
               ),
 
-              const SizedBox(height: 50),
+              const SizedBox(height: 30),
 
               // userlastname textfield
               MyTextField(
@@ -146,6 +187,32 @@ class _RegisterViewState extends State<RegisterView> {
                         color: Theme.of(context).colorScheme.inversePrimary),
                   ),
                 ],
+              ),
+
+              const SizedBox(height: 10),
+
+              // check admin or NOT
+              Row(
+                children: <Widget>[
+                  SizedBox(
+                    width: 10,
+                  ), //SizedBox
+                  Text(
+                    'Administrateur',
+                    style: TextStyle(fontSize: 17.0),
+                  ), //Text
+                  SizedBox(width: 10), //SizedBox
+                  CustomCheckbox(
+                    value: admin,
+                    onChanged: (newValue) {
+                      setState(() {
+                        admin = newValue;
+                      });
+                    },
+                    checkedColor: Colors
+                        .black, // Spécifiez la couleur de fond de la case cochée ici
+                  ),
+                ], //<Widget>[]
               ),
 
               const SizedBox(height: 25),

@@ -16,9 +16,6 @@ class LoginView extends StatefulWidget {
 }
 
 class _LoginViewState extends State<LoginView> {
-
-  late AssetImage _imageAsset;
-
   // text controllers
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
@@ -51,12 +48,6 @@ class _LoginViewState extends State<LoginView> {
   }
 
   @override
-  void initState() {
-    super.initState();
-    _imageAsset = AssetImage('assets/images/logo.png');
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.background,
@@ -67,10 +58,15 @@ class _LoginViewState extends State<LoginView> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               // logo
-              Image(
-                image: _imageAsset,
-                width: 600,
-                height: 600,
+              Container(
+                width: 151,
+                height: 154,
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    image: AssetImage(
+                        "assets/images/logo.png"),                    fit: BoxFit.fill,
+                  ),
+                ),
               ),
 
               const SizedBox(height: 25),
