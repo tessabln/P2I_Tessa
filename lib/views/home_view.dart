@@ -1,16 +1,24 @@
+// ignore_for_file: prefer_interpolation_to_compose_strings
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/theme/theme_provider.dart';
 import 'package:provider/provider.dart';
 
-class HomeView extends StatelessWidget {
+class HomeView extends StatefulWidget {
   const HomeView({Key? key});
 
+  @override
+  State<HomeView> createState() => _HomeViewState();
+}
+
+class _HomeViewState extends State<HomeView> {
+  final user = FirebaseAuth.instance.currentUser;
   // Méthode pour récupérer l'UID de l'utilisateur connecté
-  String getUserUID() {
+  /*String getUserUID() {
     User? user = FirebaseAuth.instance.currentUser;
     return user?.uid ?? "Aucun utilisateur connecté";
-  }
+  }*/
 
   // Méthode pour déconnecter l'utilisateur
   void logout(BuildContext context) {
@@ -39,9 +47,11 @@ class HomeView extends StatelessWidget {
         ],
       ),
       body: Center(
-        child: Text(
-          "(${getUserUID()})",
-          style: TextStyle(fontSize: 20),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text('Connecté en tant que : ' + user!.email!),
+          ],
         ),
       ),
     );

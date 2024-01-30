@@ -60,6 +60,9 @@ class _RegisterViewState extends State<RegisterView> {
         // add user details
         addUserDetails(
           userlastnameController.text.trim(),
+          userfirstnameController.text.trim(),
+          userfamilyController.text.trim(),
+          emailController.text.trim(),
         );
 
         // Display UID in console
@@ -176,20 +179,7 @@ class _RegisterViewState extends State<RegisterView> {
                   obscureText: true,
                   controller: confirmPwController),
 
-              const SizedBox(height: 10),
-              // forgot password
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  Text(
-                    "Mot de passe oublié ?",
-                    style: TextStyle(
-                        color: Theme.of(context).colorScheme.inversePrimary),
-                  ),
-                ],
-              ),
-
-              const SizedBox(height: 10),
+              const SizedBox(height: 20),
 
               // check admin or NOT
               Row(

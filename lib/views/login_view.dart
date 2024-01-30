@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_app/components/my_button.dart';
 import 'package:flutter_app/components/my_textfield.dart';
 import 'package:flutter_app/helper/helper_functions.dart';
+import 'package:flutter_app/views/forgot_pw_view.dart';
 
 class LoginView extends StatefulWidget {
   final void Function()? onTap;
@@ -63,8 +64,8 @@ class _LoginViewState extends State<LoginView> {
                 height: 154,
                 decoration: BoxDecoration(
                   image: DecorationImage(
-                    image: AssetImage(
-                        "assets/images/logo.png"),                    fit: BoxFit.fill,
+                    image: AssetImage("assets/images/logo.png"),
+                    fit: BoxFit.fill,
                   ),
                 ),
               ),
@@ -96,15 +97,31 @@ class _LoginViewState extends State<LoginView> {
               const SizedBox(height: 10),
 
               // forgot password
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  Text(
-                    "Mot de passe oublié ?",
-                    style: TextStyle(
-                        color: Theme.of(context).colorScheme.inversePrimary),
-                  ),
-                ],
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) {
+                              return ForgotPasswordView();
+                            },
+                          ),
+                        );
+                      },
+                      child: Text(
+                        "Mot de passe oublié ?",
+                        style: TextStyle(
+                            color:
+                                Theme.of(context).colorScheme.inversePrimary),
+                      ),
+                    ),
+                  ],
+                ),
               ),
 
               const SizedBox(height: 25),
