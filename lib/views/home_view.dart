@@ -1,9 +1,10 @@
-// ignore_for_file: prefer_interpolation_to_compose_strings
+// ignore_for_file: avoid_unnecessary_containers
 
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_app/theme/theme_provider.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_app/views/account.dart';
+import 'package:flutter_app/views/home.dart';
+import 'package:flutter_app/views/leaderboard.dart';
+import 'package:google_nav_bar/google_nav_bar.dart';
 
 class HomeView extends StatefulWidget {
   const HomeView({Key? key});
@@ -13,45 +14,51 @@ class HomeView extends StatefulWidget {
 }
 
 class _HomeViewState extends State<HomeView> {
-  final user = FirebaseAuth.instance.currentUser;
-  // Méthode pour récupérer l'UID de l'utilisateur connecté
-  /*String getUserUID() {
-    User? user = FirebaseAuth.instance.currentUser;
-    return user?.uid ?? "Aucun utilisateur connecté";
-  }*/
 
-  // Méthode pour déconnecter l'utilisateur
-  void logout(BuildContext context) {
-    FirebaseAuth.instance.signOut();
-    // Vous pouvez ajouter ici une redirection vers l'écran de connexion si nécessaire
-  }
+  int _selectedIndex = 0;
+
+  final List<Widget> _views = [
+    Home(),
+    Leaderboard(),
+    Account(),
+  ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.grey,
-        actions: [
-          // Bouton de déconnexion
-          IconButton(
-            onPressed: () => logout(context),
-            icon: Icon(Icons.logout),
-          ),
-          // Bouton pour changer de thème
-          IconButton(
-            onPressed: () {
-              Provider.of<ThemeProvider>(context, listen: false).toggleTheme();
-            },
-            icon: Icon(Icons.nightlight_round_sharp),
-          ),
-        ],
+      body: IndexedStack(
+        index: _selectedIndex,
+        children: _views,
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text('Connecté en tant que : ' + user!.email!),
-          ],
+      bottomNavigationBar: Container(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 20),
+          child: GNav(
+            backgroundColor: Theme.of(context).colorScheme.background,
+            tabBackgroundColor: Theme.of(context).colorScheme.primary,
+            gap: 20,
+            padding: EdgeInsets.all(16),
+            tabs: const [
+              GButton(
+                icon: Icons.home,
+                text: 'Accueil',
+              ),
+              GButton(
+                icon: Icons.leaderboard,
+                text: 'Classement',
+              ),
+              GButton(
+                icon: Icons.account_circle_rounded,
+                text: 'Compte',
+              ),
+            ],
+            selectedIndex: _selectedIndex,
+            onTabChange: (index) {
+              setState(() {
+                _selectedIndex = index;
+              });
+            },
+          ),
         ),
       ),
     );

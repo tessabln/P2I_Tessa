@@ -4,7 +4,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/components/my_button.dart';
-import 'package:flutter_app/components/my_checkbox.dart';
 import 'package:flutter_app/components/my_textfield.dart';
 import 'package:flutter_app/helper/helper_functions.dart';
 
@@ -36,8 +35,6 @@ class _RegisterViewState extends State<RegisterView> {
     confirmPwController.dispose();
     super.dispose();
   }
-
-  bool admin = false;
 
   //register method
   Future registerUser() async {
@@ -179,31 +176,6 @@ class _RegisterViewState extends State<RegisterView> {
                   obscureText: true,
                   controller: confirmPwController),
 
-              const SizedBox(height: 20),
-
-              // check admin or NOT
-              Row(
-                children: <Widget>[
-                  SizedBox(
-                    width: 10,
-                  ), //SizedBox
-                  Text(
-                    'Administrateur',
-                    style: TextStyle(fontSize: 17.0),
-                  ), //Text
-                  SizedBox(width: 10), //SizedBox
-                  CustomCheckbox(
-                    value: admin,
-                    onChanged: (newValue) {
-                      setState(() {
-                        admin = newValue;
-                      });
-                    },
-                    checkedColor: Colors
-                        .black, // Spécifiez la couleur de fond de la case cochée ici
-                  ),
-                ], //<Widget>[]
-              ),
 
               const SizedBox(height: 25),
 
