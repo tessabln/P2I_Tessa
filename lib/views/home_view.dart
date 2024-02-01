@@ -2,7 +2,6 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_app/views/account_view.dart';
-import 'package:flutter_app/views/admin_view.dart';
 import 'package:flutter_app/views/home.dart';
 import 'package:flutter_app/views/leaderboard.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
