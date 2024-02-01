@@ -1,21 +1,52 @@
-// ignore_for_file: must_be_immutable, prefer_interpolation_to_compose_strings
+// ignore_for_file: must_be_immutable, prefer_interpolation_to_compose_strings, sort_child_properties_last, avoid_function_literals_in_foreach_calls
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_app/services/readData/get_user_name.dart';
 import 'package:slide_to_act/slide_to_act.dart';
+import 'package:flutter_app/services/firestore.dart';
 
-class Home extends StatelessWidget {
+class Home extends StatefulWidget {
+  @override
+  State<Home> createState() => _HomeState();
+}
+
+class _HomeState extends State<Home> {
   final user = FirebaseAuth.instance.currentUser;
+  // DocumentReference? currentUserDocument;
+  Future<DocumentSnapshot<Map<String, dynamic>>>? userData;
+
+  // document IDs
+  List<String> docIDs = [];
+
+  @override
+  void initState() {
+    super.initState();
+    userData = getUserData();
+  }
+
+  // get docIds
+  // Future getDocId() async {
+  //   await FirebaseFirestore.instance
+  //       .collection('users')
+  //       .get()
+  //       .then((snapshot) => snapshot.docs.forEach((document) {
+  //             docIDs.add(document.reference.id);
+  //           }));
+  // }
+
+  Future<DocumentSnapshot<Map<String, dynamic>>> getUserData() async {
+    var document = FirebaseFirestore.instance.collection("users").doc(user!.uid).get();
+    return document;
+  }
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.background,
-        title: Text(
-          'Bonjour ' + user!.email!,
-          style: TextStyle(fontSize: 20.0),
-        ),
         actions: [
           Container(
             margin: EdgeInsets.all(8),
@@ -32,9 +63,36 @@ class Home extends StatelessWidget {
         ],
       ),
       body: Column(
-        mainAxisAlignment: MainAxisAlignment.end,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: <Widget>[
+        children: [
+          Expanded(
+            //child: Text("BONJOU CLARINETTE"),
+            child: FutureBuilder<DocumentSnapshot<Map<String, dynamic>>>(
+              future: userData,
+              builder: (BuildContext context, AsyncSnapshot<DocumentSnapshot<Map<String, dynamic>>> snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Text('Loading...'); // Show loading indicator while waiting
+                } else if (snapshot.hasError) {
+                  return Text('Error: ${snapshot.error}'); // Show error message if an error occurs
+                } else {
+                  Map<String, dynamic> userData = snapshot.data!.data()!;
+                  return Text('Bonjour, ${userData['lastname']} ${userData['firstname']} de la famille ${userData['family']}'); // Show the first name when data is available
+                }
+              },
+              )
+            // child: FutureBuilder(
+            //   future: getUserData(),
+            //   builder: (context, snapshot) {
+            //     return ListView.builder(
+            //       itemCount: docIDs.length,
+            //       itemBuilder: (context, index) {
+            //         return ListTile(
+            //           title: GetUserName(documentId: docIDs[index]),
+            //         );
+            //       },
+            //     );
+            //   },
+            // ),
+          ),
           Padding(
             padding: const EdgeInsets.all(50.0),
             child: SlideAction(
@@ -49,10 +107,12 @@ class Home extends StatelessWidget {
                   context: context,
                   builder: (context) {
                     return AlertDialog(
-                      content: Text("T'es sûr ?",)
-                    );
+                        content: Text(
+                      "T'es sûr ?",
+                    ));
                   },
                 );
+                return null;
               },
             ),
           ),

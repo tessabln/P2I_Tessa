@@ -5,7 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_app/components/my_button.dart';
 import 'package:flutter_app/components/my_textfield.dart';
 import 'package:flutter_app/helper/helper_functions.dart';
+import 'package:flutter_app/views/admin_view.dart';
 import 'package:flutter_app/views/forgot_pw_view.dart';
+import 'package:flutter_app/views/home_view.dart';
 
 class LoginView extends StatefulWidget {
   final void Function()? onTap;
@@ -31,23 +33,20 @@ class _LoginViewState extends State<LoginView> {
       ),
     );
 
-    // try sign in
-    try {
-      await FirebaseAuth.instance.signInWithEmailAndPassword(
-          email: emailController.text, password: passwordController.text);
+      try {
+    // Sign in
+    await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: emailController.text, password: passwordController.text);
 
-          
+    // pop loading circle
+    if (context.mounted) Navigator.pop(context);
+  } catch (e) {
+    // pop loading circle
+    Navigator.pop(context);
+    // Handle authentication errors
+    displayMessageToUser(e.toString(), context);
+  }
 
-      // pop loading circle
-      if (context.mounted) Navigator.pop(context);
-    }
-
-    // display any errors
-    on FirebaseAuthException catch (e) {
-      // pop loading circle
-      Navigator.pop(context);
-      displayMessageToUser(e.code, context);
-    }
   }
 
   @override

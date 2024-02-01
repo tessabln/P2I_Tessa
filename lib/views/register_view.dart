@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_app/components/my_button.dart';
 import 'package:flutter_app/components/my_textfield.dart';
 import 'package:flutter_app/helper/helper_functions.dart';
+import 'package:flutter_app/services/firestore.dart';
 
 class RegisterView extends StatefulWidget {
   final void Function()? onTap;
@@ -24,6 +25,7 @@ class _RegisterViewState extends State<RegisterView> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController confirmPwController = TextEditingController();
+  final TextEditingController targetcodeController = TextEditingController();
 
   @override
   void dispose() {
@@ -33,6 +35,7 @@ class _RegisterViewState extends State<RegisterView> {
     emailController.dispose();
     passwordController.dispose();
     confirmPwController.dispose();
+    targetcodeController.dispose();
     super.dispose();
   }
 
@@ -55,11 +58,13 @@ class _RegisterViewState extends State<RegisterView> {
         Navigator.pop(context);
 
         // add user details
-        addUserDetails(
+        FirestoreService().addUserDetails(
+          userCredential.user!.uid,
           userlastnameController.text.trim(),
           userfirstnameController.text.trim(),
           userfamilyController.text.trim(),
           emailController.text.trim(),
+          int.parse(targetcodeController.text.trim()),
         );
 
         // Display UID in console
@@ -80,15 +85,7 @@ class _RegisterViewState extends State<RegisterView> {
     }
   }
 
-  Future addUserDetails(
-      String lastName, String firstName, String family, String email) async {
-    await FirebaseFirestore.instance.collection('users').add({
-      'last name': lastName,
-      'first name': firstName,
-      'family': family,
-      'email': email,
-    });
-  }
+  
 
   bool passwordConfirmed() {
     if (passwordController.text.trim() == confirmPwController.text.trim()) {
@@ -151,6 +148,14 @@ class _RegisterViewState extends State<RegisterView> {
                   hintText: "Famille",
                   obscureText: false,
                   controller: userfamilyController),
+
+              const SizedBox(height: 10),    
+
+              // targetcode textfield
+              MyTextField(
+                  hintText: "Code",
+                  obscureText: true,
+                  controller: targetcodeController),    
 
               const SizedBox(height: 10),
 
