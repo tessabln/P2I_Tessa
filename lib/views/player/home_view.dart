@@ -12,32 +12,25 @@ class HomeView extends StatefulWidget {
 
 class _HomeViewState extends State<HomeView> {
   final user = FirebaseAuth.instance.currentUser;
-  // DocumentReference? currentUserDocument;
   Future<DocumentSnapshot<Map<String, dynamic>>>? userData;
-
-  // document IDs
-  List<String> docIDs = [];
+  Future<DocumentSnapshot<Map<String, dynamic>>>? objectData;
 
   @override
   void initState() {
     super.initState();
     userData = getUserData();
+    objectData = getObjectData();
   }
 
-  // get docIds
-  // Future getDocId() async {
-  //   await FirebaseFirestore.instance
-  //       .collection('users')
-  //       .get()
-  //       .then((snapshot) => snapshot.docs.forEach((document) {
-  //             docIDs.add(document.reference.id);
-  //           }));
-  // }
-
   Future<DocumentSnapshot<Map<String, dynamic>>> getUserData() async {
-    var document =
-        FirebaseFirestore.instance.collection("users").doc(user!.uid).get();
-    return document;
+    return FirebaseFirestore.instance.collection("users").doc(user!.uid).get();
+  }
+
+  Future<DocumentSnapshot<Map<String, dynamic>>> getObjectData() async {
+    return FirebaseFirestore.instance
+        .collection("objects")
+        .doc("HG9gEDmgC9Hu83nsDVji")
+        .get();
   }
 
   @override
@@ -63,39 +56,83 @@ class _HomeViewState extends State<HomeView> {
       body: Column(
         children: [
           Expanded(
-              //child: Text("BONJOU CLARINETTE"),
-              child: FutureBuilder<DocumentSnapshot<Map<String, dynamic>>>(
-            future: userData,
-            builder: (BuildContext context,
-                AsyncSnapshot<DocumentSnapshot<Map<String, dynamic>>>
-                    snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return Text(
-                    'Loading...'); // Show loading indicator while waiting
-              } else if (snapshot.hasError) {
-                return Text(
-                    'Error: ${snapshot.error}'); // Show error message if an error occurs
-              } else {
-                Map<String, dynamic> userData = snapshot.data!.data()!;
-                return Text(
-                    'Bonjour, ${userData['lastname']} ${userData['firstname']} de la famille ${userData['family']}'); // Show the first name when data is available
-              }
-            },
-          )
-              // child: FutureBuilder(
-              //   future: getUserData(),
-              //   builder: (context, snapshot) {
-              //     return ListView.builder(
-              //       itemCount: docIDs.length,
-              //       itemBuilder: (context, index) {
-              //         return ListTile(
-              //           title: GetUserName(documentId: docIDs[index]),
-              //         );
-              //       },
-              //     );
-              //   },
-              // ),
-              ),
+            child: FutureBuilder<DocumentSnapshot<Map<String, dynamic>>>(
+              future: userData,
+              builder: (BuildContext context,
+                  AsyncSnapshot<DocumentSnapshot<Map<String, dynamic>>>
+                      snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Text('Loading...');
+                } else if (snapshot.hasError) {
+                  return Text('Error: ${snapshot.error}');
+                } else {
+                  Map<String, dynamic> userData = snapshot.data!.data()!;
+                  return Text('Bonjour, ${userData['firstname']}');
+                }
+              },
+            ),
+          ),
+          Expanded(
+            child: FutureBuilder<DocumentSnapshot<Map<String, dynamic>>>(
+              future: objectData,
+              builder: (BuildContext context,
+                  AsyncSnapshot<DocumentSnapshot<Map<String, dynamic>>>
+                      snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Text('Loading...');
+                } else if (snapshot.hasError) {
+                  return Text('Error: ${snapshot.error}');
+                } else {
+                  Map<String, dynamic> objectData = snapshot.data!.data()!;
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 8.0, horizontal: 16.0),
+                        child: Text(
+                          "Nom de l'objet:",
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                        child: Text(
+                          objectData['name'],
+                          style: TextStyle(
+                            fontStyle: FontStyle.italic,
+                          ),
+                        ),
+                      ),
+                      Divider(),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 8.0, horizontal: 16.0),
+                        child: Text(
+                          "Description de l'objet:",
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                        child: Text(
+                          objectData['description'],
+                          style: TextStyle(
+                            fontStyle: FontStyle.italic,
+                          ),
+                        ),
+                      ),
+                    ],
+                  );
+                }
+              },
+            ),
+          ),
+          const SizedBox(height: 260),
           Padding(
             padding: const EdgeInsets.all(50.0),
             child: SlideAction(
