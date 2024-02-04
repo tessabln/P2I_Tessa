@@ -5,12 +5,12 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:slide_to_act/slide_to_act.dart';
 
-class Home extends StatefulWidget {
+class HomeView extends StatefulWidget {
   @override
-  State<Home> createState() => _HomeState();
+  State<HomeView> createState() => _HomeViewState();
 }
 
-class _HomeState extends State<Home> {
+class _HomeViewState extends State<HomeView> {
   final user = FirebaseAuth.instance.currentUser;
   // DocumentReference? currentUserDocument;
   Future<DocumentSnapshot<Map<String, dynamic>>>? userData;
@@ -35,13 +35,13 @@ class _HomeState extends State<Home> {
   // }
 
   Future<DocumentSnapshot<Map<String, dynamic>>> getUserData() async {
-    var document = FirebaseFirestore.instance.collection("users").doc(user!.uid).get();
+    var document =
+        FirebaseFirestore.instance.collection("users").doc(user!.uid).get();
     return document;
   }
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.background,
@@ -63,34 +63,39 @@ class _HomeState extends State<Home> {
       body: Column(
         children: [
           Expanded(
-            //child: Text("BONJOU CLARINETTE"),
-            child: FutureBuilder<DocumentSnapshot<Map<String, dynamic>>>(
-              future: userData,
-              builder: (BuildContext context, AsyncSnapshot<DocumentSnapshot<Map<String, dynamic>>> snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return Text('Loading...'); // Show loading indicator while waiting
-                } else if (snapshot.hasError) {
-                  return Text('Error: ${snapshot.error}'); // Show error message if an error occurs
-                } else {
-                  Map<String, dynamic> userData = snapshot.data!.data()!;
-                  return Text('Bonjour, ${userData['lastname']} ${userData['firstname']} de la famille ${userData['family']}'); // Show the first name when data is available
-                }
-              },
-              )
-            // child: FutureBuilder(
-            //   future: getUserData(),
-            //   builder: (context, snapshot) {
-            //     return ListView.builder(
-            //       itemCount: docIDs.length,
-            //       itemBuilder: (context, index) {
-            //         return ListTile(
-            //           title: GetUserName(documentId: docIDs[index]),
-            //         );
-            //       },
-            //     );
-            //   },
-            // ),
-          ),
+              //child: Text("BONJOU CLARINETTE"),
+              child: FutureBuilder<DocumentSnapshot<Map<String, dynamic>>>(
+            future: userData,
+            builder: (BuildContext context,
+                AsyncSnapshot<DocumentSnapshot<Map<String, dynamic>>>
+                    snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return Text(
+                    'Loading...'); // Show loading indicator while waiting
+              } else if (snapshot.hasError) {
+                return Text(
+                    'Error: ${snapshot.error}'); // Show error message if an error occurs
+              } else {
+                Map<String, dynamic> userData = snapshot.data!.data()!;
+                return Text(
+                    'Bonjour, ${userData['lastname']} ${userData['firstname']} de la famille ${userData['family']}'); // Show the first name when data is available
+              }
+            },
+          )
+              // child: FutureBuilder(
+              //   future: getUserData(),
+              //   builder: (context, snapshot) {
+              //     return ListView.builder(
+              //       itemCount: docIDs.length,
+              //       itemBuilder: (context, index) {
+              //         return ListTile(
+              //           title: GetUserName(documentId: docIDs[index]),
+              //         );
+              //       },
+              //     );
+              //   },
+              // ),
+              ),
           Padding(
             padding: const EdgeInsets.all(50.0),
             child: SlideAction(

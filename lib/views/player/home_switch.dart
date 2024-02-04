@@ -2,24 +2,23 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_app/views/account_view.dart';
-import 'package:flutter_app/views/admin.dart';
-import 'package:flutter_app/views/leaderboard.dart';
+import 'package:flutter_app/views/player/home_view.dart';
+import 'package:flutter_app/views/leaderboard_view.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 
-class AdminView extends StatefulWidget {
-  const AdminView({Key? key});
+class HomeSwitch extends StatefulWidget {
+  const HomeSwitch({Key? key});
 
   @override
-  State<AdminView> createState() => _AdminViewState();
+  State<HomeSwitch> createState() => _HomeSwitchState();
 }
 
-class _AdminViewState extends State<AdminView> {
-
+class _HomeSwitchState extends State<HomeSwitch> {
   int _selectedIndex = 0;
 
   final List<Widget> _views = [
-    Admin(),
-    Leaderboard(),
+    HomeView(),
+    LeaderboardView(),
     AccountView(),
   ];
 
@@ -40,8 +39,8 @@ class _AdminViewState extends State<AdminView> {
             padding: EdgeInsets.all(16),
             tabs: const [
               GButton(
-                icon: Icons.settings,
-                text: 'Gestion',
+                icon: Icons.home,
+                text: 'Accueil',
               ),
               GButton(
                 icon: Icons.leaderboard,

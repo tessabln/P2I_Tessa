@@ -7,5 +7,5 @@ void displayMessageToUser(String message, BuildContext context) {
     builder: (context) => AlertDialog(
       title: Text(message),
     ),
-    );
+  );
 }

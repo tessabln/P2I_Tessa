@@ -31,20 +31,19 @@ class _LoginViewState extends State<LoginView> {
       ),
     );
 
-      try {
-    // Sign in
-    await FirebaseAuth.instance.signInWithEmailAndPassword(
-        email: emailController.text, password: passwordController.text);
+    try {
+      // Sign in
+      await FirebaseAuth.instance.signInWithEmailAndPassword(
+          email: emailController.text, password: passwordController.text);
 
-    // pop loading circle
-    if (context.mounted) Navigator.pop(context);
-  } catch (e) {
-    // pop loading circle
-    Navigator.pop(context);
-    // Handle authentication errors
-    displayMessageToUser(e.toString(), context);
-  }
-
+      // pop loading circle
+      if (context.mounted) Navigator.pop(context);
+    } catch (e) {
+      // pop loading circle
+      Navigator.pop(context);
+      // Handle authentication errors
+      displayMessageToUser(e.toString(), context);
+    }
   }
 
   @override

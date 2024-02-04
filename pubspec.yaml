@@ -33,6 +33,7 @@ dependencies:
   flutter:
     sdk: flutter
     
+    
 
 
   # The following adds the Cupertino Icons font to your application.
@@ -51,6 +52,7 @@ dependencies:
   cloud_firestore: ^4.14.0
   google_nav_bar: ^5.0.6
   slide_to_act: ^2.0.1
+  intl: ^0.19.0
 
 dev_dependencies:
   flutter_test:

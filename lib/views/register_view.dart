@@ -84,8 +84,6 @@ class _RegisterViewState extends State<RegisterView> {
     }
   }
 
-  
-
   bool passwordConfirmed() {
     if (passwordController.text.trim() == confirmPwController.text.trim()) {
       return true;
@@ -148,13 +146,13 @@ class _RegisterViewState extends State<RegisterView> {
                   obscureText: false,
                   controller: userfamilyController),
 
-              const SizedBox(height: 10),    
+              const SizedBox(height: 10),
 
               // targetcode textfield
               MyTextField(
                   hintText: "Code",
                   obscureText: true,
-                  controller: targetcodeController),    
+                  controller: targetcodeController),
 
               const SizedBox(height: 10),
 
@@ -179,7 +177,6 @@ class _RegisterViewState extends State<RegisterView> {
                   hintText: "Confirmer le mot de passe",
                   obscureText: true,
                   controller: confirmPwController),
-
 
               const SizedBox(height: 25),
 
