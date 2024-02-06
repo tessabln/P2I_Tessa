@@ -65,6 +65,8 @@ class _HomeViewState extends State<HomeView> {
                   return Text('Loading...');
                 } else if (snapshot.hasError) {
                   return Text('Error: ${snapshot.error}');
+                } else if (snapshot.data == null || !snapshot.data!.exists) {
+                  return Text('Pas de donnée');
                 } else {
                   Map<String, dynamic> userData = snapshot.data!.data()!;
                   return Text('Bonjour, ${userData['firstname']}');

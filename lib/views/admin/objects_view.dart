@@ -2,7 +2,6 @@
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_app/services/firestore.dart';
 import 'package:intl/intl.dart';
 
 class ObjectsView extends StatefulWidget {
@@ -11,21 +10,22 @@ class ObjectsView extends StatefulWidget {
 }
 
 class _ObjectsViewState extends State<ObjectsView> {
-  final FirestoreService firestoreService = FirestoreService();
   final TextEditingController objectnameController = TextEditingController();
   final TextEditingController objectdescriptionController =
       TextEditingController();
-  final TextEditingController objectdateController = TextEditingController();
+  final TextEditingController objectbegindateController =
+      TextEditingController();
+  final TextEditingController objectendateController = TextEditingController();
 
   @override
   void dispose() {
     objectnameController.dispose();
     objectdescriptionController.dispose();
-    objectdateController.dispose();
+    objectbegindateController.dispose();
+    objectendateController.dispose();
     super.dispose();
   }
 
-  // Fonction pour afficher la boîte de dialogue
   void openObjectBox() {
     showDialog(
       context: context,
@@ -46,10 +46,10 @@ class _ObjectsViewState extends State<ObjectsView> {
               ),
             ),
             TextField(
-              controller: objectdateController,
+              controller: objectbegindateController,
               decoration: const InputDecoration(
                 icon: Icon(Icons.calendar_today),
-                labelText: "Date",
+                labelText: "Date de début",
               ),
               readOnly: true,
               onTap: () async {
@@ -75,7 +75,43 @@ class _ObjectsViewState extends State<ObjectsView> {
                     String formattedDateTime = DateFormat('yyyy-MM-dd HH:mm:ss')
                         .format(selectedDateTime);
                     setState(() {
-                      objectdateController.text = formattedDateTime;
+                      objectbegindateController.text = formattedDateTime;
+                    });
+                  }
+                }
+              },
+            ),
+            TextField(
+              controller: objectendateController,
+              decoration: const InputDecoration(
+                icon: Icon(Icons.calendar_today),
+                labelText: "Date de fin",
+              ),
+              readOnly: true,
+              onTap: () async {
+                DateTime? pickedDate = await showDatePicker(
+                  context: context,
+                  initialDate: DateTime.now(),
+                  firstDate: DateTime.now(),
+                  lastDate: DateTime(2101),
+                );
+                if (pickedDate != null) {
+                  TimeOfDay? pickedTime = await showTimePicker(
+                    context: context,
+                    initialTime: TimeOfDay.now(),
+                  );
+                  if (pickedTime != null) {
+                    DateTime selectedDateTime = DateTime(
+                      pickedDate.year,
+                      pickedDate.month,
+                      pickedDate.day,
+                      pickedTime.hour,
+                      pickedTime.minute,
+                    );
+                    String formattedDateTime = DateFormat('yyyy-MM-dd HH:mm:ss')
+                        .format(selectedDateTime);
+                    setState(() {
+                      objectendateController.text = formattedDateTime;
                     });
                   }
                 }
@@ -86,18 +122,24 @@ class _ObjectsViewState extends State<ObjectsView> {
         actions: [
           ElevatedButton(
             onPressed: () {
-              final DateTime objectdate = DateFormat('yyyy-MM-dd HH:mm:ss')
-                  .parse(objectdateController.text.trim());
+              final DateTime objectbegindate = DateFormat('yyyy-MM-dd HH:mm:ss')
+                  .parse(objectbegindateController.text.trim());
 
-              firestoreService.addObject(
-                objectnameController.text,
-                objectdescriptionController.text,
-                objectdate,
-              );
+              final DateTime objectendate = DateFormat('yyyy-MM-dd HH:mm:ss')
+                  .parse(objectendateController.text.trim());
+
+              // Ajout d'objets dans Firestore
+              FirebaseFirestore.instance.collection('objects').add({
+                'name': objectnameController.text,
+                'description': objectdescriptionController.text,
+                'begindate': objectbegindate,
+                'endate': objectendate,
+              });
 
               objectnameController.clear();
               objectdescriptionController.clear();
-              objectdateController.clear();
+              objectbegindateController.clear();
+              objectendateController.clear();
 
               Navigator.pop(context);
             },
@@ -111,57 +153,103 @@ class _ObjectsViewState extends State<ObjectsView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Objets")),
+      appBar: AppBar(
+        title: Text("Objets"),
+        backgroundColor: Theme.of(context).colorScheme.background,
+        actions: [
+          Container(
+            margin: EdgeInsets.all(8),
+            width: 50,
+            height: 50,
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage("assets/images/logo.png"),
+                fit: BoxFit.cover,
+              ),
+              borderRadius: BorderRadius.circular(8),
+            ),
+          ),
+        ],
+      ),
       floatingActionButton: FloatingActionButton(
         onPressed: openObjectBox,
         child: const Icon(Icons.add),
       ),
       body: StreamBuilder<QuerySnapshot>(
-        stream: firestoreService.getObjectsStream(),
+        stream: FirebaseFirestore.instance
+            .collection('objects')
+            .orderBy('begindate', descending: true)
+            .snapshots(),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
-            List objectsList = snapshot.data!.docs;
+            List<DocumentSnapshot> objectsList = snapshot.data!.docs;
 
-            // Display as a list
             return ListView.builder(
               itemCount: objectsList.length,
               itemBuilder: (context, index) {
-                // Get each indiv doc
                 DocumentSnapshot document = objectsList[index];
                 String docID = document.id;
 
-                // Get obj from each doc
-                Map<String, dynamic> data =
-                    document.data() as Map<String, dynamic>;
-                String objname = data['name'] ?? 'Nom non défini';
-                String objdescrip =
-                    data['description'] ?? 'Description non défini';
-                Timestamp timestamp = data['date'];
-                DateTime objdate = timestamp.toDate();
-                String formattedDate =
-                    DateFormat('yyyy-MM-dd HH:mm:ss').format(objdate);
+                Map<String, dynamic>? data =
+                    document.data() as Map<String, dynamic>?;
 
-                // Display as a list tile
-                return ListTile(
-                  title: Text('Nom: $objname'),
-                  subtitle: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text('Description: $objdescrip'),
-                      Text(
-                        'Date: $formattedDate',
-                        style: TextStyle(
-                          fontStyle: FontStyle.italic,
-                          color: Colors.grey,
-                        ),
+                if (data != null) {
+                  String objname = data['name'] ?? 'Nom non défini';
+                  String objdescrip =
+                      data['description'] ?? 'Description non défini';
+                  Timestamp? timestamp = data['begindate'];
+                  DateTime objbegindate = timestamp?.toDate() ?? DateTime.now();
+                  String formattedDate =
+                      DateFormat('yyyy-MM-dd HH:mm:ss').format(objbegindate);
+                  Timestamp? timestamp2 = data['endate'];
+                  DateTime objendate = timestamp2?.toDate() ?? DateTime.now();
+                  String formattedDate2 =
+                      DateFormat('yyyy-MM-dd HH:mm:ss').format(objendate);
+
+                  return Container(
+                    margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                    padding: EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(color: Colors.grey),
+                    ),
+                    child: ListTile(
+                      title: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            '$objname',
+                            style: TextStyle(
+                              fontSize: 18,
+                            ),
+                          ),
+                          SizedBox(height: 8),
+                          Text(
+                            'Description: $objdescrip',
+                            style: TextStyle(
+                              fontSize: 14,
+                            ),
+                          ),
+                          Text(
+                            'Date de début: $formattedDate',
+                            style: TextStyle(
+                                fontStyle: FontStyle.italic, fontSize: 14),
+                          ),
+                          Text(
+                            'Date de fin: $formattedDate2',
+                            style: TextStyle(
+                                fontStyle: FontStyle.italic, fontSize: 14),
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
-                );
+                    ),
+                  );
+                } else {
+                  return SizedBox();
+                }
               },
             );
           } else {
-            // Return a loading indicator or an empty widget when snapshot.hasData is false
             return Center(
               child: CircularProgressIndicator(),
             );

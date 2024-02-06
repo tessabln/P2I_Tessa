@@ -31,11 +31,12 @@ class FirestoreService {
     });
   }
 
-  Future<void> addObject(String name, String description, DateTime date) {
+  Future<void> addObject(String name, String description, DateTime begindate, DateTime endate) {
     return objects.add({
       'name': name,
       'description': description,
-      'date': date,
+      'begindate': begindate,
+      'endate': endate,
     });
   }
 
@@ -52,10 +53,10 @@ class FirestoreService {
   Future<void> deleteUser(String uid) async {
     try {
       await FirebaseFirestore.instance.collection('users').doc(uid).delete();
-      print('User deleted successfully.');
+      print('L utilisateur a bien été supprimé');
     } catch (error) {
-      print('Failed to delete user: $error');
-      // Gérer l'erreur ici
+      print('Echec de la suppression: $error');
     }
   }
+  
 }

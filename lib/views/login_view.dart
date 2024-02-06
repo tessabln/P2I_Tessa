@@ -2,10 +2,12 @@
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_app/auth/auth.dart';
 import 'package:flutter_app/components/my_button.dart';
 import 'package:flutter_app/components/my_textfield.dart';
 import 'package:flutter_app/helper/helper_functions.dart';
 import 'package:flutter_app/views/forgot_pw_view.dart';
+import 'package:flutter_app/views/register_view.dart';
 
 class LoginView extends StatefulWidget {
   final void Function()? onTap;
@@ -36,8 +38,11 @@ class _LoginViewState extends State<LoginView> {
       await FirebaseAuth.instance.signInWithEmailAndPassword(
           email: emailController.text, password: passwordController.text);
 
-      // pop loading circle
-      if (context.mounted) Navigator.pop(context);
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => AuthView()),
+      );
+      
     } catch (e) {
       // pop loading circle
       Navigator.pop(context);
@@ -142,7 +147,16 @@ class _LoginViewState extends State<LoginView> {
                         color: Theme.of(context).colorScheme.inversePrimary),
                   ),
                   GestureDetector(
-                    onTap: widget.onTap,
+                    onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) {
+                              return RegisterView(onTap: () {  },);
+                            },
+                          ),
+                        );
+                      },
                     child: const Text(
                       " Inscrivez-vous ici",
                       style: TextStyle(

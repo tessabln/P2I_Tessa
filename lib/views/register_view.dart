@@ -6,6 +6,7 @@ import 'package:flutter_app/components/my_button.dart';
 import 'package:flutter_app/components/my_textfield.dart';
 import 'package:flutter_app/helper/helper_functions.dart';
 import 'package:flutter_app/services/firestore.dart';
+import 'package:flutter_app/views/login_view.dart';
 
 class RegisterView extends StatefulWidget {
   final void Function()? onTap;
@@ -66,6 +67,10 @@ class _RegisterViewState extends State<RegisterView> {
           int.parse(targetcodeController.text.trim()),
         );
 
+        Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => LoginView(onTap: () {  },)),
+      );
         // Display UID in console
         print('User UID: ${userCredential.user!.uid}');
       } on FirebaseAuthException catch (e) {
@@ -198,7 +203,16 @@ class _RegisterViewState extends State<RegisterView> {
                         color: Theme.of(context).colorScheme.inversePrimary),
                   ),
                   GestureDetector(
-                    onTap: widget.onTap,
+                    onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) {
+                              return LoginView(onTap: () {  },);
+                            },
+                          ),
+                        );
+                      },
                     child: const Text(
                       " Connectez-vous ici",
                       style: TextStyle(

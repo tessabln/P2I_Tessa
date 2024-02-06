@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_app/components/my_button.dart';
 import 'package:flutter_app/views/admin/game_register_view.dart';
 import 'package:flutter_app/views/admin/objects_view.dart';
+import 'package:flutter_app/views/admin/targets_view.dart';
+import 'package:flutter_app/views/admin/users_view.dart';
 
 class AdminView extends StatefulWidget {
   final void Function()? onTap;
@@ -87,12 +89,30 @@ class _AdminViewState extends State<AdminView> {
             const SizedBox(height: 10),
             MyButton(
               text: "Gestion des joueurs",
-              onTap: () {},
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) {
+                      return UsersView();
+                    },
+                  ),
+                );
+              },
             ),
             const SizedBox(height: 10),
             MyButton(
               text: "Gestion des cibles",
-              onTap: () {},
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) {
+                      return TargetsView();
+                    },
+                  ),
+                );
+              },
             ),
             const SizedBox(height: 10),
             MyButton(
