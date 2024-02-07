@@ -1,9 +1,11 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/components/my_button.dart';
 import 'package:flutter_app/theme/theme_provider.dart';
+import 'package:flutter_app/views/change_pw_view.dart';
 import 'package:flutter_app/views/login_view.dart';
 import 'package:flutter_app/services/firestore.dart';
 import 'package:provider/provider.dart';
@@ -17,11 +19,14 @@ class AccountView extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.background,
         actions: [
-          IconButton(
-            onPressed: () {
-              Provider.of<ThemeProvider>(context, listen: false).toggleTheme();
-            },
-            icon: Icon(Icons.nightlight_round_sharp),
+          const Text("Dark mode"),
+          CupertinoSwitch(
+            value:
+                Provider.of<ThemeProvider>(context, listen: false).isDarkMode,
+                activeColor: Colors.grey.shade700,
+            onChanged: (value) =>
+                Provider.of<ThemeProvider>(context, listen: false)
+                    .toggleTheme(),
           ),
         ],
       ),
@@ -38,7 +43,16 @@ class AccountView extends StatelessWidget {
               const SizedBox(height: 200),
               MyButton(
                 text: "Changer mon mot de passe",
-                onTap: () {},
+                onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) {
+                      return ChangePasswordView();
+                    },
+                  ),
+                );
+              },
               ),
               const SizedBox(height: 10),
               MyButton(

@@ -9,17 +9,13 @@ class TargetsView extends StatefulWidget {
 
 class _TargetsViewState extends State<TargetsView> {
   final user = FirebaseAuth.instance.currentUser;
-  Future<DocumentSnapshot<Map<String, dynamic>>>? userData;
+  var userList = FirebaseFirestore.instance.collection("users").snapshots();
 
   @override
   void initState() {
     super.initState();
-    userData = getUserData();
   }
 
-  Future<DocumentSnapshot<Map<String, dynamic>>> getUserData() async {
-    return FirebaseFirestore.instance.collection("users").doc(user!.uid).get();
-  }
 
   final Map<String, Color> familyColors = {
     'Bleue': Color.fromARGB(255, 10, 28, 112),
@@ -65,7 +61,6 @@ class _TargetsViewState extends State<TargetsView> {
       body: StreamBuilder<QuerySnapshot>(
         stream: FirebaseFirestore.instance
             .collection('users')
-            .orderBy('lastname', descending: true)
             .snapshots(),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
@@ -101,13 +96,7 @@ class _TargetsViewState extends State<TargetsView> {
                 );
               },
               onReorder: (oldIndex, newIndex) {
-                setState(() {
-                  if (oldIndex < newIndex) {
-                    newIndex--;
-                  }
-                  final user = _userList.removeAt(oldIndex);
-                  _userList.insert(newIndex, user);
-                });
+                updateUserList(oldIndex,newIndex);
               },
             );
           } else {

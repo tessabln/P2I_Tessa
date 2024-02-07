@@ -22,6 +22,7 @@ class _AdminViewState extends State<AdminView> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.background,
+        automaticallyImplyLeading: false,
         actions: [
           Container(
             margin: EdgeInsets.all(8),

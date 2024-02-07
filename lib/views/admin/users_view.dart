@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 
 class UsersView extends StatefulWidget {
   @override
@@ -45,7 +46,7 @@ class _UsersViewState extends State<UsersView> {
       body: StreamBuilder<QuerySnapshot>(
         stream: FirebaseFirestore.instance
             .collection('users')
-            .orderBy('lastname', descending: true)
+            .orderBy('lastname', descending: false)
             .snapshots(),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
@@ -67,50 +68,59 @@ class _UsersViewState extends State<UsersView> {
                   return Container(
                     margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(12),
+                      borderRadius: BorderRadius.circular(2),
                       border: Border.all(color: Colors.grey),
                     ),
-                    child: ListTile(
-                      title: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                    child: Slidable(
+                      endActionPane: ActionPane(
+                        motion: ScrollMotion(),
                         children: [
-                          Text(
-                            '$lastname $firstname',
-                            style: TextStyle(
-                              fontSize: 18,
-                            ),
+                          SlidableAction(
+                            onPressed: ((context) {
+                              showDialog(
+                                context: context,
+                                builder: (context) => AlertDialog(
+                                  title: Text("Confirmation"),
+                                  content: Text(
+                                      "Voulez-vous vraiment supprimer cet utilisateur ?"),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () {
+                                        Navigator.pop(context);
+                                      },
+                                      child: Text("Annuler"),
+                                    ),
+                                    TextButton(
+                                      onPressed: () {
+                                        FirebaseFirestore.instance
+                                            .collection('users')
+                                            .doc(userId)
+                                            .delete();
+                                        Navigator.pop(context);
+                                      },
+                                      child: Text("Supprimer"),
+                                    ),
+                                  ],
+                                ),
+                              );
+                            }),
+                            backgroundColor: Colors.red,
+                            icon: Icons.delete,
                           ),
                         ],
                       ),
-                      trailing: IconButton(
-                        icon: Icon(Icons.delete),
-                        onPressed: () {
-                          showDialog(
-                            context: context,
-                            builder: (context) => AlertDialog(
-                              title: Text("Confirmation"),
-                              content: Text("Voulez-vous vraiment supprimer cet utilisateur ?"),
-                              actions: [
-                                TextButton(
-                                  onPressed: () {
-                                    Navigator.pop(context);
-                                  },
-                                  child: Text("Annuler"),
-                                ),
-                                TextButton(
-                                  onPressed: () {
-                                    FirebaseFirestore.instance
-                                        .collection('users')
-                                        .doc(userId)
-                                        .delete();
-                                    Navigator.pop(context);
-                                  },
-                                  child: Text("Supprimer"),
-                                ),
-                              ],
+                      child: ListTile(
+                        title: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              '$lastname $firstname',
+                              style: TextStyle(
+                                fontSize: 18,
+                              ),
                             ),
-                          );
-                        },
+                          ],
+                        ),
                       ),
                     ),
                   );

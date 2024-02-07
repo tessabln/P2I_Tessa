@@ -1,4 +1,4 @@
-// ignore_for_file: use_build_context_synchronously
+// ignore_for_file: use_build_context_synchronously, unnecessary_string_interpolations
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -188,7 +188,7 @@ class _ObjectsViewState extends State<ObjectsView> {
               itemCount: objectsList.length,
               itemBuilder: (context, index) {
                 DocumentSnapshot document = objectsList[index];
-                String docID = document.id;
+                //String userId= document.id;
 
                 Map<String, dynamic>? data =
                     document.data() as Map<String, dynamic>?;

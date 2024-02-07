@@ -7,7 +7,7 @@ import 'package:flutter_app/components/my_button.dart';
 import 'package:flutter_app/components/my_textfield.dart';
 import 'package:flutter_app/helper/helper_functions.dart';
 import 'package:flutter_app/views/forgot_pw_view.dart';
-import 'package:flutter_app/views/register_view.dart';
+import 'package:flutter_app/views/player/register_view.dart';
 
 class LoginView extends StatefulWidget {
   final void Function()? onTap;
