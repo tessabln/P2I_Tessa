@@ -1,55 +1,21 @@
-// ignore_for_file: use_build_context_synchronously
-
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_app/auth/auth.dart';
 import 'package:flutter_app/components/my_button.dart';
 import 'package:flutter_app/components/my_textfield.dart';
-import 'package:flutter_app/helper/helper_functions.dart';
 import 'package:flutter_app/views/forgot_pw_view.dart';
-import 'package:flutter_app/views/player/register_view.dart';
+import 'package:flutter_app/views/user/register_view.dart';
+import 'package:flutter_app/auth/userAuth.dart';
 
 class LoginView extends StatefulWidget {
   final void Function()? onTap;
-
-  const LoginView({super.key, required this.onTap});
-
+  const LoginView({Key? key, required this.onTap}) : super(key: key);
   @override
   State<LoginView> createState() => _LoginViewState();
 }
 
 class _LoginViewState extends State<LoginView> {
-  // text controllers
   final TextEditingController emailController = TextEditingController();
+
   final TextEditingController passwordController = TextEditingController();
-
-  //login method
-  void login() async {
-    // show loading circle
-    showDialog(
-      context: context,
-      builder: (context) => const Center(
-        child: CircularProgressIndicator(),
-      ),
-    );
-
-    try {
-      // Sign in
-      await FirebaseAuth.instance.signInWithEmailAndPassword(
-          email: emailController.text, password: passwordController.text);
-
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => AuthView()),
-      );
-      
-    } catch (e) {
-      // pop loading circle
-      Navigator.pop(context);
-      // Handle authentication errors
-      displayMessageToUser(e.toString(), context);
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -132,7 +98,8 @@ class _LoginViewState extends State<LoginView> {
               // sign in button
               MyButton(
                 text: "Se connecter",
-                onTap: login,
+                onTap: () => AuthService.logIn(
+                    emailController.text, passwordController.text, context),
               ),
 
               const SizedBox(height: 25),
@@ -148,15 +115,17 @@ class _LoginViewState extends State<LoginView> {
                   ),
                   GestureDetector(
                     onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) {
-                              return RegisterView(onTap: () {  },);
-                            },
-                          ),
-                        );
-                      },
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) {
+                            return RegisterView(
+                              onTap: () {},
+                            );
+                          },
+                        ),
+                      );
+                    },
                     child: const Text(
                       " Inscrivez-vous ici",
                       style: TextStyle(

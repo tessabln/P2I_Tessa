@@ -1,22 +1,21 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_app/models/user.dart';
 
 class FirestoreService {
   // get collection
-  final CollectionReference users =
-      FirebaseFirestore.instance.collection('users');
+  static FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final CollectionReference games =
       FirebaseFirestore.instance.collection('games');
   final CollectionReference objects =
       FirebaseFirestore.instance.collection('objects');
   // CREATE
-  addUserDetails(String uid, String lastName, String firstName, String family,
-      String email, int targetcode) async {
-    await FirebaseFirestore.instance.collection('users').doc(uid).set({
-      'lastname': lastName,
-      'firstname': firstName,
-      'family': family,
-      'email': email,
-      'code': targetcode,
+  static Future<void> addUser(User user) async {
+    await _firestore.collection("users").doc(user.uid).set({
+      'lastname': user.lastname,
+      'firstname': user.firstname,
+      'family': user.family,
+      'email': user.email,
+      'targetcode': user.targetcode,
     });
   }
 
@@ -31,7 +30,8 @@ class FirestoreService {
     });
   }
 
-  Future<void> addObject(String name, String description, DateTime begindate, DateTime endate) {
+  Future<void> addObject(
+      String name, String description, DateTime begindate, DateTime endate) {
     return objects.add({
       'name': name,
       'description': description,
@@ -58,5 +58,4 @@ class FirestoreService {
       print('Echec de la suppression: $error');
     }
   }
-  
 }

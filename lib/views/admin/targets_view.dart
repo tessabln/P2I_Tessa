@@ -16,7 +16,6 @@ class _TargetsViewState extends State<TargetsView> {
     super.initState();
   }
 
-
   final Map<String, Color> familyColors = {
     'Bleue': Color.fromARGB(255, 10, 28, 112),
     'Rouge': Color.fromARGB(255, 182, 31, 26),
@@ -59,9 +58,7 @@ class _TargetsViewState extends State<TargetsView> {
         ],
       ),
       body: StreamBuilder<QuerySnapshot>(
-        stream: FirebaseFirestore.instance
-            .collection('users')
-            .snapshots(),
+        stream: FirebaseFirestore.instance.collection('users').snapshots(),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             _userList = snapshot.data!.docs;
@@ -96,7 +93,7 @@ class _TargetsViewState extends State<TargetsView> {
                 );
               },
               onReorder: (oldIndex, newIndex) {
-                updateUserList(oldIndex,newIndex);
+                updateUserList(oldIndex, newIndex);
               },
             );
           } else {

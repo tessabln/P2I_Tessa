@@ -1,5 +1,3 @@
-// ignore_for_file: must_be_immutable, prefer_interpolation_to_compose_strings, sort_child_properties_last, avoid_function_literals_in_foreach_calls, unused_local_variable
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -20,33 +18,27 @@ class _HomeViewState extends State<HomeView> {
   void initState() {
     super.initState();
     userData = getUserData();
-    Future<DocumentSnapshot<Map<String, dynamic>>>?
-        objectData; //bonne ligne pour pas que ça soit tout faux
+    objectData = getObjectData();
   }
 
   Future<DocumentSnapshot<Map<String, dynamic>>> getUserData() async {
     return FirebaseFirestore.instance.collection("users").doc(user!.uid).get();
   }
 
-  Future<DocumentSnapshot<Map<String, dynamic>>?> getObjectData() async {
+  Future<DocumentSnapshot<Map<String, dynamic>>> getObjectData() async {
     DateTime now = DateTime.now();
 
-    String formattedDate = DateFormat('dd-MM-yyyy à HH:mm:ss').format(now);
+    String formattedDate = DateFormat('yyyy-MM-dd à HH:mm:ss').format(now);
     print('Formatted Date: $formattedDate');
 
     QuerySnapshot<Map<String, dynamic>> snapshot = await FirebaseFirestore
         .instance
         .collection("objects")
-        .where('begindate', isLessThanOrEqualTo: formattedDate)
-        .where('endate', isGreaterThanOrEqualTo: formattedDate)
+        .where('endate', isGreaterThanOrEqualTo: now)
+        .orderBy('endate', descending: false)
         .get();
-    print('Object Data: $objectData');
 
-    if (snapshot.docs.isNotEmpty) {
-      return snapshot.docs.first;
-    } else {
-      return null;
-    }
+    return snapshot.docs.first;
   }
 
   @override
@@ -120,7 +112,7 @@ class _HomeViewState extends State<HomeView> {
                         padding: const EdgeInsets.symmetric(
                             vertical: 8.0, horizontal: 16.0),
                         child: Text(
-                          "Nom de l'objet:",
+                          "Nom de l'objet : ${objectData['name']}",
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
                           ),
@@ -129,7 +121,7 @@ class _HomeViewState extends State<HomeView> {
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 16.0),
                         child: Text(
-                          objectData['name'],
+                          objectData['name'], // Accès au nom de l'objet
                           style: TextStyle(
                             fontStyle: FontStyle.italic,
                           ),
@@ -140,7 +132,7 @@ class _HomeViewState extends State<HomeView> {
                         padding: const EdgeInsets.symmetric(
                             vertical: 8.0, horizontal: 16.0),
                         child: Text(
-                          "Description de l'objet:",
+                          "Description de l'objet :",
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
                           ),
@@ -149,7 +141,8 @@ class _HomeViewState extends State<HomeView> {
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 16.0),
                         child: Text(
-                          objectData['description'],
+                          objectData[
+                              'description'], // Accès à la description de l'objet
                           style: TextStyle(
                             fontStyle: FontStyle.italic,
                           ),

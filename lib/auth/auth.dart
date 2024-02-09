@@ -1,7 +1,7 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_app/auth/login_or_register.dart';
-import 'package:flutter_app/views/player/home_switch.dart';
+import 'package:flutter_app/views/user/home_switch.dart';
 import 'package:flutter_app/views/admin/admin_switch.dart';
 
 class AuthView extends StatelessWidget {

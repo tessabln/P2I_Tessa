@@ -10,7 +10,7 @@ import 'package:flutter_app/views/admin/users_view.dart';
 class AdminView extends StatefulWidget {
   final void Function()? onTap;
 
-  const AdminView({super.key, required this.onTap});
+  const AdminView({Key? key, required this.onTap});
 
   @override
   State<AdminView> createState() => _AdminViewState();
@@ -24,6 +24,7 @@ class _AdminViewState extends State<AdminView> {
         backgroundColor: Theme.of(context).colorScheme.background,
         automaticallyImplyLeading: false,
         actions: [
+          // Logo
           Container(
             margin: EdgeInsets.all(8),
             width: 50,
@@ -41,86 +42,93 @@ class _AdminViewState extends State<AdminView> {
       body: Center(
         child: Padding(
           padding: const EdgeInsets.all(25.0),
-          child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-            GestureDetector(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) {
-                      return GameRegisterView();
-                    },
-                  ),
-                );
-              },
-              child: SizedBox(
-                width: 150,
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.primary,
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  padding: const EdgeInsets.all(15),
-                  child: Center(
-                    child: Text(
-                      "Créer le jeu",
-                      style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) {
+                        return GameRegisterView();
+                      },
+                    ),
+                  );
+                },
+                child: SizedBox(
+                  width: 150,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).colorScheme.primary,
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    padding: const EdgeInsets.all(15),
+                    child: Center(
+                      child: Text(
+                        "Créer le jeu",
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                        ),
                       ),
                     ),
                   ),
                 ),
               ),
-            ),
-            const SizedBox(height: 80),
-            MyButton(
-              text: "Gestion des objets",
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) {
-                      return ObjectsView();
-                    },
-                  ),
-                );
-              },
-            ),
-            const SizedBox(height: 10),
-            MyButton(
-              text: "Gestion des joueurs",
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) {
-                      return UsersView();
-                    },
-                  ),
-                );
-              },
-            ),
-            const SizedBox(height: 10),
-            MyButton(
-              text: "Gestion des cibles",
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) {
-                      return TargetsView();
-                    },
-                  ),
-                );
-              },
-            ),
-            const SizedBox(height: 10),
-            MyButton(
-              text: "Gestion des annonces",
-              onTap: () {},
-            ),
-          ]),
+              const SizedBox(height: 80),
+              // Button for managing objects
+              MyButton(
+                text: "Gestion des objets",
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) {
+                        return ObjectsView();
+                      },
+                    ),
+                  );
+                },
+              ),
+              const SizedBox(height: 10),
+              // Button for managing users
+              MyButton(
+                text: "Gestion des joueurs",
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) {
+                        return UsersView();
+                      },
+                    ),
+                  );
+                },
+              ),
+              const SizedBox(height: 10),
+              // Button for managing targets
+              MyButton(
+                text: "Gestion des cibles",
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) {
+                        return TargetsView();
+                      },
+                    ),
+                  );
+                },
+              ),
+              const SizedBox(height: 10),
+              // Button for managing announcements
+              MyButton(
+                text: "Gestion des annonces",
+                onTap: () {},
+              ),
+            ],
+          ),
         ),
       ),
     );

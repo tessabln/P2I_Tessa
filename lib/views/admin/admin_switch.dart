@@ -1,5 +1,3 @@
-// ignore_for_file: avoid_unnecessary_containers
-
 import 'package:flutter/material.dart';
 import 'package:flutter_app/views/account_view.dart';
 import 'package:flutter_app/views/admin/admin_view.dart';
@@ -14,13 +12,18 @@ class AdminSwitch extends StatefulWidget {
 }
 
 class _AdminSwitchState extends State<AdminSwitch> {
+  // Index to keep track of the selected view
   int _selectedIndex = 0;
 
+  // List of views to be displayed
   final List<Widget> _views = [
+    // Admin view for managing settings
     AdminView(
       onTap: () {},
     ),
+    // View for displaying leaderboard
     LeaderboardView(),
+    // View for managing user account
     AccountView(),
   ];
 
@@ -31,6 +34,7 @@ class _AdminSwitchState extends State<AdminSwitch> {
         index: _selectedIndex,
         children: _views,
       ),
+      // Bottom navigation bar
       bottomNavigationBar: Container(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 20),
@@ -39,6 +43,7 @@ class _AdminSwitchState extends State<AdminSwitch> {
             tabBackgroundColor: Theme.of(context).colorScheme.primary,
             gap: 20,
             padding: EdgeInsets.all(16),
+            // List of navigation tabs
             tabs: const [
               GButton(
                 icon: Icons.settings,
@@ -53,7 +58,9 @@ class _AdminSwitchState extends State<AdminSwitch> {
                 text: 'Compte',
               ),
             ],
+            // Index of the selected tab
             selectedIndex: _selectedIndex,
+            // Callback function for tab change
             onTabChange: (index) {
               setState(() {
                 _selectedIndex = index;

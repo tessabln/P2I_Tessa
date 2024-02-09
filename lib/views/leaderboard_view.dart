@@ -21,9 +21,7 @@ class LeaderboardView extends StatelessWidget {
             _buildCircle(Color.fromARGB(255, 146, 9, 9), "25"),
           ],
         ),
-
         const SizedBox(height: 100),
-
         Text(
           "Nombre de survivants",
           style: TextStyle(fontSize: 24),
@@ -39,9 +37,7 @@ class LeaderboardView extends StatelessWidget {
             _buildCircle(Color.fromARGB(255, 146, 9, 9), "25"),
           ],
         ),
-
         const SizedBox(height: 100),
-
         Text(
           "Top kill",
           style: TextStyle(fontSize: 24),
@@ -72,7 +68,10 @@ class LeaderboardView extends StatelessWidget {
           Center(
             child: Text(
               text,
-              style: TextStyle(fontSize: 20, color: Colors.white, fontWeight: FontWeight.bold),
+              style: TextStyle(
+                  fontSize: 20,
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold),
             ),
           ),
         ],

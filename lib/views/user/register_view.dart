@@ -1,10 +1,11 @@
 // ignore_for_file: use_build_context_synchronously
 
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_app/auth/userAuth.dart';
 import 'package:flutter_app/components/my_button.dart';
 import 'package:flutter_app/components/my_textfield.dart';
-import 'package:flutter_app/helper/helper_functions.dart';
+import 'package:flutter_app/models/user.dart' as User;
 import 'package:flutter_app/services/firestore.dart';
 import 'package:flutter_app/views/login_view.dart';
 
@@ -18,82 +19,79 @@ class RegisterView extends StatefulWidget {
 }
 
 class _RegisterViewState extends State<RegisterView> {
-  // text controllers
-  final TextEditingController userlastnameController = TextEditingController();
-  final TextEditingController userfirstnameController = TextEditingController();
-  final TextEditingController userfamilyController = TextEditingController();
-  final TextEditingController emailController = TextEditingController();
-  final TextEditingController passwordController = TextEditingController();
-  final TextEditingController confirmPwController = TextEditingController();
-  final TextEditingController targetcodeController = TextEditingController();
+  final TextEditingController _userlastnameController = TextEditingController();
+  final TextEditingController _userfirstnameController =
+      TextEditingController();
+  final TextEditingController _userfamilyController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _confirmPwController = TextEditingController();
+  final TextEditingController _targetcodeController = TextEditingController();
 
   @override
   void dispose() {
-    userlastnameController.dispose();
-    userfirstnameController.dispose();
-    userfamilyController.dispose();
-    emailController.dispose();
-    passwordController.dispose();
-    confirmPwController.dispose();
-    targetcodeController.dispose();
+    _userlastnameController.dispose();
+    _userfirstnameController.dispose();
+    _userfamilyController.dispose();
+    _emailController.dispose();
+    _passwordController.dispose();
+    _confirmPwController.dispose();
+    _targetcodeController.dispose();
     super.dispose();
   }
 
-  //register method
-  Future registerUser() async {
-    // show loading circle
-    showDialog(
-      context: context,
-      builder: (context) => const Center(child: CircularProgressIndicator()),
-    );
+  Future<void> registerUser() async {
+    final String userlastname = _userlastnameController.text.trim();
+    final String userfirstname = _userfirstnameController.text.trim();
+    final String userfamily = _userfamilyController.text.trim();
+    final String email = _emailController.text.trim();
+    final String password = _passwordController.text.trim();
+    final String confirmPw = _confirmPwController.text.trim();
+    final String targetcode = _targetcodeController.text.trim();
 
-    if (passwordConfirmed()) {
+    if (password == confirmPw) {
       try {
-        // create the user
-        UserCredential? userCredential = await FirebaseAuth.instance
-            .createUserWithEmailAndPassword(
-                email: emailController.text, password: passwordController.text);
+        final UserCredential userCredential =
+            await AuthService.register(email, password, context);
 
-        // pop loading circle
-        Navigator.pop(context);
+        if (userCredential != null) {
+          final User.User user = User.User(
+            uid: userCredential.user!.uid,
+            lastname: userlastname,
+            firstname: userfirstname,
+            family: userfamily,
+            email: email,
+            targetcode: int.parse(targetcode),
+          );
 
-        // add user details
-        FirestoreService().addUserDetails(
-          userCredential.user!.uid,
-          userlastnameController.text.trim(),
-          userfirstnameController.text.trim(),
-          userfamilyController.text.trim(),
-          emailController.text.trim(),
-          int.parse(targetcodeController.text.trim()),
+          await FirestoreService.addUser(user);
+
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (context) => LoginView(
+                onTap: () {},
+              ),
+            ),
+          );
+        }
+      } catch (e) {
+        // Afficher un message d'erreur en cas d'erreur lors de l'enregistrement
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Erreur lors de l\'inscription'),
+            duration: Duration(seconds: 5),
+          ),
         );
-
-        Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => LoginView(onTap: () {  },)),
-      );
-        // Display UID in console
-        print('User UID: ${userCredential.user!.uid}');
-      } on FirebaseAuthException catch (e) {
-        // pop loading circle
-        Navigator.pop(context);
-
-        // display error message to user
-        displayMessageToUser(e.code, context);
       }
     } else {
-      // pop loading circle
-      Navigator.pop(context);
-
-      // show error message to user
-      displayMessageToUser("Les mots de passe ne sont pas les mêmes", context);
-    }
-  }
-
-  bool passwordConfirmed() {
-    if (passwordController.text.trim() == confirmPwController.text.trim()) {
-      return true;
-    } else {
-      return false;
+      // Afficher un message d'erreur si les mots de passe ne correspondent pas
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Les mots de passe ne correspondent pas.'),
+          duration: Duration(seconds: 5),
+        ),
+      );
     }
   }
 
@@ -133,7 +131,7 @@ class _RegisterViewState extends State<RegisterView> {
               MyTextField(
                   hintText: "Nom",
                   obscureText: false,
-                  controller: userlastnameController),
+                  controller: _userlastnameController),
 
               const SizedBox(height: 10),
 
@@ -141,7 +139,7 @@ class _RegisterViewState extends State<RegisterView> {
               MyTextField(
                   hintText: "Prénom",
                   obscureText: false,
-                  controller: userfirstnameController),
+                  controller: _userfirstnameController),
 
               const SizedBox(height: 10),
 
@@ -149,7 +147,7 @@ class _RegisterViewState extends State<RegisterView> {
               MyTextField(
                   hintText: "Famille",
                   obscureText: false,
-                  controller: userfamilyController),
+                  controller: _userfamilyController),
 
               const SizedBox(height: 10),
 
@@ -157,7 +155,7 @@ class _RegisterViewState extends State<RegisterView> {
               MyTextField(
                   hintText: "Code",
                   obscureText: true,
-                  controller: targetcodeController),
+                  controller: _targetcodeController),
 
               const SizedBox(height: 10),
 
@@ -165,7 +163,7 @@ class _RegisterViewState extends State<RegisterView> {
               MyTextField(
                   hintText: "Email",
                   obscureText: false,
-                  controller: emailController),
+                  controller: _emailController),
 
               const SizedBox(height: 10),
 
@@ -173,7 +171,7 @@ class _RegisterViewState extends State<RegisterView> {
               MyTextField(
                   hintText: "Mot de passe",
                   obscureText: true,
-                  controller: passwordController),
+                  controller: _passwordController),
 
               const SizedBox(height: 10),
 
@@ -181,14 +179,16 @@ class _RegisterViewState extends State<RegisterView> {
               MyTextField(
                   hintText: "Confirmer le mot de passe",
                   obscureText: true,
-                  controller: confirmPwController),
+                  controller: _confirmPwController),
 
               const SizedBox(height: 25),
 
               // register button
               MyButton(
                 text: "S'inscrire",
-                onTap: registerUser,
+                onTap: () async {
+                  await registerUser();
+                },
               ),
 
               const SizedBox(height: 25),
@@ -204,15 +204,17 @@ class _RegisterViewState extends State<RegisterView> {
                   ),
                   GestureDetector(
                     onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) {
-                              return LoginView(onTap: () {  },);
-                            },
-                          ),
-                        );
-                      },
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) {
+                            return LoginView(
+                              onTap: () {},
+                            );
+                          },
+                        ),
+                      );
+                    },
                     child: const Text(
                       " Connectez-vous ici",
                       style: TextStyle(

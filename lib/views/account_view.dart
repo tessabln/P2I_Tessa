@@ -23,7 +23,7 @@ class AccountView extends StatelessWidget {
           CupertinoSwitch(
             value:
                 Provider.of<ThemeProvider>(context, listen: false).isDarkMode,
-                activeColor: Colors.grey.shade700,
+            activeColor: Colors.grey.shade700,
             onChanged: (value) =>
                 Provider.of<ThemeProvider>(context, listen: false)
                     .toggleTheme(),
@@ -44,15 +44,15 @@ class AccountView extends StatelessWidget {
               MyButton(
                 text: "Changer mon mot de passe",
                 onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) {
-                      return ChangePasswordView();
-                    },
-                  ),
-                );
-              },
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) {
+                        return ChangePasswordView();
+                      },
+                    ),
+                  );
+                },
               ),
               const SizedBox(height: 10),
               MyButton(
