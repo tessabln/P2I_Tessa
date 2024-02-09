@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/components/object_list.dart';
 import 'package:flutter_app/models/object.dart';
 import 'package:flutter_app/helper/boxdialog.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -38,7 +39,6 @@ class _ObjectsViewState extends State<ObjectsView> {
     );
   }
 
-  // Function to update text controllers
   void updateTextController(String begindate, String endate) {
     DateTime parsedBeginDate =
         DateFormat('yyyy-MM-dd HH:mm:ss').parse(begindate);
@@ -89,50 +89,9 @@ class _ObjectsViewState extends State<ObjectsView> {
               return Object.fromFirestore(data);
             }).toList();
 
-            return ListView.builder(
-              itemCount: objectsList.length,
-              itemBuilder: (context, index) {
-                Object object = objectsList[index];
-
-                return Container(
-                  margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-                  padding: EdgeInsets.all(8),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: Colors.grey),
-                  ),
-                  child: ListTile(
-                    title: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          object.name,
-                          style: TextStyle(
-                            fontSize: 18,
-                          ),
-                        ),
-                        SizedBox(height: 8),
-                        Text(
-                          'Description: ${object.description}',
-                          style: TextStyle(
-                            fontSize: 14,
-                          ),
-                        ),
-                        Text(
-                          'Date de début: ${object.formattedBeginDate}',
-                          style: TextStyle(
-                              fontStyle: FontStyle.italic, fontSize: 14),
-                        ),
-                        Text(
-                          'Date de fin: ${object.formattedEndDate}',
-                          style: TextStyle(
-                              fontStyle: FontStyle.italic, fontSize: 14),
-                        ),
-                      ],
-                    ),
-                  ),
-                );
-              },
+            return ObjectList(
+              objectsList: objectsList,
+              data: {},
             );
           } else {
             return Center(
