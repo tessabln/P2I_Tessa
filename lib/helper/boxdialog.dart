@@ -32,73 +32,39 @@ Widget addObjectDialog(
         ),
         TextField(
           controller: objectbegindateController,
-          decoration: const InputDecoration(
+          decoration: InputDecoration(
             icon: Icon(Icons.calendar_today),
             labelText: "Date de début",
+            labelStyle: TextStyle(color: Theme.of(context).colorScheme.primary),
           ),
           readOnly: true,
           onTap: () async {
-            DateTime? pickedDate = await showDatePicker(
-              context: context,
-              initialDate: DateTime.now(),
-              firstDate: DateTime.now(),
-              lastDate: DateTime(2101),
-            );
-            if (pickedDate != null) {
-              TimeOfDay? pickedTime = await showTimePicker(
-                context: context,
-                initialTime: TimeOfDay.now(),
+            DateTime? pickedDateTime = await _selectDateTime(context);
+            if (pickedDateTime != null) {
+              updateTextController(
+                DateFormat('yyyy-MM-dd HH:mm:ss').format(pickedDateTime),
+                objectendateController.text,
               );
-              if (pickedTime != null) {
-                DateTime selectedDateTime = DateTime(
-                  pickedDate.year,
-                  pickedDate.month,
-                  pickedDate.day,
-                  pickedTime.hour,
-                  pickedTime.minute,
-                );
-                String formattedDateTime =
-                    DateFormat('yyyy-MM-dd HH:mm:ss').format(selectedDateTime);
-                // Update text controller using the provided function
-                updateTextController(
-                    formattedDateTime, objectendateController.text);
-              }
+              objectbegindateController.text = DateFormat('yyyy-MM-dd HH:mm:ss').format(pickedDateTime);
             }
           },
         ),
         TextField(
           controller: objectendateController,
-          decoration: const InputDecoration(
+          decoration: InputDecoration(
             icon: Icon(Icons.calendar_today),
             labelText: "Date de fin",
+            labelStyle: TextStyle(color: Theme.of(context).colorScheme.primary),
           ),
           readOnly: true,
           onTap: () async {
-            DateTime? pickedDate = await showDatePicker(
-              context: context,
-              initialDate: DateTime.now(),
-              firstDate: DateTime.now(),
-              lastDate: DateTime(2101),
-            );
-            if (pickedDate != null) {
-              TimeOfDay? pickedTime = await showTimePicker(
-                context: context,
-                initialTime: TimeOfDay.now(),
+            DateTime? pickedDateTime = await _selectDateTime(context);
+            if (pickedDateTime != null) {
+              updateTextController(
+                objectbegindateController.text,
+                DateFormat('yyyy-MM-dd HH:mm:ss').format(pickedDateTime),
               );
-              if (pickedTime != null) {
-                DateTime selectedDateTime = DateTime(
-                  pickedDate.year,
-                  pickedDate.month,
-                  pickedDate.day,
-                  pickedTime.hour,
-                  pickedTime.minute,
-                );
-                String formattedDateTime =
-                    DateFormat('yyyy-MM-dd HH:mm:ss').format(selectedDateTime);
-                // Update text controller using the provided function
-                updateTextController(
-                    objectbegindateController.text, formattedDateTime);
-              }
+              objectendateController.text = DateFormat('yyyy-MM-dd HH:mm:ss').format(pickedDateTime);
             }
           },
         ),
@@ -131,4 +97,29 @@ Widget addObjectDialog(
       )
     ],
   );
+}
+
+Future<DateTime?> _selectDateTime(BuildContext context) async {
+  DateTime? pickedDate = await showDatePicker(
+    context: context,
+    initialDate: DateTime.now(),
+    firstDate: DateTime.now(),
+    lastDate: DateTime(2101),
+  );
+  if (pickedDate != null) {
+    TimeOfDay? pickedTime = await showTimePicker(
+      context: context,
+      initialTime: TimeOfDay.now(),
+    );
+    if (pickedTime != null) {
+      return DateTime(
+        pickedDate.year,
+        pickedDate.month,
+        pickedDate.day,
+        pickedTime.hour,
+        pickedTime.minute,
+      );
+    }
+  }
+  return null;
 }

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_app/components/my_button.dart';
 import 'package:flutter_app/views/admin/game_register_view.dart';
 import 'package:flutter_app/views/admin/objects_view.dart';
+import 'package:flutter_app/views/admin/post_view.dart';
 import 'package:flutter_app/views/admin/targets_view.dart';
 import 'package:flutter_app/views/admin/users_view.dart';
 
@@ -60,16 +61,17 @@ class _AdminViewState extends State<AdminView> {
                   width: 150,
                   child: Container(
                     decoration: BoxDecoration(
-                      color: Theme.of(context).colorScheme.primary,
+                      color: Theme.of(context).colorScheme.secondary,
                       borderRadius: BorderRadius.circular(12),
                     ),
                     padding: const EdgeInsets.all(15),
                     child: Center(
                       child: Text(
                         "Créer le jeu",
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 16,
+                          color: Theme.of(context).colorScheme.primary,
                         ),
                       ),
                     ),
@@ -125,7 +127,16 @@ class _AdminViewState extends State<AdminView> {
               // Button for managing announcements
               MyButton(
                 text: "Gestion des annonces",
-                onTap: () {},
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) {
+                        return PostView();
+                      },
+                    ),
+                  );
+                },
               ),
             ],
           ),

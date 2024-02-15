@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter_app/models/user.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_app/models/user.dart' as CustomUser;
 
 class FirestoreService {
   // get collection
@@ -8,8 +9,11 @@ class FirestoreService {
       FirebaseFirestore.instance.collection('games');
   final CollectionReference objects =
       FirebaseFirestore.instance.collection('objects');
+  final CollectionReference posts = FirebaseFirestore.instance.collection('posts');
+  User? user = FirebaseAuth.instance.currentUser;
+
   // CREATE
-  static Future<void> addUser(User user) async {
+  static Future<void> addUser(CustomUser.User user) async {
     await _firestore.collection("users").doc(user.uid).set({
       'lastname': user.lastname,
       'firstname': user.firstname,
@@ -40,11 +44,28 @@ class FirestoreService {
     });
   }
 
-  // READ
 
-  Stream<QuerySnapshot> getObjectsStream() {
-    final objectsStream = objects.orderBy('date', descending: true).snapshots();
-    return objectsStream;
+  Future<void> addPost(String message){
+    return posts.add({
+      'PostMessage': message,
+      'TimeStamp':Timestamp.now(),
+    });
+  }
+  // READ
+Stream<QuerySnapshot> getObjectStream() {
+    return FirebaseFirestore.instance
+        .collection('objects')
+        .orderBy('begindate', descending: true)
+        .snapshots();
+  }
+  
+
+  Stream<QuerySnapshot> getPostsStream(){
+    final postsStream = FirebaseFirestore.instance
+        .collection('posts')
+        .orderBy('TimeStamp', descending: true)
+        .snapshots();
+      return postsStream;
   }
 
   // UPDATE
@@ -57,5 +78,9 @@ class FirestoreService {
     } catch (error) {
       print('Echec de la suppression: $error');
     }
+  }
+
+  Future<void> deleteObject(String objId) {
+    return FirebaseFirestore.instance.collection('objects').doc(objId).delete();
   }
 }

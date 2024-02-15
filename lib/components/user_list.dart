@@ -69,7 +69,7 @@ class UserTile extends StatelessWidget {
     return Container(
       margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(2),
+        borderRadius: BorderRadius.circular(10), 
         border: Border.all(color: Colors.grey),
       ),
       child: Slidable(
@@ -107,6 +107,7 @@ class UserTile extends StatelessWidget {
               }),
               backgroundColor: Colors.red,
               icon: Icons.delete,
+              borderRadius: BorderRadius.circular(10), 
             ),
           ],
         ),

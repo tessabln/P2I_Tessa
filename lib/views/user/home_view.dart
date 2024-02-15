@@ -1,8 +1,11 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+// ignore_for_file: unused_local_variable, library_private_types_in_public_api
+
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
+import 'package:flutter_app/components/my_Objcard.dart';
+import 'package:flutter_app/services/firestore.dart';
 import 'package:slide_to_act/slide_to_act.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class HomeView extends StatefulWidget {
   @override
@@ -11,14 +14,18 @@ class HomeView extends StatefulWidget {
 
 class _HomeViewState extends State<HomeView> {
   final user = FirebaseAuth.instance.currentUser;
+  final FirestoreService firestore = FirestoreService();
   Future<DocumentSnapshot<Map<String, dynamic>>>? userData;
   Future<DocumentSnapshot<Map<String, dynamic>>>? objectData;
+  Stream<QuerySnapshot<Map<String, dynamic>>>? messagesStream;
 
   @override
   void initState() {
     super.initState();
     userData = getUserData();
     objectData = getObjectData();
+    messagesStream =
+        FirebaseFirestore.instance.collection('messages').snapshots();
   }
 
   Future<DocumentSnapshot<Map<String, dynamic>>> getUserData() async {
@@ -27,9 +34,6 @@ class _HomeViewState extends State<HomeView> {
 
   Future<DocumentSnapshot<Map<String, dynamic>>> getObjectData() async {
     DateTime now = DateTime.now();
-
-    String formattedDate = DateFormat('yyyy-MM-dd à HH:mm:ss').format(now);
-    print('Formatted Date: $formattedDate');
 
     QuerySnapshot<Map<String, dynamic>> snapshot = await FirebaseFirestore
         .instance
@@ -65,9 +69,9 @@ class _HomeViewState extends State<HomeView> {
                 return Text(
                   'Bonjour ${userData['firstname']},',
                   style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 22,
-                  ),
+                      fontWeight: FontWeight.bold,
+                      fontSize: 22,
+                      color: Theme.of(context).colorScheme.primary),
                 );
               }
             },
@@ -90,7 +94,7 @@ class _HomeViewState extends State<HomeView> {
       ),
       body: Column(
         children: [
-          const SizedBox(height: 100),
+          const SizedBox(height: 30),
           Expanded(
             child: FutureBuilder<DocumentSnapshot<Map<String, dynamic>>>(
               future: objectData,
@@ -105,64 +109,72 @@ class _HomeViewState extends State<HomeView> {
                   return Text('Aucun objet trouvé');
                 } else {
                   Map<String, dynamic> objectData = snapshot.data!.data()!;
-                  return Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 8.0, horizontal: 16.0),
-                        child: Text(
-                          "Nom de l'objet : ${objectData['name']}",
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                        child: Text(
-                          objectData['name'], // Accès au nom de l'objet
-                          style: TextStyle(
-                            fontStyle: FontStyle.italic,
-                          ),
-                        ),
-                      ),
-                      Divider(),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 8.0, horizontal: 16.0),
-                        child: Text(
-                          "Description de l'objet :",
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                        child: Text(
-                          objectData[
-                              'description'], // Accès à la description de l'objet
-                          style: TextStyle(
-                            fontStyle: FontStyle.italic,
-                          ),
-                        ),
-                      ),
-                    ],
-                  );
+                  return ObjCard(objectData);
                 }
               },
             ),
           ),
-          const SizedBox(height: 260),
+          Divider(),
+          StreamBuilder(
+            stream: firestore.getPostsStream(),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return Center(
+                  child: CircularProgressIndicator(),
+                );
+              }
+
+              final posts = snapshot.data!.docs;
+
+              if (snapshot.data == null || posts.isEmpty) {
+                return Center(
+                  child: Padding(
+                      padding: EdgeInsets.all(25),
+                      child: Text(
+                        "Aucune annonce ce jour",
+                        style: TextStyle(
+                            color: Theme.of(context).colorScheme.primary),
+                      )),
+                );
+              }
+
+              return Expanded(
+                child: ListView.builder(
+                  itemCount: posts.length,
+                  itemBuilder: (context, index) {
+                    // get each indiv post
+                    final post = posts[index];
+
+                    // get data from each post
+                    String message = post['PostMessage'];
+                    Timestamp timestamp = post['TimeStamp'];
+
+                    // return as a list tile
+                    return Padding(
+                      padding: const EdgeInsets.only(
+                          left: 10.0, right: 10.0, bottom: 10.0),
+                      child: ListTile(
+                        title: Text('Annonce du jour : $message',
+                            style: TextStyle(
+                                fontSize: 18,
+                                color: Theme.of(context).colorScheme.primary)),
+                      ),
+                    );
+                  },
+                ),
+              );
+            },
+          ),
+          const SizedBox(height: 20),
           Padding(
             padding: const EdgeInsets.all(50.0),
             child: SlideAction(
               elevation: 0,
               sliderButtonIcon: Icon(Icons.gps_fixed_rounded,
-                  color: Theme.of(context).colorScheme.primary),
-              text: '        Confirmez votre kill !',
-              textStyle: const TextStyle(fontSize: 16),
+                  color: Theme.of(context).colorScheme.secondary),
+              text: '         Confirmez votre kill !',
+              textStyle: TextStyle(
+                  fontSize: 16, fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.primary),
               sliderRotate: false,
               onSubmit: () {
                 showDialog(

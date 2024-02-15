@@ -1,7 +1,7 @@
 // ignore_for_file: avoid_unnecessary_containers
 
 import 'package:flutter/material.dart';
-import 'package:flutter_app/views/account_view.dart';
+import 'package:flutter_app/views/user/account_view.dart';
 import 'package:flutter_app/views/user/home_view.dart';
 import 'package:flutter_app/views/leaderboard_view.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
@@ -34,21 +34,27 @@ class _HomeSwitchState extends State<HomeSwitch> {
           padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 20),
           child: GNav(
             backgroundColor: Theme.of(context).colorScheme.background,
-            tabBackgroundColor: Theme.of(context).colorScheme.primary,
+            tabBackgroundColor: Theme.of(context).colorScheme.secondary,
             gap: 20,
             padding: EdgeInsets.all(16),
-            tabs: const [
+            tabs:  [
               GButton(
                 icon: Icons.home,
                 text: 'Accueil',
+                iconColor: Theme.of(context).colorScheme.primary,
+                textColor: Theme.of(context).colorScheme.primary,
               ),
               GButton(
                 icon: Icons.leaderboard,
                 text: 'Classement',
+                iconColor: Theme.of(context).colorScheme.primary,
+                textColor: Theme.of(context).colorScheme.primary,
               ),
               GButton(
                 icon: Icons.account_circle_rounded,
                 text: 'Compte',
+                iconColor: Theme.of(context).colorScheme.primary,
+                textColor: Theme.of(context).colorScheme.primary,
               ),
             ],
             selectedIndex: _selectedIndex,

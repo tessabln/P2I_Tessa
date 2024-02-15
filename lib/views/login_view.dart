@@ -29,8 +29,8 @@ class _LoginViewState extends State<LoginView> {
             children: [
               // logo
               Container(
-                width: 151,
-                height: 154,
+                width: 181,
+                height: 184,
                 decoration: BoxDecoration(
                   image: DecorationImage(
                     image: AssetImage("assets/images/logo.png"),

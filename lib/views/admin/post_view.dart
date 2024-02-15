@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_app/components/object_list.dart';
+import 'package:flutter_app/components/post_list.dart';
 
-class ObjectsView extends StatelessWidget {
+class PostView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Objets"),
+        title: Text("Annonces"),
         backgroundColor: Theme.of(context).colorScheme.background,
         actions: [
           Container(
@@ -23,7 +23,7 @@ class ObjectsView extends StatelessWidget {
           ),
         ],
       ),
-      body: ObjectList(),
+      body: PostList(),
     );
   }
 }
