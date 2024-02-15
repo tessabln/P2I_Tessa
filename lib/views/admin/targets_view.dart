@@ -17,7 +17,7 @@ class _TargetsViewState extends State<TargetsView> {
   }
 
   final Map<String, Color> familyColors = {
-    'Bleue': Color.fromARGB(255, 10, 28, 112),
+    'Bleue': Color.fromARGB(255, 27, 47, 135),
     'Rouge': Color.fromARGB(255, 182, 31, 26),
     'Verte': Color.fromARGB(255, 43, 144, 63),
     'Orange': Color.fromARGB(255, 247, 118, 6),

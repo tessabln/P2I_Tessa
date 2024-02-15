@@ -1,11 +1,8 @@
-// ignore_for_file: unused_local_variable, library_private_types_in_public_api
-
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/components/my_Objcard.dart';
-import 'package:flutter_app/services/firestore.dart';
+import 'package:flutter_app/viewModel/home_view_model.dart';
 import 'package:slide_to_act/slide_to_act.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 
 class HomeView extends StatefulWidget {
   @override
@@ -13,37 +10,7 @@ class HomeView extends StatefulWidget {
 }
 
 class _HomeViewState extends State<HomeView> {
-  final user = FirebaseAuth.instance.currentUser;
-  final FirestoreService firestore = FirestoreService();
-  Future<DocumentSnapshot<Map<String, dynamic>>>? userData;
-  Future<DocumentSnapshot<Map<String, dynamic>>>? objectData;
-  Stream<QuerySnapshot<Map<String, dynamic>>>? messagesStream;
-
-  @override
-  void initState() {
-    super.initState();
-    userData = getUserData();
-    objectData = getObjectData();
-    messagesStream =
-        FirebaseFirestore.instance.collection('messages').snapshots();
-  }
-
-  Future<DocumentSnapshot<Map<String, dynamic>>> getUserData() async {
-    return FirebaseFirestore.instance.collection("users").doc(user!.uid).get();
-  }
-
-  Future<DocumentSnapshot<Map<String, dynamic>>> getObjectData() async {
-    DateTime now = DateTime.now();
-
-    QuerySnapshot<Map<String, dynamic>> snapshot = await FirebaseFirestore
-        .instance
-        .collection("objects")
-        .where('endate', isGreaterThanOrEqualTo: now)
-        .orderBy('endate', descending: false)
-        .get();
-
-    return snapshot.docs.first;
-  }
+  final HomeViewModel viewModel = HomeViewModel();
 
   @override
   Widget build(BuildContext context) {
@@ -54,7 +21,7 @@ class _HomeViewState extends State<HomeView> {
         flexibleSpace: Padding(
           padding: const EdgeInsets.all(8.0),
           child: FutureBuilder<DocumentSnapshot<Map<String, dynamic>>>(
-            future: userData,
+            future: viewModel.getUserData(),
             builder: (BuildContext context,
                 AsyncSnapshot<DocumentSnapshot<Map<String, dynamic>>>
                     snapshot) {
@@ -97,7 +64,7 @@ class _HomeViewState extends State<HomeView> {
           const SizedBox(height: 30),
           Expanded(
             child: FutureBuilder<DocumentSnapshot<Map<String, dynamic>>>(
-              future: objectData,
+              future: viewModel.getObjectData(),
               builder: (BuildContext context,
                   AsyncSnapshot<DocumentSnapshot<Map<String, dynamic>>>
                       snapshot) {
@@ -116,7 +83,7 @@ class _HomeViewState extends State<HomeView> {
           ),
           Divider(),
           StreamBuilder(
-            stream: firestore.getPostsStream(),
+            stream: viewModel.getPostsStream(),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return Center(
@@ -174,7 +141,9 @@ class _HomeViewState extends State<HomeView> {
                   color: Theme.of(context).colorScheme.secondary),
               text: '         Confirmez votre kill !',
               textStyle: TextStyle(
-                  fontSize: 16, fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.primary),
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: Theme.of(context).colorScheme.primary),
               sliderRotate: false,
               onSubmit: () {
                 showDialog(

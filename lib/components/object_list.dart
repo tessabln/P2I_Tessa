@@ -2,8 +2,8 @@
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_app/helper/boxdialog.dart';
-import 'package:flutter_app/services/firestore.dart';
+import 'package:flutter_app/components/boxdialog.dart';
+import 'package:flutter_app/service/firestore.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:intl/intl.dart';
 

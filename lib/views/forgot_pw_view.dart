@@ -1,48 +1,8 @@
-// ignore_for_file: use_build_context_synchronously, sort_child_properties_last
-
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_app/viewModel/forgot_pw_view_model.dart';
 
-class ForgotPasswordView extends StatefulWidget {
-  const ForgotPasswordView({Key? key}) : super(key: key);
-
-  @override
-  State<ForgotPasswordView> createState() => _ForgotPasswordViewState();
-}
-
-class _ForgotPasswordViewState extends State<ForgotPasswordView> {
-  final emailController = TextEditingController();
-
-  @override
-  void dispose() {
-    emailController.dispose();
-    super.dispose();
-  }
-
-  Future passwordReset() async {
-    try {
-      await FirebaseAuth.instance
-          .sendPasswordResetEmail(email: emailController.text.trim());
-      showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            content: Text('Lien de réinitialisation de mot de passe envoyé !'),
-          );
-        },
-      );
-    } on FirebaseAuthException catch (e) {
-      print(e);
-      showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            content: Text(e.message.toString()),
-          );
-        },
-      );
-    }
-  }
+class ForgotPasswordView extends StatelessWidget {
+  final ForgotPasswordViewModel viewModel = ForgotPasswordViewModel();
 
   @override
   Widget build(BuildContext context) {
@@ -64,7 +24,7 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 25.0),
             child: TextField(
-              controller: emailController,
+              controller: viewModel.emailController,
               decoration: InputDecoration(
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
@@ -77,9 +37,11 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
           ),
           SizedBox(height: 10),
           MaterialButton(
-            onPressed: passwordReset,
+            onPressed: () {
+              viewModel.passwordReset(context);
+            },
+            color: Theme.of(context).colorScheme.secondary,
             child: Text('Réinitialiser mon mot de passe'),
-            color: Theme.of(context).colorScheme.primary,
           ),
         ],
       ),
