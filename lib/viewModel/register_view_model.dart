@@ -27,7 +27,7 @@ class RegisterViewModel {
 
     if (password == confirmPw) {
       try {
-        final UserCredential userCredential =
+        final UserCredential? userCredential =
             await AuthService.register(email, password, context);
 
         if (userCredential != null) {
@@ -52,9 +52,10 @@ class RegisterViewModel {
           );
         }
       } catch (e) {
+        print('Erreur lors de l\'inscription: $e');
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Erreur lors de l\'inscription'),
+            content: Text('Erreur lors de l\'inscription: $e'),
             duration: Duration(seconds: 5),
           ),
         );

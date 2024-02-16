@@ -46,9 +46,6 @@ class AccountViewComponents {
               ),
               TextButton(
                 onPressed: () {
-                  print("targetCode: $targetCode");
-                  print("_targetController.text: ${_targetController.text}");
-
                   if (targetCode.trim() == _targetController.text.trim()) {
                     Navigator.of(context).pop();
                     _navigateToCibleView(context, targetCode);

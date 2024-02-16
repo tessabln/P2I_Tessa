@@ -5,9 +5,12 @@ import 'package:flutter_app/viewModel/register_view_model.dart';
 import 'package:flutter_app/views/login_view.dart';
 
 class RegisterView extends StatelessWidget {
-  final RegisterViewModel viewModel = RegisterViewModel();
-  final void Function()? onTap;
+
+   final void Function()? onTap;
+
   RegisterView({Key? key, required this.onTap}) : super(key: key);
+
+  final RegisterViewModel viewModel = RegisterViewModel();
 
   @override
   Widget build(BuildContext context) {

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_app/views/user/account_view.dart';
+import 'package:flutter_app/views/user/accountU_view.dart';
 import 'package:flutter_app/views/admin/admin_view.dart';
 import 'package:flutter_app/views/leaderboard_view.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';

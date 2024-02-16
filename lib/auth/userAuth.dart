@@ -8,12 +8,12 @@ import 'package:flutter_app/components/functions.dart';
 class AuthService {
   static FirebaseAuth _auth = FirebaseAuth.instance;
 
-  static Future register(
+  static Future<UserCredential?> register(
       String email, String password, BuildContext context) async {
     // Vérifie si l'email se termine par "@ensc.fr"
     if (!email.endsWith("@ensc.fr")) {
       displayMessageToUser("Adresse e-mail non autorisée", context);
-      return;
+      return null;
     }
 
     showDialog(
@@ -24,7 +24,8 @@ class AuthService {
     );
 
     try {
-      await _auth.createUserWithEmailAndPassword(
+      final UserCredential userCredential =
+          await _auth.createUserWithEmailAndPassword(
         email: email,
         password: password,
       );
@@ -33,9 +34,12 @@ class AuthService {
         context,
         MaterialPageRoute(builder: (context) => AuthView()),
       );
+
+      return userCredential;
     } catch (e) {
       Navigator.pop(context);
       displayMessageToUser(e.toString(), context);
+      return null;
     }
   }
 

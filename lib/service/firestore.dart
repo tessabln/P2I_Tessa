@@ -19,7 +19,7 @@ class FirestoreService {
       'firstname': user.firstname,
       'family': user.family,
       'email': user.email,
-      'targetcode': user.targetcode,
+      'code': user.targetcode,
     });
   }
 
