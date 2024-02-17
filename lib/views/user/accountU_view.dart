@@ -15,6 +15,7 @@ class AccountView extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.background,
+        automaticallyImplyLeading: false,
         actions: [
           const Text("Dark mode"),
           CupertinoSwitch(
@@ -65,13 +66,13 @@ class AccountView extends StatelessWidget {
                       context, currentUser.uid);
                 },
               ),
-              const SizedBox(height: 120),
+              const SizedBox(height: 50),
               GestureDetector(
                 onTap: () {
                   logout(context);
                 },
                 child: SizedBox(
-                  width: 150,
+                  width: 180,
                   child: Container(
                     decoration: BoxDecoration(
                       color: Theme.of(context).colorScheme.secondary,

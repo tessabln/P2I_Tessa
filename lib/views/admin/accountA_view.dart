@@ -15,6 +15,7 @@ class AccountViewA extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.background,
+        automaticallyImplyLeading: false,
         actions: [
           const Text("Dark mode"),
           CupertinoSwitch(
