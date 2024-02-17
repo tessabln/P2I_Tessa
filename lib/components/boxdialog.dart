@@ -45,7 +45,8 @@ Widget addObjectDialog(
                 DateFormat('yyyy-MM-dd HH:mm:ss').format(pickedDateTime),
                 objectendateController.text,
               );
-              objectbegindateController.text = DateFormat('yyyy-MM-dd HH:mm:ss').format(pickedDateTime);
+              objectbegindateController.text =
+                  DateFormat('yyyy-MM-dd HH:mm:ss').format(pickedDateTime);
             }
           },
         ),
@@ -64,7 +65,8 @@ Widget addObjectDialog(
                 objectbegindateController.text,
                 DateFormat('yyyy-MM-dd HH:mm:ss').format(pickedDateTime),
               );
-              objectendateController.text = DateFormat('yyyy-MM-dd HH:mm:ss').format(pickedDateTime);
+              objectendateController.text =
+                  DateFormat('yyyy-MM-dd HH:mm:ss').format(pickedDateTime);
             }
           },
         ),
@@ -93,6 +95,9 @@ Widget addObjectDialog(
 
           Navigator.pop(context);
         },
+        style: ElevatedButton.styleFrom(
+          backgroundColor: Color.fromARGB(255, 76, 61, 120), 
+        ),
         child: Text("Ajouter"),
       )
     ],

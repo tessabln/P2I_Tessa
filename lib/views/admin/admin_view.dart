@@ -18,6 +18,8 @@ class AdminView extends StatefulWidget {
 }
 
 class _AdminViewState extends State<AdminView> {
+  bool killerRunning = false;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -46,38 +48,71 @@ class _AdminViewState extends State<AdminView> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              GestureDetector(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) {
-                        return GameRegisterView();
-                      },
-                    ),
-                  );
-                },
-                child: SizedBox(
-                  width: 150,
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: Theme.of(context).colorScheme.secondary,
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    padding: const EdgeInsets.all(15),
-                    child: Center(
-                      child: Text(
-                        "Créer le jeu",
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16,
-                          color: Theme.of(context).colorScheme.primary,
+              if (!killerRunning)
+                GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => GameRegisterView(
+                          onTap: () {
+                            setState(() {
+                              killerRunning = true;
+                            });
+                          },
+                        ),
+                      ),
+                    );
+                  },
+                  child: SizedBox(
+                    width: 220,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Color.fromARGB(255, 76, 61, 120),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      padding: const EdgeInsets.all(15),
+                      child: Center(
+                        child: Text(
+                          "Créer un Killer",
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                            color: Theme.of(context).colorScheme.primary,
+                          ),
                         ),
                       ),
                     ),
                   ),
                 ),
-              ),
+              if (killerRunning)
+                GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      killerRunning = false;
+                    });
+                  },
+                  child: SizedBox(
+                    width: 220,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.red,
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      padding: const EdgeInsets.all(15),
+                      child: Center(
+                        child: Text(
+                          "Arrêter le Killer",
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
               const SizedBox(height: 80),
               // Button for managing objects
               MyButton(

@@ -9,8 +9,10 @@ class FirestoreService {
       FirebaseFirestore.instance.collection('games');
   final CollectionReference objects =
       FirebaseFirestore.instance.collection('objects');
-  final CollectionReference posts = FirebaseFirestore.instance.collection('posts');
+  final CollectionReference posts =
+      FirebaseFirestore.instance.collection('posts');
   User? user = FirebaseAuth.instance.currentUser;
+
 
   // CREATE
   static Future<void> addUser(CustomUser.User user) async {
@@ -44,28 +46,27 @@ class FirestoreService {
     });
   }
 
-
-  Future<void> addPost(String message){
+  Future<void> addPost(String message) {
     return posts.add({
       'PostMessage': message,
-      'TimeStamp':Timestamp.now(),
+      'TimeStamp': Timestamp.now(),
     });
   }
+
   // READ
-Stream<QuerySnapshot> getObjectStream() {
+  Stream<QuerySnapshot> getObjectStream() {
     return FirebaseFirestore.instance
         .collection('objects')
         .orderBy('begindate', descending: true)
         .snapshots();
   }
-  
 
-  Stream<QuerySnapshot> getPostsStream(){
+  Stream<QuerySnapshot> getPostsStream() {
     final postsStream = FirebaseFirestore.instance
         .collection('posts')
         .orderBy('TimeStamp', descending: true)
         .snapshots();
-      return postsStream;
+    return postsStream;
   }
 
   // UPDATE
@@ -83,4 +84,35 @@ Stream<QuerySnapshot> getObjectStream() {
   Future<void> deleteObject(String objId) {
     return FirebaseFirestore.instance.collection('objects').doc(objId).delete();
   }
+
+  Future<void> deleteAllPlayers() async {
+    await FirebaseFirestore.instance.collection('users').get().then(
+      (snapshot) {
+        for (DocumentSnapshot doc in snapshot.docs) {
+          doc.reference.delete();
+        }
+      },
+    );
+  }
+
+  Future<void> deleteAllPosts() async {
+    await FirebaseFirestore.instance.collection('posts').get().then(
+      (snapshot) {
+        for (DocumentSnapshot doc in snapshot.docs) {
+          doc.reference.delete();
+        }
+      },
+    );
+  }
+
+  Future<void> deleteAllObjects() async {
+    await FirebaseFirestore.instance.collection('objects').get().then(
+      (snapshot) {
+        for (DocumentSnapshot doc in snapshot.docs) {
+          doc.reference.delete();
+        }
+      },
+    );
+  }
 }
+

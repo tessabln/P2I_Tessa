@@ -39,6 +39,9 @@ class ChangePasswordView extends StatelessWidget {
               onPressed: () {
                 viewModel.changePassword(context);
               },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Color.fromARGB(255, 76, 61, 120),
+              ),
               child: Text(
                 'Changer le mot de passe',
                 style: TextStyle(color: Theme.of(context).colorScheme.primary),

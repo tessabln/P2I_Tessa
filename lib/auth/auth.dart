@@ -15,7 +15,7 @@ class AuthView extends StatelessWidget {
         builder: (context, snapshot) {
           // user is logged in
           if (snapshot.hasData) {
-            if (snapshot.data!.email == "killer.appli@gmail.com") {
+            if (snapshot.data!.email == "killer@ensc.fr") {
               // Navigate to a specific page based on the email
               return AdminSwitch();
             } else {

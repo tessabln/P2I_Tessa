@@ -55,6 +55,9 @@ class _PostListState extends State<PostList> {
                 ),
                 ElevatedButton(
                   onPressed: postMessage,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Color.fromARGB(255, 76, 61, 120),
+                  ),
                   child: Text('Post'),
                 )
               ],
@@ -108,15 +111,14 @@ class PostTile extends StatelessWidget {
     String message = data['PostMessage'] ?? 'Message non défini';
     Timestamp? timestamp = data['date'];
     DateTime date = timestamp?.toDate() ?? DateTime.now();
-    String formattedDate =
-        DateFormat('yyyy-MM-dd HH:mm:ss').format(date);
+    String formattedDate = DateFormat('yyyy-MM-dd HH:mm:ss').format(date);
 
     return Container(
       margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
       padding: EdgeInsets.all(8),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(15),
-        border: Border.all(color: Colors.grey),
+        border: Border.all(color: const Color.fromARGB(255, 255, 255, 255), width: 2),
       ),
       child: Slidable(
         endActionPane: ActionPane(

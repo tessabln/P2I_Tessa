@@ -96,12 +96,27 @@ class _LoginViewState extends State<LoginView> {
               const SizedBox(height: 25),
 
               // sign in button
-              MyButton(
-                text: "Se connecter",
+              GestureDetector(
                 onTap: () => AuthService.logIn(
                     emailController.text, passwordController.text, context),
-              ),
-
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: Color.fromARGB(255, 76, 61, 120),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    padding: const EdgeInsets.all(25),
+                    child: Center(
+                      child: Text(
+                        "Se connecter",
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                          color: Theme.of(context).colorScheme.primary,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
               const SizedBox(height: 10),
 
               // don't have an account? Register here

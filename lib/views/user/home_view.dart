@@ -81,7 +81,7 @@ class _HomeViewState extends State<HomeView> {
               },
             ),
           ),
-          Divider(),
+          Divider(color: Theme.of(context).colorScheme.secondary),
           StreamBuilder(
             stream: viewModel.getPostsStream(),
             builder: (context, snapshot) {

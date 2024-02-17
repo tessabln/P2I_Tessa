@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_app/components/my_button.dart';
 import 'package:flutter_app/components/my_textfield.dart';
 import 'package:flutter_app/viewModel/register_view_model.dart';
 import 'package:flutter_app/views/login_view.dart';
 
 class RegisterView extends StatelessWidget {
-
-   final void Function()? onTap;
+  final void Function()? onTap;
 
   RegisterView({Key? key, required this.onTap}) : super(key: key);
 
@@ -56,7 +54,7 @@ class RegisterView extends StatelessWidget {
 
               // userfamily textfield
               MyTextField(
-                hintText: "Famille",
+                hintText: "Famille (Bleue, Verte, etc.)",
                 obscureText: false,
                 controller: viewModel.userfamilyController,
               ),
@@ -65,7 +63,7 @@ class RegisterView extends StatelessWidget {
 
               // targetcode textfield
               MyTextField(
-                hintText: "Code",
+                hintText: "Code (à chiffres)",
                 obscureText: true,
                 controller: viewModel.targetcodeController,
               ),
@@ -100,11 +98,27 @@ class RegisterView extends StatelessWidget {
               const SizedBox(height: 25),
 
               // register button
-              MyButton(
-                text: "S'inscrire",
+              GestureDetector(
                 onTap: () async {
                   await viewModel.registerUser(context);
                 },
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Color.fromARGB(255, 76, 61, 120),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  padding: const EdgeInsets.all(25),
+                  child: Center(
+                    child: Text(
+                      "S'inscrire",
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
+                    ),
+                  ),
+                ),
               ),
 
               const SizedBox(height: 10),

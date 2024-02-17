@@ -8,7 +8,7 @@ class ObjCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      color: Theme.of(context).colorScheme.secondary,
+      color: Color.fromARGB(255, 72, 57, 117),
       child: SizedBox.expand(
         child: Padding(
           padding: const EdgeInsets.all(8.0),

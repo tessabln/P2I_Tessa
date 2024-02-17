@@ -70,7 +70,7 @@ class UserTile extends StatelessWidget {
       margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10), 
-        border: Border.all(color: Colors.grey),
+        border: Border.all(color: const Color.fromARGB(255, 255, 255, 255), width: 2),
       ),
       child: Slidable(
         endActionPane: ActionPane(

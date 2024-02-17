@@ -2,14 +2,15 @@
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_app/components/my_button.dart';
 import 'package:flutter_app/components/my_textfield.dart';
 import 'package:flutter_app/components/functions.dart';
 import 'package:flutter_app/service/firestore.dart';
 import 'package:intl/intl.dart';
 
 class GameRegisterView extends StatefulWidget {
-  const GameRegisterView({Key? key}) : super(key: key);
+  final VoidCallback onTap; // Définir la propriété onTap
+
+  const GameRegisterView({Key? key, required this.onTap}) : super(key: key);
 
   @override
   State<GameRegisterView> createState() => _GameRegisterViewState();
@@ -44,9 +45,22 @@ class _GameRegisterViewState extends State<GameRegisterView> {
         endate,
       );
 
+      // Delete all players
+      await FirestoreService().deleteAllPlayers();
+
+      // Delete all posts
+      await FirestoreService().deleteAllPosts();
+
+      // Delete all objects
+      await FirestoreService().deleteAllObjects();
+
+      // Set killerIsRunning to true
+      widget.onTap?.call();
+
+      // Close the current screen
       Navigator.pop(context);
     } on FirebaseAuthException catch (e) {
-      // display error message to user
+      // Display error message to user
       displayMessageToUser(e.code, context);
     }
   }
@@ -150,9 +164,25 @@ class _GameRegisterViewState extends State<GameRegisterView> {
               const SizedBox(height: 50),
 
               // register button
-              MyButton(
-                text: "Valider",
+              GestureDetector(
                 onTap: registerGame,
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Color.fromARGB(255, 76, 61, 120),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  padding: const EdgeInsets.all(25),
+                  child: Center(
+                    child: Text(
+                      "Valider",
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
+                    ),
+                  ),
+                ),
               ),
 
               const SizedBox(height: 25),

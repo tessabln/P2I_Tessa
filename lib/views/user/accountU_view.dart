@@ -21,7 +21,7 @@ class AccountView extends StatelessWidget {
           CupertinoSwitch(
             value:
                 Provider.of<ThemeProvider>(context, listen: false).isDarkMode,
-            activeColor: Colors.grey.shade700,
+            activeColor: Color.fromARGB(255, 76, 61, 120),
             onChanged: (value) =>
                 Provider.of<ThemeProvider>(context, listen: false)
                     .toggleTheme(),
@@ -75,7 +75,7 @@ class AccountView extends StatelessWidget {
                   width: 180,
                   child: Container(
                     decoration: BoxDecoration(
-                      color: Theme.of(context).colorScheme.secondary,
+                      color: Color.fromARGB(255, 76, 61, 120),
                       borderRadius: BorderRadius.circular(12),
                     ),
                     padding: const EdgeInsets.all(15),
