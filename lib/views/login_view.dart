@@ -102,7 +102,7 @@ class _LoginViewState extends State<LoginView> {
                     emailController.text, passwordController.text, context),
               ),
 
-              const SizedBox(height: 25),
+              const SizedBox(height: 10),
 
               // don't have an account? Register here
               Row(

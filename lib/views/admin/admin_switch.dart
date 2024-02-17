@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/views/admin/accountA_view.dart';
 import 'package:flutter_app/views/user/accountU_view.dart';
 import 'package:flutter_app/views/admin/admin_view.dart';
 import 'package:flutter_app/views/leaderboard_view.dart';
@@ -24,7 +25,7 @@ class _AdminSwitchState extends State<AdminSwitch> {
     // View for displaying leaderboard
     LeaderboardView(),
     // View for managing user account
-    AccountView(),
+    AccountViewA(),
   ];
 
   @override

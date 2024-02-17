@@ -18,14 +18,14 @@ class RegisterView extends StatelessWidget {
       backgroundColor: Theme.of(context).colorScheme.background,
       body: Center(
         child: Padding(
-          padding: const EdgeInsets.all(25.0),
+          padding: const EdgeInsets.fromLTRB(25.0, 0, 25.0, 25.0),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               // logo
               Container(
-                width: 121,
-                height: 124,
+                width: 91,
+                height: 94,
                 decoration: BoxDecoration(
                   image: DecorationImage(
                     image: AssetImage("assets/images/logo.png"),
@@ -34,15 +34,7 @@ class RegisterView extends StatelessWidget {
                 ),
               ),
 
-              const SizedBox(height: 10),
-
-              // app name
-              Text(
-                "T H E  K I L L E R",
-                style: TextStyle(fontSize: 20),
-              ),
-
-              const SizedBox(height: 30),
+              const SizedBox(height: 5),
 
               // userlastname textfield
               MyTextField(
@@ -115,7 +107,7 @@ class RegisterView extends StatelessWidget {
                 },
               ),
 
-              const SizedBox(height: 25),
+              const SizedBox(height: 10),
 
               // don't have an account? Register here
               Row(
