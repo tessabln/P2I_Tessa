@@ -85,7 +85,7 @@ class AccountView extends StatelessWidget {
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 16,
-                          color: Theme.of(context).colorScheme.primary,
+                          color: Theme.of(context).colorScheme.inversePrimary,
                         ),
                       ),
                     ),

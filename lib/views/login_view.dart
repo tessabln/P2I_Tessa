@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_app/components/my_button.dart';
 import 'package:flutter_app/components/my_textfield.dart';
 import 'package:flutter_app/views/forgot_pw_view.dart';
 import 'package:flutter_app/views/user/register_view.dart';
@@ -23,7 +22,7 @@ class _LoginViewState extends State<LoginView> {
       backgroundColor: Theme.of(context).colorScheme.background,
       body: Center(
         child: Padding(
-          padding: const EdgeInsets.all(25.0),
+          padding: const EdgeInsets.fromLTRB(25.0, 0, 25.0, 25.0),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -39,7 +38,7 @@ class _LoginViewState extends State<LoginView> {
                 ),
               ),
 
-              const SizedBox(height: 25),
+              const SizedBox(height: 2),
 
               // app name
               Text(
@@ -47,7 +46,7 @@ class _LoginViewState extends State<LoginView> {
                 style: TextStyle(fontSize: 20),
               ),
 
-              const SizedBox(height: 50),
+              const SizedBox(height: 80),
 
               // email textfield
               MyTextField(
@@ -86,7 +85,7 @@ class _LoginViewState extends State<LoginView> {
                         "Mot de passe oublié ?",
                         style: TextStyle(
                             color:
-                                Theme.of(context).colorScheme.inversePrimary),
+                               Theme.of(context).textTheme.bodyLarge!.color),
                       ),
                     ),
                   ],
@@ -111,7 +110,7 @@ class _LoginViewState extends State<LoginView> {
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 16,
-                          color: Theme.of(context).colorScheme.primary,
+                          color: Theme.of(context).colorScheme.inversePrimary,
                         ),
                       ),
                     ),
@@ -126,7 +125,7 @@ class _LoginViewState extends State<LoginView> {
                   Text(
                     "Vous n'avez pas de compte ?",
                     style: TextStyle(
-                        color: Theme.of(context).colorScheme.inversePrimary),
+                        color: Theme.of(context).textTheme.bodyLarge!.color),
                   ),
                   GestureDetector(
                     onTap: () {

@@ -38,7 +38,7 @@ class _HomeViewState extends State<HomeView> {
                   style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 22,
-                      color: Theme.of(context).colorScheme.primary),
+                      color: Theme.of(context).textTheme.bodyLarge!.color),
                 );
               }
             },
@@ -124,7 +124,8 @@ class _HomeViewState extends State<HomeView> {
                         title: Text('Annonce du jour : $message',
                             style: TextStyle(
                                 fontSize: 18,
-                                color: Theme.of(context).colorScheme.primary)),
+                                color: Theme.of(context).textTheme.bodyLarge!.color,
+                                ),),
                       ),
                     );
                   },
@@ -132,18 +133,18 @@ class _HomeViewState extends State<HomeView> {
               );
             },
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: 10),
           Padding(
-            padding: const EdgeInsets.all(50.0),
+            padding: const EdgeInsets.all(40.0),
             child: SlideAction(
               elevation: 0,
               sliderButtonIcon: Icon(Icons.gps_fixed_rounded,
-                  color: Theme.of(context).colorScheme.secondary),
+                  color: Theme.of(context).colorScheme.primary),
               text: '         Confirmez votre kill !',
               textStyle: TextStyle(
                   fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                  color: Theme.of(context).colorScheme.primary),
+                  fontWeight: FontWeight.normal,
+                  color: Theme.of(context).textTheme.bodyLarge!.color,),
               sliderRotate: false,
               onSubmit: () {
                 showDialog(
@@ -159,6 +160,7 @@ class _HomeViewState extends State<HomeView> {
               },
             ),
           ),
+          const SizedBox(height: 60),
         ],
       ),
     );

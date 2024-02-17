@@ -40,8 +40,13 @@ class ForgotPasswordView extends StatelessWidget {
             onPressed: () {
               viewModel.passwordReset(context);
             },
-            color: Theme.of(context).colorScheme.secondary,
-            child: Text('Réinitialiser mon mot de passe'),
+            color: Color.fromARGB(255, 76, 61, 120),
+            child: Text('Réinitialiser mon mot de passe',
+            style: TextStyle(
+                          fontWeight: FontWeight.normal,
+                          fontSize: 16,
+                          color: Theme.of(context).colorScheme.inversePrimary,
+                        ),),
           ),
         ],
       ),

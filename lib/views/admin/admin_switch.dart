@@ -41,7 +41,7 @@ class _AdminSwitchState extends State<AdminSwitch> {
           padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 20),
           child: GNav(
             backgroundColor: Theme.of(context).colorScheme.background,
-            tabBackgroundColor: Theme.of(context).colorScheme.secondary,
+            tabBackgroundColor: Theme.of(context).colorScheme.primary,
             gap: 20,
             padding: EdgeInsets.all(16),
             // List of navigation tabs
@@ -49,20 +49,32 @@ class _AdminSwitchState extends State<AdminSwitch> {
               GButton(
                 icon: Icons.settings,
                 text: 'Gestion',
-                iconColor: Theme.of(context).colorScheme.primary,
-                textColor: Theme.of(context).colorScheme.primary,
+                iconColor: Theme.of(context).textTheme.bodyLarge!.color,
+                textColor: Theme.of(context).textTheme.bodyLarge!.color,
+                border: Border.all(
+                  color: const Color.fromARGB(255, 72, 57, 117),
+                  width: 1,
+                ),
               ),
               GButton(
                 icon: Icons.leaderboard,
                 text: 'Classement',
-                iconColor: Theme.of(context).colorScheme.primary,
-                textColor: Theme.of(context).colorScheme.primary,
+                iconColor: Theme.of(context).textTheme.bodyLarge!.color,
+                textColor: Theme.of(context).textTheme.bodyLarge!.color,
+                border: Border.all(
+                  color: const Color.fromARGB(255, 72, 57, 117),
+                  width: 1,
+                ),
               ),
               GButton(
                 icon: Icons.account_circle_rounded,
                 text: 'Compte',
-                iconColor: Theme.of(context).colorScheme.primary,
-                textColor: Theme.of(context).colorScheme.primary,
+                iconColor: Theme.of(context).textTheme.bodyLarge!.color,
+                textColor: Theme.of(context).textTheme.bodyLarge!.color,
+                border: Border.all(
+                  color: const Color.fromARGB(255, 72, 57, 117),
+                  width: 1,
+                ),
               ),
             ],
             // Index of the selected tab

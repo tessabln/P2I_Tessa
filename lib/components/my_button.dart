@@ -16,17 +16,21 @@ class MyButton extends StatelessWidget {
       onTap: onTap,
       child: Container(
         decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.secondary,
-          borderRadius: BorderRadius.circular(12),
+          color: Theme.of(context).colorScheme.primary,
+          borderRadius: BorderRadius.circular(30),
+          border: Border.all(
+                  color: const Color.fromARGB(255, 72, 57, 117), 
+                  width: 1,
+                ),
         ),
-        padding: const EdgeInsets.all(25),
+        padding: const EdgeInsets.all(15),
         child: Center(
             child: Text(
           text,
           style: TextStyle(
-            fontWeight: FontWeight.bold,
+            fontWeight: FontWeight.normal,
             fontSize: 16,
-            color: Theme.of(context).colorScheme.primary,
+            color: Theme.of(context).textTheme.bodyLarge!.color,
           ),
         )),
       ),
