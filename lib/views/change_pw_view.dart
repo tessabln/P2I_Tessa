@@ -44,7 +44,7 @@ class ChangePasswordView extends StatelessWidget {
               ),
               child: Text(
                 'Changer le mot de passe',
-                style: TextStyle(color: Theme.of(context).colorScheme.primary),
+                style: TextStyle(color: Theme.of(context).colorScheme.secondary),
               ),
             ),
           ],

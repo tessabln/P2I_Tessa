@@ -6,21 +6,23 @@ import 'package:flutter/material.dart';
 import 'package:flutter_app/components/keypad.dart';
 import 'package:flutter_app/service/firestore.dart';
 import 'package:flutter_app/views/login_view.dart';
-import 'package:flutter_app/views/user/target_view.dart';
+import 'package:flutter_app/views/user/userTarget_view.dart';
 
 class AccountViewComponents {
   static void showTargetDialog(BuildContext context, String userId) async {
-
     Future<DocumentSnapshot<Map<String, dynamic>>> getUserData() async {
-    final user = FirebaseAuth.instance.currentUser;
-    return FirebaseFirestore.instance.collection("users").doc(user!.uid).get();
-  }
-  
+      final user = FirebaseAuth.instance.currentUser;
+      return FirebaseFirestore.instance
+          .collection("users")
+          .doc(user!.uid)
+          .get();
+    }
+
     final currentUser = FirebaseAuth.instance.currentUser;
     if (currentUser != null) {
-       final userData = await getUserData();
+      final userData = await getUserData();
       final String targetCode = userData.data()?['code'].toString() ?? '';
-      final TextEditingController _targetController = TextEditingController();
+      final TextEditingController targetController = TextEditingController();
       showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -31,10 +33,10 @@ class AccountViewComponents {
               mainAxisSize: MainAxisSize.min,
               children: [
                 TextField(
-                  controller: _targetController,
+                  controller: targetController,
                 ),
                 const SizedBox(height: 20),
-                Keypad(controller: _targetController),
+                Keypad(controller: targetController),
               ],
             ),
             actions: <Widget>[
@@ -42,11 +44,15 @@ class AccountViewComponents {
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
-                child: Text("Annuler"),
+                child: Text("Annuler",
+                style: TextStyle(
+                  fontSize: 16,
+                  color: Theme.of(context).textTheme.bodyLarge!.color,
+                ),),
               ),
               TextButton(
                 onPressed: () {
-                  if (targetCode.trim() == _targetController.text.trim()) {
+                  if (targetCode.trim() == targetController.text.trim()) {
                     Navigator.of(context).pop();
                     _navigateToCibleView(context, targetCode);
                   } else {
@@ -57,7 +63,11 @@ class AccountViewComponents {
                     );
                   }
                 },
-                child: Text("Confirmer"),
+                child: Text("Confirmer",
+                style: TextStyle(
+                  fontSize: 16,
+                  color: Theme.of(context).textTheme.bodyLarge!.color,
+                ),),
               ),
             ],
           );
@@ -97,13 +107,25 @@ class AccountViewComponents {
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: Text("Annuler"),
+              child: Text(
+                "Annuler",
+                style: TextStyle(
+                  fontSize: 16,
+                  color: Theme.of(context).textTheme.bodyLarge!.color,
+                ),
+              ),
             ),
             TextButton(
               onPressed: () {
                 deleteUser(context, userId);
               },
-              child: Text("Supprimer"),
+              child: Text(
+                "Supprimer",
+                style: TextStyle(
+                  fontSize: 16,
+                  color: Theme.of(context).textTheme.bodyLarge!.color,
+                ),
+              ),
             ),
           ],
         );
@@ -115,7 +137,7 @@ class AccountViewComponents {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => TargetView(targetCode: targetCode),
+        builder: (context) => UserTargetView(data: {}, userId: '',),
       ),
     );
   }

@@ -5,7 +5,7 @@ ThemeData darkMode = ThemeData(
   colorScheme: ColorScheme.dark(
     background: Color.fromARGB(255, 34, 34, 34),
     primary: Color.fromARGB(255, 51, 51, 51),
-    secondary: Colors.grey.shade700,
+    secondary: Color.fromARGB(255, 255, 255, 255),
     inversePrimary: const Color.fromARGB(255, 255, 255, 255),
   ),
   textTheme: ThemeData.dark().textTheme.apply(

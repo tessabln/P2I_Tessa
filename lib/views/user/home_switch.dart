@@ -45,7 +45,7 @@ class _HomeSwitchState extends State<HomeSwitch> {
                 textColor: Theme.of(context).textTheme.bodyLarge!.color,
                 border: Border.all(
                   color: const Color.fromARGB(255, 72, 57, 117), 
-                  width: 1,
+                  width: 2,
                 ),
               ),
               GButton(
@@ -55,7 +55,7 @@ class _HomeSwitchState extends State<HomeSwitch> {
                 textColor: Theme.of(context).textTheme.bodyLarge!.color,
                 border: Border.all(
                   color: const Color.fromARGB(255, 72, 57, 117), 
-                  width: 1,
+                  width: 2,
                 ),
               ),
               GButton(
@@ -65,7 +65,7 @@ class _HomeSwitchState extends State<HomeSwitch> {
                 textColor: Theme.of(context).textTheme.bodyLarge!.color,
                 border: Border.all(
                   color: const Color.fromARGB(255, 72, 57, 117), 
-                  width: 1,
+                  width: 2,
                 ),
               ),
             ],

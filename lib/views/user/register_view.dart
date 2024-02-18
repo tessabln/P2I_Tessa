@@ -114,7 +114,7 @@ class RegisterView extends StatelessWidget {
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 16,
-                        color: Theme.of(context).colorScheme.inversePrimary,
+                        color: Theme.of(context).colorScheme.secondary,
                       ),
                     ),
                   ),
@@ -130,7 +130,7 @@ class RegisterView extends StatelessWidget {
                   Text(
                     "Vous avez déjà un compte ?",
                     style: TextStyle(
-                        color: Theme.of(context).colorScheme.inversePrimary),
+                        color: Theme.of(context).textTheme.bodyLarge!.color),
                   ),
                   GestureDetector(
                     onTap: () {

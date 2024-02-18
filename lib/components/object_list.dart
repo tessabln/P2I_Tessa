@@ -71,7 +71,7 @@ class _ObjectListState extends State<ObjectList> {
       floatingActionButton: FloatingActionButton(
         onPressed: openObjectBox,
         backgroundColor: Color.fromARGB(255, 76, 61, 120),
-        child: Icon(Icons.add),
+        child: Icon(Icons.add, color: Theme.of(context).textTheme.bodyLarge!.color,),
       ),
       body: StreamBuilder<QuerySnapshot>(
         stream: _objectStream,
@@ -128,7 +128,7 @@ class ObjectTile extends StatelessWidget {
       padding: EdgeInsets.all(8),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: const Color.fromARGB(255, 255, 255, 255), width: 2),
+        border: Border.all(color: Theme.of(context).colorScheme.inversePrimary, width: 2),
       ),
       child: Slidable(
         endActionPane: ActionPane(

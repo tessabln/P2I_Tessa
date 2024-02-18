@@ -110,7 +110,7 @@ class _LoginViewState extends State<LoginView> {
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 16,
-                          color: Theme.of(context).colorScheme.inversePrimary,
+                          color: Theme.of(context).colorScheme.secondary,
                         ),
                       ),
                     ),

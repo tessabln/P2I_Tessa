@@ -13,13 +13,13 @@ class Keypad extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             KeypadButton(number: "1", controller: controller),
-            SizedBox(width: 10), // Espacement entre les boutons
+            SizedBox(width: 10),
             KeypadButton(number: "2", controller: controller),
             SizedBox(width: 8),
             KeypadButton(number: "3", controller: controller),
           ],
         ),
-        SizedBox(height: 10), // Espacement entre les rangées
+        SizedBox(height: 10), 
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
@@ -45,7 +45,7 @@ class Keypad extends StatelessWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            SizedBox(), // Utilisé pour aligner le bouton "0" au centre
+            SizedBox(), 
             KeypadButton(number: "0", controller: controller),
             SizedBox(width: 8),
             KeypadBackspace(controller: controller),
@@ -71,10 +71,16 @@ class KeypadButton extends StatelessWidget {
       },
       style: ButtonStyle(
         padding: MaterialStateProperty.all<EdgeInsetsGeometry>(
-          EdgeInsets.all(16), // Ajustez la taille du bouton ici
+          EdgeInsets.all(16),
+                
         ),
       ),
-      child: Text(number),
+      child: Text(
+        number,
+        style: TextStyle(
+          color: Theme.of(context).textTheme.bodyLarge!.color,
+        ),
+      ),
     );
   }
 }
@@ -98,7 +104,7 @@ class KeypadBackspace extends StatelessWidget {
           EdgeInsets.all(16), 
         ),
       ),
-      child: Icon(Icons.backspace),
+      child: Icon(Icons.backspace, color: Theme.of(context).textTheme.bodyLarge!.color,),
     );
   }
 }

@@ -58,7 +58,12 @@ class _PostListState extends State<PostList> {
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Color.fromARGB(255, 76, 61, 120),
                   ),
-                  child: Text('Post'),
+                  child: Text('Post',
+                  style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                            color: Theme.of(context).colorScheme.secondary,
+                          ),),
                 )
               ],
             ),
@@ -118,7 +123,7 @@ class PostTile extends StatelessWidget {
       padding: EdgeInsets.all(8),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(15),
-        border: Border.all(color: const Color.fromARGB(255, 255, 255, 255), width: 2),
+        border: Border.all(color: Theme.of(context).colorScheme.inversePrimary, width: 2),
       ),
       child: Slidable(
         endActionPane: ActionPane(
