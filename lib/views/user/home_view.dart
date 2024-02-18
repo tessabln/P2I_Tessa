@@ -137,14 +137,16 @@ class _HomeViewState extends State<HomeView> {
           Padding(
             padding: const EdgeInsets.all(40.0),
             child: SlideAction(
+              innerColor: const Color.fromARGB(255, 72, 57, 117), 
+              outerColor: Theme.of(context).colorScheme.primary,
               elevation: 0,
               sliderButtonIcon: Icon(Icons.gps_fixed_rounded,
                   color: Theme.of(context).colorScheme.primary),
               text: '         Confirmez votre kill !',
               textStyle: TextStyle(
                   fontSize: 16,
-                  fontWeight: FontWeight.normal,
-                  color: Theme.of(context).textTheme.bodyLarge!.color,),
+                  fontWeight: FontWeight.bold,
+                  color: Theme.of(context).textTheme.bodyLarge!.color),
               sliderRotate: false,
               onSubmit: () {
                 showDialog(

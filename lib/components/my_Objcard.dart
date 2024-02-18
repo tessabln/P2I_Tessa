@@ -25,7 +25,7 @@ class ObjCard extends StatelessWidget {
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 20,
-                    color: Theme.of(context).colorScheme.inversePrimary,
+                    color: Theme.of(context).colorScheme.secondary,
                   ),
                 ),
               ),
@@ -36,7 +36,7 @@ class ObjCard extends StatelessWidget {
                   style: TextStyle(
                     fontStyle: FontStyle.normal,
                     fontSize: 16,
-                    color: Theme.of(context).colorScheme.inversePrimary,
+                    color: Theme.of(context).colorScheme.secondary,
                   ),
                 ),
               ),
@@ -51,7 +51,7 @@ class ObjCard extends StatelessWidget {
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 20,
-                    color: Theme.of(context).colorScheme.inversePrimary,
+                    color: Theme.of(context).colorScheme.secondary,
                   ),
                 ),
               ),
@@ -62,7 +62,7 @@ class ObjCard extends StatelessWidget {
                   style: TextStyle(
                     fontStyle: FontStyle.normal,
                     fontSize: 16,
-                    color: Theme.of(context).colorScheme.inversePrimary,
+                    color: Theme.of(context).colorScheme.secondary,
                   ),
                 ),
               ),
