@@ -22,14 +22,15 @@ class _LoginViewState extends State<LoginView> {
       backgroundColor: Theme.of(context).colorScheme.background,
       body: Center(
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(25.0, 0, 25.0, 25.0),
+          padding: const EdgeInsets.fromLTRB(25.0, 60, 25.0, 25.0),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               // logo
               Container(
-                width: 181,
-                height: 184,
+                width: 231,
+                height: 234,
                 decoration: BoxDecoration(
                   image: DecorationImage(
                     image: AssetImage("assets/images/logo.png"),
@@ -38,7 +39,7 @@ class _LoginViewState extends State<LoginView> {
                 ),
               ),
 
-              const SizedBox(height: 2),
+              const SizedBox(height: 1),
 
               // app name
               Text(
@@ -46,7 +47,7 @@ class _LoginViewState extends State<LoginView> {
                 style: TextStyle(fontSize: 20),
               ),
 
-              const SizedBox(height: 80),
+              const SizedBox(height: 90),
 
               // email textfield
               MyTextField(
@@ -56,13 +57,36 @@ class _LoginViewState extends State<LoginView> {
 
               const SizedBox(height: 10),
 
-              // password textfiel
+              // password textfield
               MyTextField(
                   hintText: "Mot de passe",
                   obscureText: true,
                   controller: passwordController),
 
               const SizedBox(height: 10),
+
+              // sign in button
+              GestureDetector(
+                onTap: () => AuthService.logIn(
+                    emailController.text, passwordController.text, context),
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Color.fromARGB(255, 76, 61, 120),
+                    borderRadius: BorderRadius.circular(25),
+                  ),
+                  padding: const EdgeInsets.all(12),
+                  child: Center(
+                    child: Text(
+                      "Se connecter",
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                        color: Theme.of(context).colorScheme.secondary,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
 
               // forgot password
               Padding(
@@ -84,70 +108,53 @@ class _LoginViewState extends State<LoginView> {
                       child: Text(
                         "Mot de passe oublié ?",
                         style: TextStyle(
+                            fontWeight: FontWeight.bold,
                             color:
-                               Theme.of(context).textTheme.bodyLarge!.color),
+                                Theme.of(context).textTheme.bodyLarge!.color),
                       ),
                     ),
                   ],
                 ),
               ),
 
-              const SizedBox(height: 25),
+              const SizedBox(height: 70),
 
-              // sign in button
+              // don't have an account? Register here
               GestureDetector(
-                onTap: () => AuthService.logIn(
-                    emailController.text, passwordController.text, context),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: Color.fromARGB(255, 76, 61, 120),
-                      borderRadius: BorderRadius.circular(12),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) {
+                        return RegisterView(
+                          onTap: () {},
+                        );
+                      },
                     ),
-                    padding: const EdgeInsets.all(25),
-                    child: Center(
-                      child: Text(
-                        "Se connecter",
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16,
-                          color: Theme.of(context).colorScheme.secondary,
-                        ),
+                  );
+                },
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).colorScheme.background,
+                    borderRadius: BorderRadius.circular(25),
+                    border: Border.all(
+                      color: Color.fromARGB(
+                          255, 76, 61, 120), 
+                          width: 2.0, 
+                    ),
+                  ),
+                  padding: const EdgeInsets.all(12),
+                  child: Center(
+                    child: Text(
+                      "Créer un compte",
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                        color: Color.fromARGB(255, 76, 61, 120),
                       ),
                     ),
                   ),
                 ),
-              const SizedBox(height: 10),
-
-              // don't have an account? Register here
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    "Vous n'avez pas de compte ?",
-                    style: TextStyle(
-                        color: Theme.of(context).textTheme.bodyLarge!.color),
-                  ),
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) {
-                            return RegisterView(
-                              onTap: () {},
-                            );
-                          },
-                        ),
-                      );
-                    },
-                    child: const Text(
-                      " Inscrivez-vous ici",
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                ],
               ),
             ],
           ),

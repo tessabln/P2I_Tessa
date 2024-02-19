@@ -52,13 +52,6 @@ class AccountViewA extends StatelessWidget {
                   );
                 },
               ),
-              const SizedBox(height: 10),
-              MyButton(
-                text: "Supprimer mon compte",
-                onTap: () => AccountViewComponents.confirmDeleteUser(
-                    context, currentUser.uid),
-              ),
-
               const SizedBox(height: 50),
               GestureDetector(
                 onTap: () {
