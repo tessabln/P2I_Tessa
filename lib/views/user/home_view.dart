@@ -34,9 +34,9 @@ class _HomeViewState extends State<HomeView> {
               } else {
                 Map<String, dynamic> userData = snapshot.data!.data()!;
                 return Text(
-                  'Bonjour ${userData['firstname']},',
+                  'Bonjour ${userData['firstname']} !',
                   style: TextStyle(
-                      fontWeight: FontWeight.bold,
+                      fontWeight: FontWeight.normal,
                       fontSize: 22,
                       color: Theme.of(context).textTheme.bodyLarge!.color),
                 );
@@ -142,9 +142,9 @@ class _HomeViewState extends State<HomeView> {
               elevation: 0,
               sliderButtonIcon: Icon(Icons.gps_fixed_rounded,
                   color: Theme.of(context).colorScheme.primary),
-              text: '         Confirmez votre kill !',
+              text: '            Glisser pour confirmer votre kill !',
               textStyle: TextStyle(
-                  fontSize: 16,
+                  fontSize: 14,
                   fontWeight: FontWeight.bold,
                   color: Theme.of(context).textTheme.bodyLarge!.color),
               sliderRotate: false,

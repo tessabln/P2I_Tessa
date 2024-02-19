@@ -10,6 +10,18 @@ class RegisterView extends StatelessWidget {
 
   final RegisterViewModel viewModel = RegisterViewModel();
 
+  // Liste des options de famille
+  final List<String> familyOptions = [
+    "Bleue",
+    "Verte",
+    "Rouge",
+    "Jaune",
+    "Orange"
+  ];
+
+  // Valeur sélectionnée par défaut
+  String selectedFamily = "Bleue";
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -53,11 +65,58 @@ class RegisterView extends StatelessWidget {
 
                 const SizedBox(height: 10),
 
-                // userfamily textfield
-                MyTextField(
-                  hintText: "Famille (Bleue, Verte, etc.)",
-                  obscureText: false,
-                  controller: viewModel.userfamilyController,
+                // Dropdown pour la sélection de famille
+                DropdownButtonFormField<String>(
+                  value: selectedFamily,
+                  items: familyOptions.map((String family) {
+                    Color textColor;
+                    // Définir la couleur du texte en fonction de la famille sélectionnée
+                    switch (family) {
+                      case "Bleue":
+                        textColor = Colors.blue;
+                        break;
+                      case "Verte":
+                        textColor = Colors.green;
+                        break;
+                      case "Rouge":
+                        textColor = Colors.red;
+                        break;
+                      case "Jaune":
+                        textColor = Colors.yellow;
+                        break;
+                      case "Orange":
+                        textColor = Colors.orange;
+                        break;
+                      default:
+                        textColor = Colors.black; // Couleur de texte par défaut
+                    }
+                    return DropdownMenuItem<String>(
+                      value: family,
+                      child: Text(
+                        family,
+                        style: TextStyle(
+                            color:
+                                textColor), // Utiliser la couleur de texte définie dynamiquement
+                      ),
+                    );
+                  }).toList(),
+                  onChanged: (String? value) {
+                    if (value != null) {
+                      selectedFamily = value;
+                      viewModel.updateSelectedFamily(value);
+                    }
+                  },
+                  decoration: InputDecoration(
+                    hintText: 'Sélectionnez une famille',
+                    contentPadding:
+                        EdgeInsets.symmetric(vertical: 4.0, horizontal: 7.0),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12.0),
+                    ),
+                  ),
+                  dropdownColor: Theme.of(context)
+                      .colorScheme
+                      .primary, // Couleur de fond du DropdownButton
                 ),
 
                 const SizedBox(height: 10),
