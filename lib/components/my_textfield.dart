@@ -26,6 +26,7 @@ class MyTextField extends StatelessWidget {
             borderRadius: BorderRadius.circular(12),
           ),
           hintText: hintText,
+          contentPadding: EdgeInsets.symmetric(vertical: 4.0, horizontal: 7.0), 
         ),
         obscureText: obscureText,
       ),
