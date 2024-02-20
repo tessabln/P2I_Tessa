@@ -89,7 +89,11 @@ class UserTile extends StatelessWidget {
                         onPressed: () {
                           Navigator.pop(context);
                         },
-                        child: Text("Annuler"),
+                        child: Text("Annuler",
+                        style: TextStyle(
+                          fontWeight: FontWeight.normal,
+                          fontSize: 16,
+                          color: Theme.of(context).colorScheme.inversePrimary),),
                       ),
                       TextButton(
                         onPressed: () {
@@ -99,7 +103,11 @@ class UserTile extends StatelessWidget {
                               .delete();
                           Navigator.pop(context);
                         },
-                        child: Text("Supprimer"),
+                        child: Text("Supprimer",
+                        style: TextStyle(
+                          fontWeight: FontWeight.normal,
+                          fontSize: 16,
+                          color: Theme.of(context).colorScheme.inversePrimary),),
                       ),
                     ],
                   ),

@@ -8,12 +8,18 @@ class HomeView extends StatefulWidget {
   @override
   _HomeViewState createState() => _HomeViewState();
 }
+DateTime getToday() {
+  DateTime now = DateTime.now();
+  return DateTime(now.year, now.month, now.day); // Réinitialise l'heure à 00:00:00
+}
 
 class _HomeViewState extends State<HomeView> {
   final HomeViewModel viewModel = HomeViewModel();
+  
 
   @override
   Widget build(BuildContext context) {
+    DateTime today = getToday();
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.background,
@@ -70,8 +76,6 @@ class _HomeViewState extends State<HomeView> {
                       snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return Text('Loading...');
-                } else if (snapshot.hasError) {
-                  return Text('Error: ${snapshot.error}');
                 } else if (!snapshot.hasData || snapshot.data == null) {
                   return Text('Aucun objet trouvé');
                 } else {
@@ -81,8 +85,9 @@ class _HomeViewState extends State<HomeView> {
               },
             ),
           ),
-          Divider(color: Theme.of(context).colorScheme.secondary),
+          Divider(color: Theme.of(context).colorScheme.inversePrimary),
           StreamBuilder(
+            
             stream: viewModel.getPostsStream(),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
@@ -96,21 +101,48 @@ class _HomeViewState extends State<HomeView> {
               if (snapshot.data == null || posts.isEmpty) {
                 return Center(
                   child: Padding(
-                      padding: EdgeInsets.all(25),
-                      child: Text(
-                        "Aucune annonce ce jour",
-                        style: TextStyle(
-                            color: Theme.of(context).colorScheme.primary),
-                      )),
+                    padding: EdgeInsets.all(25),
+                    child: Text(
+                      "Aucune annonce ce jour",
+                      style: TextStyle(
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
+                    ),
+                  ),
+                );
+              }
+
+              // Filtrer les annonces pour ne récupérer que celles avec la date d'aujourd'hui
+              final todayPosts = posts.where((post) {
+                Timestamp timestamp = post['TimeStamp'];
+                DateTime postDate = timestamp.toDate();
+                DateTime postDateWithoutTime = DateTime(
+                    postDate.year,
+                    postDate.month,
+                    postDate.day); // Réinitialise l'heure à 00:00:00
+                return postDateWithoutTime.isAtSameMomentAs(today);
+              }).toList();
+
+              if (todayPosts.isEmpty) {
+                return Center(
+                  child: Padding(
+                    padding: EdgeInsets.all(25),
+                    child: Text(
+                      "Aucune annonce ce jour",
+                      style: TextStyle(
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
+                    ),
+                  ),
                 );
               }
 
               return Expanded(
                 child: ListView.builder(
-                  itemCount: posts.length,
+                  itemCount: todayPosts.length,
                   itemBuilder: (context, index) {
                     // get each indiv post
-                    final post = posts[index];
+                    final post = todayPosts[index];
 
                     // get data from each post
                     String message = post['PostMessage'];
@@ -121,11 +153,13 @@ class _HomeViewState extends State<HomeView> {
                       padding: const EdgeInsets.only(
                           left: 10.0, right: 10.0, bottom: 10.0),
                       child: ListTile(
-                        title: Text('Annonce du jour : $message',
-                            style: TextStyle(
-                                fontSize: 18,
-                                color: Theme.of(context).textTheme.bodyLarge!.color,
-                                ),),
+                        title: Text(
+                          'Annonce du jour : $message',
+                          style: TextStyle(
+                            fontSize: 18,
+                            color: Theme.of(context).textTheme.bodyLarge!.color,
+                          ),
+                        ),
                       ),
                     );
                   },
@@ -137,12 +171,12 @@ class _HomeViewState extends State<HomeView> {
           Padding(
             padding: const EdgeInsets.all(40.0),
             child: SlideAction(
-              innerColor: const Color.fromARGB(255, 72, 57, 117), 
+              innerColor: const Color.fromARGB(255, 72, 57, 117),
               outerColor: Theme.of(context).colorScheme.primary,
               elevation: 0,
               sliderButtonIcon: Icon(Icons.gps_fixed_rounded,
                   color: Theme.of(context).colorScheme.primary),
-              text: '            Glisser pour confirmer votre kill !',
+              text: '             Glisser pour confirmer votre kill !',
               textStyle: TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.bold,

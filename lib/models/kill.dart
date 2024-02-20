@@ -26,34 +26,54 @@ class Kill {
 List<Kill> generateKills(List<DocumentSnapshot> usersListCopy) {
   List<Kill> kills = [];
 
-  // min deux joueurs dans la liste
+  // Vérifier s'il y a au moins deux joueurs dans la liste
   if (usersListCopy.length < 2) {
     return kills;
   }
 
-  // Génération des "kills" pour chaque joueur dans la liste
-  for (int i = 0; i < usersListCopy.length - 1; i++) {
-    String idKiller = usersListCopy[i].id;
-    String idCible = usersListCopy[i + 1].id;
+  // Générer un index de départ aléatoire pour commencer à parcourir la liste des joueurs
+  int startIndex = Random().nextInt(usersListCopy.length);
 
-    // Vérifie si le killer et la cible sont de la même famille
-    String familleKiller = usersListCopy[i]['family'];
-    String familleCible = usersListCopy[i + 1]['family'];
-    if (familleKiller == familleCible) {
-      // Si le killer et la cible sont de la même famille, passe au joueur suivant
-      continue;
+  // Créer une liste pour suivre les cibles déjà attribuées
+  List<String> assignedTargets = [];
+
+  // Parcourir la liste des joueurs en commençant par l'index aléatoire
+  for (int i = 0; i < usersListCopy.length; i++) {
+    int index = (startIndex + i) % usersListCopy.length;
+    String idKiller = usersListCopy[index].id;
+    String idCible = '';
+
+    String? familleKiller = usersListCopy[index]
+        ['family']; 
+    for (int j = 1; j < usersListCopy.length; j++) {
+      int targetIndex = (index + j) % usersListCopy.length;
+      String? familleCible = usersListCopy[targetIndex]
+          ['family']; 
+
+      if (familleKiller != null &&
+          familleCible != null &&
+          familleKiller != familleCible &&
+          !assignedTargets.contains(usersListCopy[targetIndex].id)) {
+        idCible = usersListCopy[targetIndex].id;
+        assignedTargets.add(idCible);
+        break;
+      }
     }
 
-    // Création d'un ID unique pour chaque "kill" 
-    String idKill = Random().nextInt(1000000).toString();
+    if (idCible.isEmpty) {
+      break;
+    }
 
-    // Création du "kill" avec l'état initial enCours
+    String idKill = Random().nextInt(1000000).toString();
     kills.add(Kill(
       id: idKill,
       idCible: idCible,
       idKiller: idKiller,
       etat: KillState.enCours,
     ));
+
+    // Affichage du kill dans la console
+    print('Kill ID: $idKill, Killer ID: $idKiller, Target ID: $idCible');
   }
 
   return kills;

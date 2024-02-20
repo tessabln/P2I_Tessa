@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_app/components/target_map.dart';
 import 'package:flutter_app/models/kill.dart';
+import 'package:flutter_app/service/firestore.dart';
 
 class TargetsView extends StatefulWidget {
   @override
@@ -54,6 +55,10 @@ class _TargetsViewState extends State<TargetsView> {
 
             // Génération de la liste des "kills" dans l'ordre souhaité
             List<Kill> kills = generateKills(usersList);
+
+            FirestoreService firestoreService = FirestoreService();
+
+            firestoreService.addKills(kills);
 
             // Création d'une liste ordonnée des utilisateurs selon les "kills"
             orderedUsersList = [];

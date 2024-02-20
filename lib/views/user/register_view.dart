@@ -73,22 +73,22 @@ class RegisterView extends StatelessWidget {
                     // Définir la couleur du texte en fonction de la famille sélectionnée
                     switch (family) {
                       case "Bleue":
-                        textColor = Colors.blue;
+                        textColor = Color.fromARGB(255, 1, 0, 128); 
                         break;
                       case "Verte":
-                        textColor = Colors.green;
+                        textColor = Color.fromARGB(255, 43, 144, 63);
                         break;
                       case "Rouge":
-                        textColor = Colors.red;
+                        textColor = Color.fromARGB(255, 191, 69, 56);
                         break;
                       case "Jaune":
-                        textColor = Colors.yellow;
+                        textColor = Color.fromARGB(255, 249, 188, 51);
                         break;
                       case "Orange":
-                        textColor = Colors.orange;
+                        textColor = Color.fromARGB(255, 228, 108, 11);
                         break;
                       default:
-                        textColor = Colors.black; // Couleur de texte par défaut
+                        textColor = Colors.black; 
                     }
                     return DropdownMenuItem<String>(
                       value: family,
@@ -96,7 +96,8 @@ class RegisterView extends StatelessWidget {
                         family,
                         style: TextStyle(
                             color:
-                                textColor), // Utiliser la couleur de texte définie dynamiquement
+                                textColor,
+                                fontWeight: FontWeight.bold, ), 
                       ),
                     );
                   }).toList(),
@@ -116,14 +117,14 @@ class RegisterView extends StatelessWidget {
                   ),
                   dropdownColor: Theme.of(context)
                       .colorScheme
-                      .primary, // Couleur de fond du DropdownButton
+                      .primary,
                 ),
 
                 const SizedBox(height: 10),
 
                 // targetcode textfield
                 MyTextField(
-                  hintText: "Code (à chiffres)",
+                  hintText: "Code à 4 chiffres",
                   obscureText: true,
                   controller: viewModel.targetcodeController,
                 ),

@@ -69,7 +69,7 @@ class AccountView extends StatelessWidget {
               const SizedBox(height: 50),
               GestureDetector(
                 onTap: () {
-                  logout(context);
+                  showLogoutConfirmationDialog(context);
                 },
                 child: SizedBox(
                   width: 180,

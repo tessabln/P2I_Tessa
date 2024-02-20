@@ -7,6 +7,8 @@ class TargetsMap {
   }
 
   static String? getTargetId(String userId) {
+    // Afficher le contenu de la carte `targets`
+    print('Contenu de la carte `targets`: ${TargetsMap.targets}');
     return targets[userId];
   }
 }

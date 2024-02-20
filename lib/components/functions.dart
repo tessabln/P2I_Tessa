@@ -23,3 +23,33 @@ void logout(BuildContext context) {
   );
 }
 
+void showLogoutConfirmationDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text("Confirmation"),
+        content: Text("Êtes-vous sûr de vouloir vous déconnecter ?"),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text("Annuler",
+            style: TextStyle(
+                  fontSize: 16,
+                  color: Theme.of(context).textTheme.bodyLarge!.color,
+                ),),
+          ),
+          TextButton(
+            onPressed: () {
+              logout(context);
+            },
+            child: Text("Confirmer",
+            style: TextStyle(
+                  fontSize: 16,
+                  color: Theme.of(context).textTheme.bodyLarge!.color,
+                ),),
+          ),
+        ],
+      ),
+    );
+  }
+

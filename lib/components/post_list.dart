@@ -58,12 +58,14 @@ class _PostListState extends State<PostList> {
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Color.fromARGB(255, 76, 61, 120),
                   ),
-                  child: Text('Post',
-                  style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 16,
-                            color: Theme.of(context).colorScheme.secondary,
-                          ),),
+                  child: Text(
+                    'Post',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                      color: Theme.of(context).colorScheme.secondary,
+                    ),
+                  ),
                 )
               ],
             ),
@@ -114,8 +116,9 @@ class PostTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     String message = data['PostMessage'] ?? 'Message non défini';
-    Timestamp? timestamp = data['date'];
-    DateTime date = timestamp?.toDate() ?? DateTime.now();
+    Timestamp timestamp = data['TimeStamp'];
+    DateTime date =
+        timestamp.toDate(); 
     String formattedDate = DateFormat('yyyy-MM-dd HH:mm:ss').format(date);
 
     return Container(
@@ -123,7 +126,8 @@ class PostTile extends StatelessWidget {
       padding: EdgeInsets.all(8),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(15),
-        border: Border.all(color: Theme.of(context).colorScheme.inversePrimary, width: 2),
+        border: Border.all(
+            color: Theme.of(context).colorScheme.inversePrimary, width: 2),
       ),
       child: Slidable(
         endActionPane: ActionPane(
@@ -135,13 +139,20 @@ class PostTile extends StatelessWidget {
                   context: context,
                   builder: (context) => AlertDialog(
                     title: Text("Confirmation"),
-                    content: Text("Voulez-vous vraiment supprimer cet objet ?"),
+                    content: Text("Voulez-vous vraiment supprimer ce post ?"),
                     actions: [
                       TextButton(
                         onPressed: () {
                           Navigator.pop(context);
                         },
-                        child: Text("Annuler"),
+                        child: Text(
+                          "Annuler",
+                          style: TextStyle(
+                              fontWeight: FontWeight.normal,
+                              fontSize: 16,
+                              color:
+                                  Theme.of(context).colorScheme.inversePrimary),
+                        ),
                       ),
                       TextButton(
                         onPressed: () {
@@ -151,7 +162,14 @@ class PostTile extends StatelessWidget {
                               .delete();
                           Navigator.pop(context);
                         },
-                        child: Text("Supprimer"),
+                        child: Text(
+                          "Supprimer",
+                          style: TextStyle(
+                              fontWeight: FontWeight.normal,
+                              fontSize: 16,
+                              color:
+                                  Theme.of(context).colorScheme.inversePrimary),
+                        ),
                       ),
                     ],
                   ),

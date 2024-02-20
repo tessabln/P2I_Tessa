@@ -102,7 +102,7 @@ Widget addObjectDialog(
         style: TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 16,
-                            color: Theme.of(context).colorScheme.secondary,
+                            color: Theme.of(context).colorScheme.inversePrimary,
                           ),),
       )
     ],

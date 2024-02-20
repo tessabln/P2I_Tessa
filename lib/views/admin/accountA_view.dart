@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter_app/components/account_components.dart';
 import 'package:flutter_app/components/my_button.dart';
 import 'package:flutter_app/components/functions.dart';
 import 'package:flutter_app/views/change_pw_view.dart';
@@ -38,7 +37,7 @@ class AccountViewA extends StatelessWidget {
                 Icons.person,
                 size: 72,
               ),
-              const SizedBox(height: 100),
+              const SizedBox(height: 120),
               MyButton(
                 text: "Changer mon mot de passe",
                 onTap: () {
@@ -52,10 +51,10 @@ class AccountViewA extends StatelessWidget {
                   );
                 },
               ),
-              const SizedBox(height: 50),
+              const SizedBox(height: 120),
               GestureDetector(
                 onTap: () {
-                  logout(context);
+                  showLogoutConfirmationDialog(context);
                 },
                 child: SizedBox(
                   width: 180,

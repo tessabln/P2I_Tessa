@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_app/models/kill.dart';
 import 'package:flutter_app/models/user.dart' as CustomUser;
 
 class FirestoreService {
@@ -52,6 +53,28 @@ class FirestoreService {
       'TimeStamp': Timestamp.now(),
     });
   }
+
+  void addKills(List<Kill> kills) {
+  CollectionReference killsCollection = FirebaseFirestore.instance.collection('kills');
+
+  kills.forEach((kill) async {
+    try {
+      Map<String, dynamic> killData = {
+        'id': kill.id,
+        'idCible': kill.idCible,
+        'idKiller': kill.idKiller,
+        'etat': kill.etat.toString(), 
+      };
+
+      await killsCollection.add(killData);
+      
+      print('Kill ajouté à Firestore: $killData');
+    } catch (e) {
+      print('Erreur lors de l\'ajout du kill à Firestore: $e');
+    }
+  });
+}
+
 
   // READ
   Stream<QuerySnapshot> getObjectStream() {
