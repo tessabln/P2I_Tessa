@@ -176,7 +176,7 @@ class _HomeViewState extends State<HomeView> {
               elevation: 0,
               sliderButtonIcon: Icon(Icons.gps_fixed_rounded,
                   color: Theme.of(context).colorScheme.primary),
-              text: '             Glisser pour confirmer votre kill !',
+              text: '                Glisser pour confirmer votre kill !',
               textStyle: TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.bold,

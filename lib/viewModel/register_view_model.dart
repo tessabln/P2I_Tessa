@@ -18,10 +18,12 @@ class RegisterViewModel {
 
    String selectedFamily = "";
 
-  // Méthode pour mettre à jour la famille sélectionnée
-  void updateSelectedFamily(String family) {
-    selectedFamily = family;
-  }
+  void updateSelectedFamily(String selectedFamily) {
+  // Mettre à jour la valeur de selectedFamily
+  this.selectedFamily = selectedFamily;
+  // Mettre à jour le champ de la famille de l'utilisateur
+  userfamilyController.text = selectedFamily;
+}
 
   Future<void> registerUser(BuildContext context) async {
     final String userlastname = userlastnameController.text.trim();

@@ -73,7 +73,7 @@ class RegisterView extends StatelessWidget {
                     // Définir la couleur du texte en fonction de la famille sélectionnée
                     switch (family) {
                       case "Bleue":
-                        textColor = Color.fromARGB(255, 1, 0, 128); 
+                        textColor = Color.fromARGB(255, 1, 0, 128);
                         break;
                       case "Verte":
                         textColor = Color.fromARGB(255, 43, 144, 63);
@@ -88,22 +88,24 @@ class RegisterView extends StatelessWidget {
                         textColor = Color.fromARGB(255, 228, 108, 11);
                         break;
                       default:
-                        textColor = Colors.black; 
+                        textColor = Colors.black;
                     }
                     return DropdownMenuItem<String>(
                       value: family,
                       child: Text(
                         family,
                         style: TextStyle(
-                            color:
-                                textColor,
-                                fontWeight: FontWeight.bold, ), 
+                          color: textColor,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     );
                   }).toList(),
                   onChanged: (String? value) {
                     if (value != null) {
+                      // Mise à jour de selectedFamily avec la valeur sélectionnée
                       selectedFamily = value;
+                      // Appel de la méthode pour mettre à jour la famille dans le ViewModel
                       viewModel.updateSelectedFamily(value);
                     }
                   },
@@ -115,9 +117,7 @@ class RegisterView extends StatelessWidget {
                       borderRadius: BorderRadius.circular(12.0),
                     ),
                   ),
-                  dropdownColor: Theme.of(context)
-                      .colorScheme
-                      .primary,
+                  dropdownColor: Theme.of(context).colorScheme.primary,
                 ),
 
                 const SizedBox(height: 10),
