@@ -8,14 +8,18 @@ class HomeView extends StatefulWidget {
   @override
   _HomeViewState createState() => _HomeViewState();
 }
+
 DateTime getToday() {
   DateTime now = DateTime.now();
-  return DateTime(now.year, now.month, now.day); // Réinitialise l'heure à 00:00:00
+  return DateTime(
+      now.year, now.month, now.day); // Réinitialise l'heure à 00:00:00
 }
+
+DateTime now = DateTime.now();
+Timestamp currentTimestamp = Timestamp.fromDate(now);
 
 class _HomeViewState extends State<HomeView> {
   final HomeViewModel viewModel = HomeViewModel();
-  
 
   @override
   Widget build(BuildContext context) {
@@ -80,14 +84,19 @@ class _HomeViewState extends State<HomeView> {
                   return Text('Aucun objet trouvé');
                 } else {
                   Map<String, dynamic> objectData = snapshot.data!.data()!;
-                  return ObjCard(objectData);
+                  final Timestamp? beginDateTimestamp = objectData["begindate"];
+                  if (beginDateTimestamp != null &&
+                      beginDateTimestamp.toDate().isBefore(now)) {
+                    return ObjCard(objectData);
+                  } else {
+                    return Text('Aucun objet trouvé');
+                  }
                 }
               },
             ),
           ),
           Divider(color: Theme.of(context).colorScheme.inversePrimary),
           StreamBuilder(
-            
             stream: viewModel.getPostsStream(),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
