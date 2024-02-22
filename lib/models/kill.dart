@@ -43,12 +43,12 @@ List<Kill> generateKills(List<DocumentSnapshot> usersListCopy) {
     String idKiller = usersListCopy[index].id;
     String idCible = '';
 
-    String? familleKiller = usersListCopy[index]
-        ['family']; 
+    String? familleKiller = usersListCopy[index][
+        'family']; // Assuming 'family' is the field representing the family in your Firestore document
     for (int j = 1; j < usersListCopy.length; j++) {
       int targetIndex = (index + j) % usersListCopy.length;
-      String? familleCible = usersListCopy[targetIndex]
-          ['family']; 
+      String? familleCible = usersListCopy[targetIndex][
+          'family']; // Assuming 'family' is the field representing the family in your Firestore document
 
       if (familleKiller != null &&
           familleCible != null &&
@@ -61,7 +61,7 @@ List<Kill> generateKills(List<DocumentSnapshot> usersListCopy) {
     }
 
     if (idCible.isEmpty) {
-      break;
+      break; // No suitable target found for this killer, exit the loop
     }
 
     String idKill = Random().nextInt(1000000).toString();

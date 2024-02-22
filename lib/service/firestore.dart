@@ -56,36 +56,52 @@ class FirestoreService {
   }
 
   void addOrUpdateKills(List<Kill> kills) async {
-    for (var kill in kills) {
-      try {
-        // Générer un ID unique basé sur idKiller et idCible
-        String documentId = '${kill.idKiller}_${kill.idCible}';
+    try {
+      for (var kill in kills) {
+        // Vérifier si un kill avec le même idKiller existe déjà
+        bool existingKill = await checkExistingKill(kill.idKiller);
 
-        // Vérifier si un document avec cet ID existe déjà
-        DocumentSnapshot? existingKill =
-            await killsCollection.doc(documentId).get();
-
-        if (existingKill.exists) {
-          // Si le document existe, mettre à jour ses données
-          await killsCollection.doc(documentId).update({
-            'etat': kill.etat.toString(),
-          });
-          print('Kill mis à jour dans Firestore: $documentId');
+        if (existingKill) {
+          // Si un kill avec le même idKiller existe déjà, mettez à jour son état au lieu d'en ajouter un nouveau
+          await updateKill(kill);
+          print('Kill mis à jour pour idKiller ${kill.idKiller}');
         } else {
-          // Si le document n'existe pas, ajouter un nouveau kill avec cet ID
-          Map<String, dynamic> killData = {
-            'id': documentId,
-            'idKiller': kill.idKiller,
-            'idCible': kill.idCible,
-            'etat': kill.etat.toString(),
-          };
-          await killsCollection.doc(documentId).set(killData);
-          print('Kill ajouté à Firestore: $documentId');
+          // Sinon, ajoutez le nouveau kill
+          await addNewKill(kill);
+          print('Nouveau kill ajouté pour idKiller ${kill.idKiller}');
         }
-      } catch (e) {
-        print('Erreur lors de l\'ajout/mise à jour du kill dans Firestore: $e');
       }
+    } catch (e) {
+      print('Erreur lors de l\'ajout/mise à jour du kill dans Firestore: $e');
     }
+  }
+
+  Future<bool> checkExistingKill(String idKiller) async {
+    // Recherchez un kill avec le même idKiller dans la base de données
+    QuerySnapshot query = await killsCollection
+        .where('idKiller', isEqualTo: idKiller)
+        .limit(1)
+        .get();
+    return query.docs.isNotEmpty;
+  }
+
+  Future<void> updateKill(Kill kill) async {
+    // Mettez à jour le kill existant avec le même idKiller
+    await killsCollection.doc(kill.idKiller).update({
+      'etat': kill.etat.toString(),
+      // Ajoutez d'autres champs à mettre à jour si nécessaire
+    });
+  }
+
+  Future<void> addNewKill(Kill kill) async {
+    // Ajoutez un nouveau kill dans la base de données
+    await killsCollection.doc(kill.id).set({
+      'id': kill.id,
+      'idKiller': kill.idKiller,
+      'idCible': kill.idCible,
+      'etat': kill.etat.toString(),
+      // Ajoutez d'autres champs si nécessaire
+    });
   }
 
   // READ

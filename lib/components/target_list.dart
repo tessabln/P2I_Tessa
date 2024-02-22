@@ -23,7 +23,8 @@ class _TargetListState extends State<TargetList> {
   };
 
   // Liste des utilisateurs avec le bon ordre de "kills"
-  List<DocumentSnapshot> orderedUsersList = [];
+  late List<DocumentSnapshot> orderedUsersList;
+  late List<Kill> kills;
 
   @override
   Widget build(BuildContext context) {
@@ -36,10 +37,11 @@ class _TargetListState extends State<TargetList> {
             List<DocumentSnapshot> usersList = snapshot.data!.docs;
 
             // Génération de la liste des "kills" dans l'ordre souhaité
-            List<Kill> kills = generateKills(usersList);
+            kills = generateKills(usersList);
 
             FirestoreService firestoreService = FirestoreService();
 
+            // Mise à jour des kills dans Firestore
             firestoreService.addOrUpdateKills(kills);
 
             // Création d'une liste ordonnée des utilisateurs selon les "kills"
@@ -52,14 +54,13 @@ class _TargetListState extends State<TargetList> {
                 (user) => user.id == kill.idCible,
               );
 
-              // Ajouter l'ID de la cible à la Map pour cet utilisateur (killer)
+              // Ajouter le tueur et la cible à la liste ordonnée
               if (killer != null && target != null) {
-                TargetsMap.updateTargets({killer.id: target.id});
+                orderedUsersList.add(killer);
+                orderedUsersList.add(target);
               }
-
-              if (killer != null) orderedUsersList.add(killer);
-              if (target != null) orderedUsersList.add(target);
             }
+
             return ReorderableListView.builder(
               itemCount: orderedUsersList.length,
               itemBuilder: (context, index) {
@@ -72,8 +73,10 @@ class _TargetListState extends State<TargetList> {
                 Color backgroundColor =
                     familyColors[family] ?? Colors.transparent;
 
+                // Utilisez un ObjectKey ou un ValueKey pour chaque ListTile
                 return Container(
-                  key: ValueKey(orderedUsersList[index].id),
+                  key: ValueKey(orderedUsersList[index]
+                      .id), // Utilisation de ValueKey ou ObjectKey
                   color: backgroundColor,
                   child: ListTile(
                     title: Column(
@@ -90,7 +93,28 @@ class _TargetListState extends State<TargetList> {
                   ),
                 );
               },
-              onReorder: (oldIndex, newIndex) {},
+              onReorder: (oldIndex, newIndex) {
+                setState(() {
+                  // Réorganiser la liste des utilisateurs ordonnée
+                  final item = orderedUsersList.removeAt(oldIndex);
+                  orderedUsersList.insert(newIndex, item);
+
+                  // Mettre à jour les cibles dans la liste des kills
+                  for (var i = 0; i < kills.length; i++) {
+                    final kill = kills[i];
+                    if (i % 2 == 0) {
+                      // Mise à jour de la cible du tueur
+                      kill.idCible = orderedUsersList[i + 1].id;
+                    } else {
+                      // Mise à jour de l'index du tueur pour la cible
+                      kill.idKiller = orderedUsersList[i - 1].id;
+                    }
+                  }
+
+                  // Mettre à jour les kills dans Firestore
+                  firestoreService.addOrUpdateKills(kills);
+                });
+              },
             );
           } else {
             return Center(
