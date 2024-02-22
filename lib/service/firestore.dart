@@ -12,8 +12,9 @@ class FirestoreService {
       FirebaseFirestore.instance.collection('objects');
   final CollectionReference posts =
       FirebaseFirestore.instance.collection('posts');
+  final CollectionReference killsCollection =
+      FirebaseFirestore.instance.collection('kills');
   User? user = FirebaseAuth.instance.currentUser;
-
 
   // CREATE
   static Future<void> addUser(CustomUser.User user) async {
@@ -54,27 +55,38 @@ class FirestoreService {
     });
   }
 
-  void addKills(List<Kill> kills) {
-  CollectionReference killsCollection = FirebaseFirestore.instance.collection('kills');
+  void addOrUpdateKills(List<Kill> kills) async {
+    for (var kill in kills) {
+      try {
+        // Générer un ID unique basé sur idKiller et idCible
+        String documentId = '${kill.idKiller}_${kill.idCible}';
 
-  kills.forEach((kill) async {
-    try {
-      Map<String, dynamic> killData = {
-        'id': kill.id,
-        'idCible': kill.idCible,
-        'idKiller': kill.idKiller,
-        'etat': kill.etat.toString(), 
-      };
+        // Vérifier si un document avec cet ID existe déjà
+        DocumentSnapshot? existingKill =
+            await killsCollection.doc(documentId).get();
 
-      await killsCollection.add(killData);
-      
-      print('Kill ajouté à Firestore: $killData');
-    } catch (e) {
-      print('Erreur lors de l\'ajout du kill à Firestore: $e');
+        if (existingKill.exists) {
+          // Si le document existe, mettre à jour ses données
+          await killsCollection.doc(documentId).update({
+            'etat': kill.etat.toString(),
+          });
+          print('Kill mis à jour dans Firestore: $documentId');
+        } else {
+          // Si le document n'existe pas, ajouter un nouveau kill avec cet ID
+          Map<String, dynamic> killData = {
+            'id': documentId,
+            'idKiller': kill.idKiller,
+            'idCible': kill.idCible,
+            'etat': kill.etat.toString(),
+          };
+          await killsCollection.doc(documentId).set(killData);
+          print('Kill ajouté à Firestore: $documentId');
+        }
+      } catch (e) {
+        print('Erreur lors de l\'ajout/mise à jour du kill dans Firestore: $e');
+      }
     }
-  });
-}
-
+  }
 
   // READ
   Stream<QuerySnapshot> getObjectStream() {
@@ -138,4 +150,3 @@ class FirestoreService {
     );
   }
 }
-

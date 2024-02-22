@@ -31,7 +31,7 @@ class ForgotPasswordView extends StatelessWidget {
                 ),
                 hintText: 'Email',
                 contentPadding: EdgeInsets.symmetric(vertical: 4.0, horizontal: 7.0), 
-                fillColor: Theme.of(context).colorScheme.primary,
+                fillColor: Theme.of(context).colorScheme.secondary,
                 filled: true,
               ),
             ),
@@ -46,7 +46,7 @@ class ForgotPasswordView extends StatelessWidget {
             style: TextStyle(
                           fontWeight: FontWeight.normal,
                           fontSize: 14,
-                          color: Theme.of(context).colorScheme.secondary,
+                          color: Color.fromARGB(255, 255, 255, 255),
                         ),),
           ),
         ],

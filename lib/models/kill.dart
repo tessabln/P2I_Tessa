@@ -11,14 +11,14 @@ enum KillState {
 
 class Kill {
   String id;
-  String idCible;
   String idKiller;
+  String idCible;
   KillState etat;
 
   Kill({
     required this.id,
-    required this.idCible,
     required this.idKiller,
+    required this.idCible,
     required this.etat,
   });
 }
@@ -67,8 +67,8 @@ List<Kill> generateKills(List<DocumentSnapshot> usersListCopy) {
     String idKill = Random().nextInt(1000000).toString();
     kills.add(Kill(
       id: idKill,
-      idCible: idCible,
       idKiller: idKiller,
+      idCible: idCible,
       etat: KillState.enCours,
     ));
 

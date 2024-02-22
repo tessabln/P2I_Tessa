@@ -22,6 +22,14 @@ class RegisterView extends StatelessWidget {
   // Valeur sélectionnée par défaut
   String selectedFamily = "Bleue";
 
+  // Fonction pour mettre à jour la famille sélectionnée
+  void updateSelectedFamily(String selectedFamily) {
+    // Mettre à jour la valeur de selectedFamily
+    this.selectedFamily = selectedFamily;
+    // Mettre à jour le champ de la famille de l'utilisateur
+    viewModel.userfamilyController.text = selectedFamily;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -106,7 +114,7 @@ class RegisterView extends StatelessWidget {
                       // Mise à jour de selectedFamily avec la valeur sélectionnée
                       selectedFamily = value;
                       // Appel de la méthode pour mettre à jour la famille dans le ViewModel
-                      viewModel.updateSelectedFamily(value);
+                      updateSelectedFamily(value);
                     }
                   },
                   decoration: InputDecoration(
@@ -117,7 +125,7 @@ class RegisterView extends StatelessWidget {
                       borderRadius: BorderRadius.circular(12.0),
                     ),
                   ),
-                  dropdownColor: Theme.of(context).colorScheme.primary,
+                  dropdownColor: Theme.of(context).colorScheme.secondary,
                 ),
 
                 const SizedBox(height: 10),
@@ -175,7 +183,7 @@ class RegisterView extends StatelessWidget {
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 16,
-                          color: Theme.of(context).colorScheme.secondary,
+                          color: Color.fromARGB(255, 255, 255, 255),
                         ),
                       ),
                     ),

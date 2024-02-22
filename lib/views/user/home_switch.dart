@@ -34,7 +34,7 @@ class _HomeSwitchState extends State<HomeSwitch> {
           padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 20),
           child: GNav(
             backgroundColor: Theme.of(context).colorScheme.background,
-            tabBackgroundColor: Theme.of(context).colorScheme.primary,
+            tabBackgroundColor: Theme.of(context).colorScheme.secondary,
             gap: 20,
             padding: EdgeInsets.all(16),
             tabs: [

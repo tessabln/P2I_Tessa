@@ -16,14 +16,7 @@ class RegisterViewModel {
   final TextEditingController confirmPwController = TextEditingController();
   final TextEditingController targetcodeController = TextEditingController();
 
-   String selectedFamily = "";
 
-  void updateSelectedFamily(String selectedFamily) {
-  // Mettre à jour la valeur de selectedFamily
-  this.selectedFamily = selectedFamily;
-  // Mettre à jour le champ de la famille de l'utilisateur
-  userfamilyController.text = selectedFamily;
-}
 
   Future<void> registerUser(BuildContext context) async {
     final String userlastname = userlastnameController.text.trim();

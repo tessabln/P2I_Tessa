@@ -98,20 +98,6 @@ class _HomeViewState extends State<HomeView> {
 
               final posts = snapshot.data!.docs;
 
-              if (snapshot.data == null || posts.isEmpty) {
-                return Center(
-                  child: Padding(
-                    padding: EdgeInsets.all(25),
-                    child: Text(
-                      "Aucune annonce ce jour",
-                      style: TextStyle(
-                        color: Theme.of(context).colorScheme.primary,
-                      ),
-                    ),
-                  ),
-                );
-              }
-
               // Filtrer les annonces pour ne récupérer que celles avec la date d'aujourd'hui
               final todayPosts = posts.where((post) {
                 Timestamp timestamp = post['TimeStamp'];
@@ -130,7 +116,7 @@ class _HomeViewState extends State<HomeView> {
                     child: Text(
                       "Aucune annonce ce jour",
                       style: TextStyle(
-                        color: Theme.of(context).colorScheme.primary,
+                        color: Theme.of(context).colorScheme.inversePrimary,
                       ),
                     ),
                   ),
@@ -172,10 +158,10 @@ class _HomeViewState extends State<HomeView> {
             padding: const EdgeInsets.all(40.0),
             child: SlideAction(
               innerColor: const Color.fromARGB(255, 72, 57, 117),
-              outerColor: Theme.of(context).colorScheme.primary,
+              outerColor: Theme.of(context).colorScheme.secondary,
               elevation: 0,
               sliderButtonIcon: Icon(Icons.gps_fixed_rounded,
-                  color: Theme.of(context).colorScheme.primary),
+                  color: Theme.of(context).colorScheme.secondary),
               text: '                Glisser pour confirmer votre kill !',
               textStyle: TextStyle(
                   fontSize: 14,

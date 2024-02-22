@@ -35,7 +35,8 @@ Widget addObjectDialog(
           decoration: InputDecoration(
             icon: Icon(Icons.calendar_today),
             labelText: "Date de début",
-            labelStyle: TextStyle(color: Theme.of(context).colorScheme.inversePrimary),
+            labelStyle:
+                TextStyle(color: Theme.of(context).colorScheme.inversePrimary),
           ),
           readOnly: true,
           onTap: () async {
@@ -55,7 +56,8 @@ Widget addObjectDialog(
           decoration: InputDecoration(
             icon: Icon(Icons.calendar_today),
             labelText: "Date de fin",
-            labelStyle: TextStyle(color: Theme.of(context).colorScheme.inversePrimary),
+            labelStyle:
+                TextStyle(color: Theme.of(context).colorScheme.inversePrimary),
           ),
           readOnly: true,
           onTap: () async {
@@ -96,14 +98,16 @@ Widget addObjectDialog(
           Navigator.pop(context);
         },
         style: ElevatedButton.styleFrom(
-          backgroundColor: Color.fromARGB(255, 76, 61, 120), 
+          backgroundColor: Color.fromARGB(255, 76, 61, 120),
         ),
-        child: Text("Ajouter",
-        style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 16,
-                            color: Theme.of(context).colorScheme.inversePrimary,
-                          ),),
+        child: Text(
+          "Ajouter",
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 16,
+            color: Color.fromARGB(255, 255, 255, 255)
+          ),
+        ),
       )
     ],
   );

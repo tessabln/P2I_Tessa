@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_app/components/my_button.dart';
 import 'package:flutter_app/views/admin/game_register_view.dart';
 import 'package:flutter_app/views/admin/objects_view.dart';
-import 'package:flutter_app/views/admin/post_view.dart';
+import 'package:flutter_app/views/admin/posts_view.dart';
 import 'package:flutter_app/views/admin/targets_view.dart';
 import 'package:flutter_app/views/admin/users_view.dart';
 
@@ -78,7 +78,7 @@ class _AdminViewState extends State<AdminView> {
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 16,
-                            color: Theme.of(context).colorScheme.secondary,
+                            color: Color.fromARGB(255,255,255,255),
                           ),
                         ),
                       ),
@@ -167,7 +167,7 @@ class _AdminViewState extends State<AdminView> {
                     context,
                     MaterialPageRoute(
                       builder: (context) {
-                        return PostView();
+                        return PostsView();
                       },
                     ),
                   );

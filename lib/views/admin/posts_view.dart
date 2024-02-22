@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/components/post_list.dart';
 
-class PostView extends StatelessWidget {
+class PostsView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
