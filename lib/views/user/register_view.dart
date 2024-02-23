@@ -1,3 +1,5 @@
+// ignore_for_file: must_be_immutable
+
 import 'package:flutter/material.dart';
 import 'package:flutter_app/components/my_textfield.dart';
 import 'package:flutter_app/viewModel/register_view_model.dart';

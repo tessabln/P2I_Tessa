@@ -1,3 +1,5 @@
+// ignore_for_file: library_private_types_in_public_api
+
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
@@ -69,8 +71,9 @@ class UserTile extends StatelessWidget {
     return Container(
       margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(10), 
-        border: Border.all(color: Theme.of(context).colorScheme.inversePrimary, width: 2),
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(
+            color: Theme.of(context).colorScheme.inversePrimary, width: 2),
       ),
       child: Slidable(
         endActionPane: ActionPane(
@@ -89,11 +92,14 @@ class UserTile extends StatelessWidget {
                         onPressed: () {
                           Navigator.pop(context);
                         },
-                        child: Text("Annuler",
-                        style: TextStyle(
-                          fontWeight: FontWeight.normal,
-                          fontSize: 16,
-                          color: Theme.of(context).colorScheme.inversePrimary),),
+                        child: Text(
+                          "Annuler",
+                          style: TextStyle(
+                              fontWeight: FontWeight.normal,
+                              fontSize: 16,
+                              color:
+                                  Theme.of(context).colorScheme.inversePrimary),
+                        ),
                       ),
                       TextButton(
                         onPressed: () {
@@ -103,11 +109,14 @@ class UserTile extends StatelessWidget {
                               .delete();
                           Navigator.pop(context);
                         },
-                        child: Text("Supprimer",
-                        style: TextStyle(
-                          fontWeight: FontWeight.normal,
-                          fontSize: 16,
-                          color: Theme.of(context).colorScheme.inversePrimary),),
+                        child: Text(
+                          "Supprimer",
+                          style: TextStyle(
+                              fontWeight: FontWeight.normal,
+                              fontSize: 16,
+                              color:
+                                  Theme.of(context).colorScheme.inversePrimary),
+                        ),
                       ),
                     ],
                   ),
@@ -115,7 +124,7 @@ class UserTile extends StatelessWidget {
               }),
               backgroundColor: Colors.red,
               icon: Icons.delete,
-              borderRadius: BorderRadius.circular(10), 
+              borderRadius: BorderRadius.circular(10),
             ),
           ],
         ),

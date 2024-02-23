@@ -172,6 +172,7 @@ class ObjectTile extends StatelessWidget {
               },
               backgroundColor: Colors.red,
               icon: Icons.delete,
+              borderRadius: BorderRadius.circular(12),
             ),
           ],
         ),

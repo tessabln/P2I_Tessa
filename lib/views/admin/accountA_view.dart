@@ -1,6 +1,7 @@
+// ignore_for_file: file_names
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_app/components/my_button.dart';
 import 'package:flutter_app/components/functions.dart';
 import 'package:flutter_app/views/change_pw_view.dart';
@@ -10,7 +11,6 @@ import 'package:flutter_app/theme/theme_provider.dart';
 class AccountViewA extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final currentUser = FirebaseAuth.instance.currentUser!;
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.background,

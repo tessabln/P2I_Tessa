@@ -1,3 +1,5 @@
+// ignore_for_file: file_names
+
 import 'package:flutter/material.dart';
 
 class ObjCard extends StatelessWidget {
@@ -25,7 +27,7 @@ class ObjCard extends StatelessWidget {
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 20,
-                    color: Theme.of(context).colorScheme.secondary,
+                    color: Color.fromARGB(255, 255, 255, 255)
                   ),
                 ),
               ),
@@ -36,7 +38,7 @@ class ObjCard extends StatelessWidget {
                   style: TextStyle(
                     fontStyle: FontStyle.normal,
                     fontSize: 16,
-                    color: Theme.of(context).colorScheme.secondary,
+                    color: Color.fromARGB(255, 255, 255, 255)
                   ),
                 ),
               ),
@@ -51,7 +53,7 @@ class ObjCard extends StatelessWidget {
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 20,
-                    color: Theme.of(context).colorScheme.secondary,
+                    color: Color.fromARGB(255, 255, 255, 255)
                   ),
                 ),
               ),
@@ -62,7 +64,7 @@ class ObjCard extends StatelessWidget {
                   style: TextStyle(
                     fontStyle: FontStyle.normal,
                     fontSize: 16,
-                    color: Theme.of(context).colorScheme.secondary,
+                    color: Color.fromARGB(255, 255, 255, 255)
                   ),
                 ),
               ),

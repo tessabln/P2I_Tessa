@@ -54,7 +54,7 @@ class LeaderboardView extends StatelessWidget {
   }
 
   Widget _buildCircle(Color color, String text) {
-    return Container(
+    return SizedBox(
       width: 44,
       height: 44,
       child: Stack(

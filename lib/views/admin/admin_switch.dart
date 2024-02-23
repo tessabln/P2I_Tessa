@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/views/admin/accountA_view.dart';
-import 'package:flutter_app/views/user/accountU_view.dart';
 import 'package:flutter_app/views/admin/admin_view.dart';
 import 'package:flutter_app/views/leaderboard_view.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
@@ -36,56 +35,54 @@ class _AdminSwitchState extends State<AdminSwitch> {
         children: _views,
       ),
       // Bottom navigation bar
-      bottomNavigationBar: Container(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 20),
-          child: GNav(
-            backgroundColor: Theme.of(context).colorScheme.background,
-            tabBackgroundColor: Theme.of(context).colorScheme.secondary,
-            gap: 20,
-            padding: EdgeInsets.all(16),
-            // List of navigation tabs
-            tabs: [
-              GButton(
-                icon: Icons.settings,
-                text: 'Gestion',
-                iconColor: Theme.of(context).textTheme.bodyLarge!.color,
-                textColor: Theme.of(context).textTheme.bodyLarge!.color,
-                border: Border.all(
-                  color: const Color.fromARGB(255, 72, 57, 117),
-                  width: 1,
-                ),
+      bottomNavigationBar: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 20),
+        child: GNav(
+          backgroundColor: Theme.of(context).colorScheme.background,
+          tabBackgroundColor: Theme.of(context).colorScheme.secondary,
+          gap: 20,
+          padding: EdgeInsets.all(16),
+          // List of navigation tabs
+          tabs: [
+            GButton(
+              icon: Icons.settings,
+              text: 'Gestion',
+              iconColor: Theme.of(context).textTheme.bodyLarge!.color,
+              textColor: Theme.of(context).textTheme.bodyLarge!.color,
+              border: Border.all(
+                color: const Color.fromARGB(255, 72, 57, 117),
+                width: 1,
               ),
-              GButton(
-                icon: Icons.leaderboard,
-                text: 'Classement',
-                iconColor: Theme.of(context).textTheme.bodyLarge!.color,
-                textColor: Theme.of(context).textTheme.bodyLarge!.color,
-                border: Border.all(
-                  color: const Color.fromARGB(255, 72, 57, 117),
-                  width: 1,
-                ),
+            ),
+            GButton(
+              icon: Icons.leaderboard,
+              text: 'Classement',
+              iconColor: Theme.of(context).textTheme.bodyLarge!.color,
+              textColor: Theme.of(context).textTheme.bodyLarge!.color,
+              border: Border.all(
+                color: const Color.fromARGB(255, 72, 57, 117),
+                width: 1,
               ),
-              GButton(
-                icon: Icons.account_circle_rounded,
-                text: 'Compte',
-                iconColor: Theme.of(context).textTheme.bodyLarge!.color,
-                textColor: Theme.of(context).textTheme.bodyLarge!.color,
-                border: Border.all(
-                  color: const Color.fromARGB(255, 72, 57, 117),
-                  width: 1,
-                ),
+            ),
+            GButton(
+              icon: Icons.account_circle_rounded,
+              text: 'Compte',
+              iconColor: Theme.of(context).textTheme.bodyLarge!.color,
+              textColor: Theme.of(context).textTheme.bodyLarge!.color,
+              border: Border.all(
+                color: const Color.fromARGB(255, 72, 57, 117),
+                width: 1,
               ),
-            ],
-            // Index of the selected tab
-            selectedIndex: _selectedIndex,
-            // Callback function for tab change
-            onTabChange: (index) {
-              setState(() {
-                _selectedIndex = index;
-              });
-            },
-          ),
+            ),
+          ],
+          // Index of the selected tab
+          selectedIndex: _selectedIndex,
+          // Callback function for tab change
+          onTabChange: (index) {
+            setState(() {
+              _selectedIndex = index;
+            });
+          },
         ),
       ),
     );

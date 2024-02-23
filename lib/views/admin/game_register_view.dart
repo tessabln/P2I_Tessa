@@ -55,7 +55,7 @@ class _GameRegisterViewState extends State<GameRegisterView> {
       await FirestoreService().deleteAllObjects();
 
       // Set killerIsRunning to true
-      widget.onTap?.call();
+      widget.onTap.call();
 
       // Close the current screen
       Navigator.pop(context);
@@ -72,9 +72,10 @@ class _GameRegisterViewState extends State<GameRegisterView> {
       backgroundColor: Theme.of(context).colorScheme.background,
       body: Center(
         child: Padding(
-          padding: const EdgeInsets.all(25.0),
+          padding: const EdgeInsets.fromLTRB(25.0, 100, 25.0, 25.0),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               // logo
               Container(
@@ -161,7 +162,7 @@ class _GameRegisterViewState extends State<GameRegisterView> {
                     }
                   }),
 
-              const SizedBox(height: 50),
+              const SizedBox(height: 30),
 
               // register button
               GestureDetector(
@@ -171,14 +172,14 @@ class _GameRegisterViewState extends State<GameRegisterView> {
                     color: Color.fromARGB(255, 76, 61, 120),
                     borderRadius: BorderRadius.circular(12),
                   ),
-                  padding: const EdgeInsets.all(25),
+                  padding: const EdgeInsets.all(12),
                   child: Center(
                     child: Text(
                       "Valider",
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 16,
-                        color: Color.fromARGB(255,255,255,255),
+                        color: Color.fromARGB(255, 255, 255, 255),
                       ),
                     ),
                   ),

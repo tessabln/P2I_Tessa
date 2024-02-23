@@ -1,7 +1,8 @@
+// ignore_for_file: unnecessary_null_comparison, library_private_types_in_public_api
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_app/components/target_map.dart';
 import 'package:flutter_app/models/kill.dart';
 import 'package:flutter_app/service/firestore.dart';
 

@@ -1,3 +1,5 @@
+// ignore_for_file: library_private_types_in_public_api
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/components/my_Objcard.dart';
@@ -141,7 +143,6 @@ class _HomeViewState extends State<HomeView> {
 
                     // get data from each post
                     String message = post['PostMessage'];
-                    Timestamp timestamp = post['TimeStamp'];
 
                     // return as a list tile
                     return Padding(
@@ -170,7 +171,7 @@ class _HomeViewState extends State<HomeView> {
               outerColor: Theme.of(context).colorScheme.secondary,
               elevation: 0,
               sliderButtonIcon: Icon(Icons.gps_fixed_rounded,
-                  color: Theme.of(context).colorScheme.secondary),
+                  color: Color.fromARGB(255, 255, 255, 255)),
               text: '                Glisser pour confirmer votre kill !',
               textStyle: TextStyle(
                   fontSize: 14,
@@ -178,16 +179,46 @@ class _HomeViewState extends State<HomeView> {
                   color: Theme.of(context).textTheme.bodyLarge!.color),
               sliderRotate: false,
               onSubmit: () {
-                showDialog(
+                return showDialog(
                   context: context,
                   builder: (context) {
                     return AlertDialog(
-                        content: Text(
-                      "T'es sûr ?",
-                    ));
+                      title: Text("Confirmer le kill"),
+                      content: Text(
+                          "Êtes-vous sûr de vouloir confirmer votre kill ?"),
+                      actions: <Widget>[
+                        TextButton(
+                          child: Text(
+                            "Annuler",
+                            style: TextStyle(
+                                fontWeight: FontWeight.normal,
+                                fontSize: 16,
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .inversePrimary),
+                          ),
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                        ),
+                        TextButton(
+                          child: Text(
+                            "Confirmer",
+                            style: TextStyle(
+                                fontWeight: FontWeight.normal,
+                                fontSize: 16,
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .inversePrimary),
+                          ),
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                        ),
+                      ],
+                    );
                   },
                 );
-                return null;
               },
             ),
           ),
