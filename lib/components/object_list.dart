@@ -71,7 +71,7 @@ class _ObjectListState extends State<ObjectList> {
       floatingActionButton: FloatingActionButton(
         onPressed: openObjectBox,
         backgroundColor: Color.fromARGB(255, 76, 61, 120),
-        child: Icon(Icons.add, color: Theme.of(context).textTheme.bodyLarge!.color,),
+        child: Icon(Icons.add, color: Color.fromARGB(255, 255, 255, 255)),
       ),
       body: StreamBuilder<QuerySnapshot>(
         stream: _objectStream,

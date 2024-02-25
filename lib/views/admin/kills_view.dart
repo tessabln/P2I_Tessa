@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_app/components/target_list.dart';
+import 'package:flutter_app/components/kill_list.dart';
 
-class TargetsView extends StatelessWidget {
+class KillsView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Cibles"),
+        title: Text("Kills"),
         backgroundColor: Theme.of(context).colorScheme.background,
         actions: [
           Container(
@@ -23,7 +23,7 @@ class TargetsView extends StatelessWidget {
           ),
         ],
       ),
-      body: TargetList(),
+      body: KillList(),
     );
   }
 }

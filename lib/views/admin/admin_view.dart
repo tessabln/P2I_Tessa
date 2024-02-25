@@ -5,7 +5,7 @@ import 'package:flutter_app/components/my_button.dart';
 import 'package:flutter_app/views/admin/game_register_view.dart';
 import 'package:flutter_app/views/admin/objects_view.dart';
 import 'package:flutter_app/views/admin/posts_view.dart';
-import 'package:flutter_app/views/admin/targets_view.dart';
+import 'package:flutter_app/views/admin/kills_view.dart';
 import 'package:flutter_app/views/admin/users_view.dart';
 
 class AdminView extends StatefulWidget {
@@ -146,13 +146,14 @@ class _AdminViewState extends State<AdminView> {
               const SizedBox(height: 10),
               // Button for managing targets
               MyButton(
-                text: "Gestion des cibles",
+                text: "Gestion des kills",
                 onTap: () {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
                       builder: (context) {
-                        return TargetsView();
+                        return KillsView
+                        ();
                       },
                     ),
                   );

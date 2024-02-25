@@ -1,7 +1,6 @@
 // ignore_for_file: library_prefixes
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_app/models/kill.dart';
 import 'package:flutter_app/models/user.dart' as CustomUser;
 
@@ -14,9 +13,8 @@ class FirestoreService {
       FirebaseFirestore.instance.collection('objects');
   final CollectionReference posts =
       FirebaseFirestore.instance.collection('posts');
-  final CollectionReference killsCollection =
+  final CollectionReference kills =
       FirebaseFirestore.instance.collection('kills');
-  User? user = FirebaseAuth.instance.currentUser;
 
   // CREATE
   static Future<void> addUser(CustomUser.User user) async {
@@ -57,54 +55,54 @@ class FirestoreService {
     });
   }
 
-  void addOrUpdateKills(List<Kill> kills) async {
-    try {
-      for (var kill in kills) {
-        // Vérifier si un kill avec le même idKiller existe déjà
-        bool existingKill = await checkExistingKill(kill.idKiller);
+  Future<void> createAndAddKills() async {
+  QuerySnapshot usersSnapshot = await FirebaseFirestore.instance
+      .collection('users')
+      .orderBy('lastname')
+      .get();
 
-        if (existingKill) {
-          // Si un kill avec le même idKiller existe déjà, mettez à jour son état au lieu d'en ajouter un nouveau
-          await updateKill(kill);
-          print('Kill mis à jour pour idKiller ${kill.idKiller}');
-        } else {
-          // Sinon, ajoutez le nouveau kill
-          await addNewKill(kill);
-          print('Nouveau kill ajouté pour idKiller ${kill.idKiller}');
-        }
-      }
-    } catch (e) {
-      print('Erreur lors de l\'ajout/mise à jour du kill dans Firestore: $e');
-    }
-  }
+  List<QueryDocumentSnapshot> userList = usersSnapshot.docs;
+  int userListLength = userList.length;
 
-  Future<bool> checkExistingKill(String idKiller) async {
-    // Recherchez un kill avec le même idKiller dans la base de données
-    QuerySnapshot query = await killsCollection
-        .where('idKiller', isEqualTo: idKiller)
-        .limit(1)
+  for (int i = 0; i < userListLength; i++) {
+    String idKiller = userList[i].id;
+    String idCible = userList[(i + 1) % userListLength].id;
+
+    // Récupérez les informations sur le tueur et la cible
+    DocumentSnapshot killerDoc = await FirebaseFirestore.instance
+        .collection('users')
+        .doc(idKiller)
         .get();
-    return query.docs.isNotEmpty;
-  }
+    DocumentSnapshot cibleDoc = await FirebaseFirestore.instance
+        .collection('users')
+        .doc(idCible)
+        .get();
 
-  Future<void> updateKill(Kill kill) async {
-    // Mettez à jour le kill existant avec le même idKiller
-    await killsCollection.doc(kill.idKiller).update({
-      'etat': kill.etat.toString(),
-      // Ajoutez d'autres champs à mettre à jour si nécessaire
-    });
-  }
+    // Récupérez les familles du tueur et de la cible
+    String killerFamily = killerDoc['family'];
+    String cibleFamily = cibleDoc['family'];
 
-  Future<void> addNewKill(Kill kill) async {
-    // Ajoutez un nouveau kill dans la base de données
-    await killsCollection.doc(kill.id).set({
-      'id': kill.id,
-      'idKiller': kill.idKiller,
-      'idCible': kill.idCible,
-      'etat': kill.etat.toString(),
-      // Ajoutez d'autres champs si nécessaire
-    });
+    // Vérifiez si les familles sont identiques
+    if (killerFamily == cibleFamily) {
+      // Les joueurs appartiennent à la même famille, passez à l'itération suivante
+      continue;
+    }
+
+    // Créez un objet Kill avec les données appropriées
+    Kill kill = Kill(
+      idKiller: idKiller,
+      idCible: idCible,
+      etat: KillState.enCours,
+    );
+
+    // Convertir l'objet Kill en une Map<String, dynamic>
+    Map<String, dynamic> killData = kill.toJson();
+
+    // Ajoutez les données converties en Map à Firestore
+    await kills.add(killData);
   }
+}
+
 
   // READ
   Stream<QuerySnapshot> getObjectStream() {
