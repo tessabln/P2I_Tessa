@@ -1,9 +1,10 @@
 // ignore_for_file: unnecessary_null_comparison, library_private_types_in_public_api
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_app/service/firestore.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:flutter_app/service/firestore.dart';
+import 'dart:async';
 
 class KillList extends StatefulWidget {
   @override
@@ -13,23 +14,13 @@ class KillList extends StatefulWidget {
 class _KillListState extends State<KillList> {
   late Stream<QuerySnapshot> _killStream;
   final FirestoreService firestore = FirestoreService();
+  List<DocumentSnapshot> killList = [];
 
   @override
   void initState() {
     super.initState();
-    _killStream = FirebaseFirestore.instance
-        .collection('kills')
-        .snapshots();
+    _killStream = FirebaseFirestore.instance.collection('kills').snapshots();
   }
-
-  // Liste des couleurs par famille
-  final Map<String, Color> familyColors = {
-    'Bleue': Color.fromARGB(255, 27, 47, 135),
-    'Rouge': Color.fromARGB(255, 182, 31, 26),
-    'Verte': Color.fromARGB(255, 43, 144, 63),
-    'Orange': Color.fromARGB(255, 247, 118, 6),
-    'Jaune': Color.fromARGB(255, 215, 187, 65),
-  };
 
   @override
   Widget build(BuildContext context) {
@@ -38,38 +29,21 @@ class _KillListState extends State<KillList> {
         stream: _killStream,
         builder: (context, snapshot) {
           if (snapshot.hasData) {
-            List<DocumentSnapshot> killList = snapshot.data!.docs;
-            return ListView.builder(
-              itemCount: killList.length,
-              itemBuilder: (context, index) {
-                DocumentSnapshot document = killList[index];
-                String killId = document.id;
-                Map<String, dynamic>? data =
-                    document.data() as Map<String, dynamic>?;
+            killList = snapshot.data!.docs;
 
-                if (data != null) {
-                  return FutureBuilder(
-                    future: _fetchUserData(data['idKiller'], data['idCible']),
-                    builder: (context,
-                        AsyncSnapshot<Map<String, dynamic>> userSnapshot) {
-                      if (userSnapshot.connectionState ==
-                          ConnectionState.waiting) {
-                        return CircularProgressIndicator();
-                      } else if (userSnapshot.hasError) {
-                        return Text('Error: ${userSnapshot.error}');
-                      } else {
-                        return KillTile(
-                          data: data,
-                          killId: killId,
-                          userData: userSnapshot.data!,
-                          familyColors: familyColors,
-                        );
-                      }
-                    },
-                  );
-                } else {
-                  return SizedBox();
-                }
+            return ReorderableListView(
+              children: List.generate(
+                killList.length,
+                (index) => buildDraggableKillTile(killList[index], index),
+              ),
+              onReorder: (oldIndex, newIndex) {
+                setState(() {
+                  if (oldIndex < newIndex) {
+                    newIndex -= 1;
+                  }
+                  final DocumentSnapshot item = killList.removeAt(oldIndex);
+                  _killStream = _reorderStream(oldIndex, newIndex);
+                });
               },
             );
           } else {
@@ -88,6 +62,21 @@ class _KillListState extends State<KillList> {
     );
   }
 
+  Stream<QuerySnapshot> _reorderStream(int oldIndex, int newIndex) {
+  List<DocumentSnapshot> reorderedList = [...killList];
+  final DocumentSnapshot item = reorderedList.removeAt(oldIndex);
+  reorderedList.insert(newIndex, item);
+
+  // Créer une nouvelle requête avec les IDs des documents réordonnés
+  final List<String> orderedIds = reorderedList.map((doc) => doc.id).toList();
+  final Query newQuery = FirebaseFirestore.instance.collection('kills').where(FieldPath.documentId, whereIn: orderedIds);
+
+  // Mettre à jour _killStream avec le nouveau flux
+  _killStream = newQuery.snapshots();
+
+  return _killStream;
+}
+
   Future<Map<String, dynamic>> _fetchUserData(
       String idKiller, String idCible) async {
     final killerDoc = await FirebaseFirestore.instance
@@ -96,26 +85,75 @@ class _KillListState extends State<KillList> {
         .get();
     final cibleDoc =
         await FirebaseFirestore.instance.collection('users').doc(idCible).get();
-    final killerFam = await FirebaseFirestore.instance
-        .collection('users')
-        .doc(idKiller)
-        .get();
-    final cibleFam =
-        await FirebaseFirestore.instance.collection('users').doc(idCible).get();
 
     return {
       'idKiller': killerDoc['lastname'] +
           ' ' +
           killerDoc['firstname'] +
-          ' ' + 
-          killerFam['family'],
+          ' ' +
+          killerDoc['family'],
       'idCible': cibleDoc['lastname'] +
           ' ' +
           cibleDoc['firstname'] +
           ' ' +
-          cibleFam['family'],
+          cibleDoc['family'],
     };
   }
+
+  Widget buildDraggableKillTile(DocumentSnapshot document, int index) {
+    String killId = document.id;
+    Map<String, dynamic>? data = document.data() as Map<String, dynamic>?;
+
+    if (data != null) {
+      return LongPressDraggable(
+        key: ValueKey(killId), // Utilisez ValueKey avec une valeur unique
+        data: killId,
+        feedback: buildKillTile(document),
+        child: buildKillTile(document),
+      );
+    } else {
+      return SizedBox();
+    }
+  }
+
+  Widget buildKillTile(DocumentSnapshot document) {
+    String killId = document.id;
+    Map<String, dynamic>? data = document.data() as Map<String, dynamic>?;
+
+    if (data != null) {
+      return FutureBuilder(
+        future: _fetchUserData(data['idKiller'], data['idCible']),
+        builder: (context, AsyncSnapshot<Map<String, dynamic>> userSnapshot) {
+          if (userSnapshot.connectionState == ConnectionState.waiting) {
+            return CircularProgressIndicator();
+          } else if (userSnapshot.hasError) {
+            return Text('Error: ${userSnapshot.error}');
+          } else {
+            // Utilisez une clé unique pour chaque KillTile
+            return KillTile(
+              data: data,
+              killId: killId,
+              userData: userSnapshot.data!,
+              familyColors: familyColors,
+              key:
+                  UniqueKey(), // Utilisez UniqueKey pour garantir une clé unique
+            );
+          }
+        },
+      );
+    } else {
+      return SizedBox();
+    }
+  }
+
+  // Liste des couleurs par famille
+  final Map<String, Color> familyColors = {
+    'Bleue': Color.fromARGB(255, 27, 47, 135),
+    'Rouge': Color.fromARGB(255, 182, 31, 26),
+    'Verte': Color.fromARGB(255, 43, 144, 63),
+    'Orange': Color.fromARGB(255, 247, 118, 6),
+    'Jaune': Color.fromARGB(255, 215, 187, 65),
+  };
 }
 
 class KillTile extends StatelessWidget {
@@ -124,11 +162,13 @@ class KillTile extends StatelessWidget {
   final Map<String, dynamic> userData;
   final Map<String, Color> familyColors;
 
-  const KillTile(
-      {required this.data,
-      required this.killId,
-      required this.userData,
-      required this.familyColors});
+  const KillTile({
+    required this.data,
+    required this.killId,
+    required this.userData,
+    required this.familyColors,
+    required Key key,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -171,10 +211,10 @@ class KillTile extends StatelessWidget {
                         child: Text(
                           "Annuler",
                           style: TextStyle(
-                              fontWeight: FontWeight.normal,
-                              fontSize: 16,
-                              color:
-                                  Theme.of(context).colorScheme.inversePrimary),
+                            fontWeight: FontWeight.normal,
+                            fontSize: 16,
+                            color: Theme.of(context).colorScheme.inversePrimary,
+                          ),
                         ),
                       ),
                       TextButton(
@@ -188,10 +228,10 @@ class KillTile extends StatelessWidget {
                         child: Text(
                           "Supprimer",
                           style: TextStyle(
-                              fontWeight: FontWeight.normal,
-                              fontSize: 16,
-                              color:
-                                  Theme.of(context).colorScheme.inversePrimary),
+                            fontWeight: FontWeight.normal,
+                            fontSize: 16,
+                            color: Theme.of(context).colorScheme.inversePrimary,
+                          ),
                         ),
                       ),
                     ],

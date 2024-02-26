@@ -1,5 +1,7 @@
 // ignore_for_file: library_prefixes
 
+import 'dart:math';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_app/models/kill.dart';
 import 'package:flutter_app/models/user.dart' as CustomUser;
@@ -56,53 +58,37 @@ class FirestoreService {
   }
 
   Future<void> createAndAddKills() async {
-  QuerySnapshot usersSnapshot = await FirebaseFirestore.instance
-      .collection('users')
-      .orderBy('lastname')
-      .get();
-
-  List<QueryDocumentSnapshot> userList = usersSnapshot.docs;
-  int userListLength = userList.length;
-
-  for (int i = 0; i < userListLength; i++) {
-    String idKiller = userList[i].id;
-    String idCible = userList[(i + 1) % userListLength].id;
-
-    // Récupérez les informations sur le tueur et la cible
-    DocumentSnapshot killerDoc = await FirebaseFirestore.instance
+    // Récupérer la liste de tous les identifiants d'utilisateurs
+    QuerySnapshot usersSnapshot = await FirebaseFirestore.instance
         .collection('users')
-        .doc(idKiller)
+        .orderBy('lastname')
         .get();
-    DocumentSnapshot cibleDoc = await FirebaseFirestore.instance
-        .collection('users')
-        .doc(idCible)
-        .get();
+    List<String> userIds = usersSnapshot.docs.map((doc) => doc.id).toList();
 
-    // Récupérez les familles du tueur et de la cible
-    String killerFamily = killerDoc['family'];
-    String cibleFamily = cibleDoc['family'];
+    // Mélanger aléatoirement la liste des identifiants d'utilisateurs
+    userIds.shuffle();
 
-    // Vérifiez si les familles sont identiques
-    if (killerFamily == cibleFamily) {
-      // Les joueurs appartiennent à la même famille, passez à l'itération suivante
-      continue;
+    // Associer chaque joueur à un autre joueur en tant que cible
+    for (int i = 0; i < userIds.length; i++) {
+      String idKiller = userIds[i];
+      String idCible = userIds[(i + 1) %
+          userIds
+              .length]; // Assurez-vous que le dernier joueur a pour cible le premier joueur
+
+      // Créer un objet Kill avec les données appropriées
+      Kill kill = Kill(
+        idKiller: idKiller,
+        idCible: idCible,
+        etat: KillState.enCours,
+      );
+
+      // Convertir l'objet Kill en une Map<String, dynamic>
+      Map<String, dynamic> killData = kill.toJson();
+
+      // Ajouter les données converties en Map à Firestore
+      await kills.add(killData);
     }
-
-    // Créez un objet Kill avec les données appropriées
-    Kill kill = Kill(
-      idKiller: idKiller,
-      idCible: idCible,
-      etat: KillState.enCours,
-    );
-
-    // Convertir l'objet Kill en une Map<String, dynamic>
-    Map<String, dynamic> killData = kill.toJson();
-
-    // Ajoutez les données converties en Map à Firestore
-    await kills.add(killData);
   }
-}
-
 
   // READ
   Stream<QuerySnapshot> getObjectStream() {
