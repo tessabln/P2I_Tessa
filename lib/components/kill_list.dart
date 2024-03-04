@@ -24,8 +24,12 @@ class _KillListState extends State<KillList> {
   bool isLoading = true;
 
   Future<bool> checkIfKillsCreated() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.getBool('killsCreated') ?? false;
+    final snapshot = await FirebaseFirestore.instance.collection('kills').get();
+    bool temp = true;
+    if (snapshot.size == 0){
+      temp = false;
+    }
+    return temp;
   }
 
   Future<void> setKillsCreated() async {
