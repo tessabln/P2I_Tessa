@@ -146,7 +146,7 @@ class _AdminViewState extends State<AdminView> {
               const SizedBox(height: 10),
               // Button for managing targets
               MyButton(
-                text: "Gestion des kills",
+                text: "Gestion des kills en cours",
                 onTap: () {
                   Navigator.push(
                     context,

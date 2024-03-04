@@ -1,10 +1,9 @@
-// ignore_for_file: unnecessary_null_comparison, library_private_types_in_public_api
+// ignore_for_file: library_private_types_in_public_api
 
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:flutter_app/service/firestore.dart';
-import 'dart:async';
 
 class KillList extends StatefulWidget {
   @override
@@ -12,268 +11,205 @@ class KillList extends StatefulWidget {
 }
 
 class _KillListState extends State<KillList> {
-  late Stream<QuerySnapshot> _killStream;
+  final user = FirebaseAuth.instance.currentUser;
+  Future<DocumentSnapshot<Map<String, dynamic>>>? userData;
   final FirestoreService firestore = FirestoreService();
-  List<DocumentSnapshot> killList = [];
+  final CollectionReference kills =
+      FirebaseFirestore.instance.collection('kills');
+
+  List<String> addedUserIds = [];
+  List<String> liste = [];
+  List<Map<String, dynamic>> listeUserData = [];
+  bool isLoading = true;
 
   @override
   void initState() {
     super.initState();
-    _killStream = FirebaseFirestore.instance.collection('kills').snapshots();
+    userData = getUserData();
+
+    // Appeler d'abord la méthode pour créer et ajouter des kills
+    firestore.createAndAddKills(addedUserIds).then((_) {
+      // Une fois que les kills sont créés et ajoutés, appeler la méthode pour récupérer l'ordre
+      fetchAndReorderKills().then((_) {
+        setState(() {
+          isLoading = false;
+        });
+      });
+    });
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: StreamBuilder<QuerySnapshot>(
-        stream: _killStream,
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            killList = snapshot.data!.docs;
+  Future<void> fetchAndReorderKills() async {
+    QuerySnapshot killSnapshot =
+        await FirebaseFirestore.instance.collection('kills').get();
+    List<Map<String, dynamic>> tableKill = killSnapshot.docs
+        .map((doc) => doc.data() as Map<String, dynamic>)
+        .toList();
+    List<String> newListe = recupOrder(tableKill);
 
-            return ReorderableListView(
-              children: List.generate(
-                killList.length,
-                (index) => buildDraggableKillTile(killList[index], index),
-              ),
-              onReorder: (oldIndex, newIndex) {
-                setState(() {
-                  if (oldIndex < newIndex) {
-                    newIndex -= 1;
-                  }
-                  final DocumentSnapshot item = killList.removeAt(oldIndex);
-                  _killStream = _reorderStream(oldIndex, newIndex);
-                });
-              },
-            );
-          } else {
-            return Center(
-              child: CircularProgressIndicator(),
-            );
-          }
-        },
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          firestore.createAndAddKills();
-        },
-        child: Icon(Icons.add),
-      ),
-    );
-  }
+    setState(() {
+      liste = newListe;
+      listeUserData = [];
+    });
 
-  Stream<QuerySnapshot> _reorderStream(int oldIndex, int newIndex) {
-  List<DocumentSnapshot> reorderedList = [...killList];
-  final DocumentSnapshot item = reorderedList.removeAt(oldIndex);
-  reorderedList.insert(newIndex, item);
-
-  // Créer une nouvelle requête avec les IDs des documents réordonnés
-  final List<String> orderedIds = reorderedList.map((doc) => doc.id).toList();
-  final Query newQuery = FirebaseFirestore.instance.collection('kills').where(FieldPath.documentId, whereIn: orderedIds);
-
-  // Mettre à jour _killStream avec le nouveau flux
-  _killStream = newQuery.snapshots();
-
-  return _killStream;
-}
-
-  Future<Map<String, dynamic>> _fetchUserData(
-      String idKiller, String idCible) async {
-    final killerDoc = await FirebaseFirestore.instance
-        .collection('users')
-        .doc(idKiller)
-        .get();
-    final cibleDoc =
-        await FirebaseFirestore.instance.collection('users').doc(idCible).get();
-
-    return {
-      'idKiller': killerDoc['lastname'] +
-          ' ' +
-          killerDoc['firstname'] +
-          ' ' +
-          killerDoc['family'],
-      'idCible': cibleDoc['lastname'] +
-          ' ' +
-          cibleDoc['firstname'] +
-          ' ' +
-          cibleDoc['family'],
-    };
-  }
-
-  Widget buildDraggableKillTile(DocumentSnapshot document, int index) {
-    String killId = document.id;
-    Map<String, dynamic>? data = document.data() as Map<String, dynamic>?;
-
-    if (data != null) {
-      return LongPressDraggable(
-        key: ValueKey(killId), // Utilisez ValueKey avec une valeur unique
-        data: killId,
-        feedback: buildKillTile(document),
-        child: buildKillTile(document),
-      );
-    } else {
-      return SizedBox();
+    for (var i = 0; i < newListe.length; i++) {
+      Map<String, dynamic> newData = {};
+      var userSnapshot = await FirebaseFirestore.instance
+          .collection("users")
+          .doc(newListe[i])
+          .get();
+      var userData = userSnapshot.data() as Map<String, dynamic>;
+      newData["lastname"] = userData['lastname'] ?? 'Nom non défini';
+      newData["firstname"] = userData['firstname'] ?? 'Prénom non défini';
+      String family = userData['family'] ?? '';
+      newData["textColor"] = familyColors[family] ?? Colors.transparent;
+      setState(() {
+        listeUserData.add(newData);
+      });
     }
   }
 
-  Widget buildKillTile(DocumentSnapshot document) {
-    String killId = document.id;
-    Map<String, dynamic>? data = document.data() as Map<String, dynamic>?;
-
-    if (data != null) {
-      return FutureBuilder(
-        future: _fetchUserData(data['idKiller'], data['idCible']),
-        builder: (context, AsyncSnapshot<Map<String, dynamic>> userSnapshot) {
-          if (userSnapshot.connectionState == ConnectionState.waiting) {
-            return CircularProgressIndicator();
-          } else if (userSnapshot.hasError) {
-            return Text('Error: ${userSnapshot.error}');
-          } else {
-            // Utilisez une clé unique pour chaque KillTile
-            return KillTile(
-              data: data,
-              killId: killId,
-              userData: userSnapshot.data!,
-              familyColors: familyColors,
-              key:
-                  UniqueKey(), // Utilisez UniqueKey pour garantir une clé unique
-            );
-          }
-        },
-      );
-    } else {
-      return SizedBox();
-    }
+  Future<Map<String, dynamic>> fetchUserData(String userId) async {
+    var userSnapshot =
+        await FirebaseFirestore.instance.collection("users").doc(userId).get();
+    return userSnapshot.data() as Map<String, dynamic>;
   }
 
-  // Liste des couleurs par famille
+  void updateUserData(int index) async {
+    Map<String, dynamic> userData = await fetchUserData(liste[index]);
+    setState(() {
+      // Mettez à jour l'état de votre widget avec les nouvelles données de l'utilisateur
+    });
+  }
+
+  Future<DocumentSnapshot<Map<String, dynamic>>> getUserData() async {
+    return FirebaseFirestore.instance.collection("users").doc(user!.uid).get();
+  }
+
   final Map<String, Color> familyColors = {
-    'Bleue': Color.fromARGB(255, 27, 47, 135),
+    'Bleue': Color.fromARGB(255, 10, 28, 112),
     'Rouge': Color.fromARGB(255, 182, 31, 26),
     'Verte': Color.fromARGB(255, 43, 144, 63),
     'Orange': Color.fromARGB(255, 247, 118, 6),
     'Jaune': Color.fromARGB(255, 215, 187, 65),
   };
-}
 
-class KillTile extends StatelessWidget {
-  final Map<String, dynamic> data;
-  final String killId;
-  final Map<String, dynamic> userData;
-  final Map<String, Color> familyColors;
+  List<String> recupOrder(List<Map<String, dynamic>> tableKill) {
+    liste.add(tableKill[0]['idKiller']);
+    String lastCible = tableKill[0]['idCible'];
+    while (lastCible != liste[0]) {
+      Map<String, dynamic>? kill = tableKill.firstWhere(
+        (kill) => kill['idKiller'] == lastCible,
+      );
 
-  const KillTile({
-    required this.data,
-    required this.killId,
-    required this.userData,
-    required this.familyColors,
-    required Key key,
-  }) : super(key: key);
+      liste.add(kill['idKiller']);
+      lastCible = kill['idCible'];
+    }
+    return liste;
+  }
+
+  void updateKill(int oldIndex, int newIndex) {
+    setState(() {
+      if (oldIndex < newIndex) {
+        newIndex--;
+      }
+      final kill = liste.removeAt(oldIndex);
+      final userData = listeUserData.removeAt(oldIndex);
+
+      liste.insert(newIndex, kill);
+      listeUserData.insert(newIndex, userData);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    String idKiller = userData['idKiller'] ?? 'idKiller non défini';
-    String idCible = userData['idCible'] ?? 'idCible non défini';
+    if (isLoading) {
+      return CircularProgressIndicator(); // Afficher un indicateur de chargement pendant que les données sont chargées
+    } else {
+      return Scaffold(
+        body: ReorderableListView.builder(
+          itemCount: liste.length,
+          itemBuilder: (context, index) {
+            if (liste[index] != null &&
+                listeUserData[index] != null &&
+                index < listeUserData.length) {
+              Map<String, dynamic> userData = listeUserData[index];
+              String lastname = userData['lastname'] ?? 'Nom non défini';
+              String firstname = userData['firstname'] ?? 'Prénom non défini';
+              Color textColor = userData["textColor"] ?? Colors.transparent;
+              String userId = liste[index]; // récupérer l'ID de l'utilisateur
 
-    // Séparation du nom complet du tueur en utilisant l'espace comme séparateur
-    List<String> idKillerParts = idKiller.split(' ');
-    // Obtention de la famille à partir de la troisième partie
-    String idKillerFamily = idKillerParts.length > 2 ? idKillerParts[2] : '';
-
-    // Séparation du nom complet de la cible en utilisant l'espace comme séparateur
-    List<String> idCibleParts = idCible.split(' ');
-    // Obtention de la famille à partir de la troisième partie
-    String idCibleFamily = idCibleParts.length > 2 ? idCibleParts[2] : '';
-
-    return Container(
-      margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(10),
-        border: Border.all(
-            color: Theme.of(context).colorScheme.inversePrimary, width: 2),
-      ),
-      child: Slidable(
-        endActionPane: ActionPane(
-          motion: ScrollMotion(),
-          children: [
-            SlidableAction(
-              onPressed: ((context) {
-                showDialog(
-                  context: context,
-                  builder: (context) => AlertDialog(
-                    title: Text("Confirmation"),
-                    content: Text("Voulez-vous vraiment supprimer ce kill ?"),
-                    actions: [
-                      TextButton(
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
-                        child: Text(
-                          "Annuler",
-                          style: TextStyle(
-                            fontWeight: FontWeight.normal,
-                            fontSize: 16,
-                            color: Theme.of(context).colorScheme.inversePrimary,
-                          ),
-                        ),
-                      ),
-                      TextButton(
-                        onPressed: () {
-                          FirebaseFirestore.instance
-                              .collection('kills')
-                              .doc(killId)
-                              .delete();
-                          Navigator.pop(context);
-                        },
-                        child: Text(
-                          "Supprimer",
-                          style: TextStyle(
-                            fontWeight: FontWeight.normal,
-                            fontSize: 16,
-                            color: Theme.of(context).colorScheme.inversePrimary,
-                          ),
-                        ),
-                      ),
-                    ],
+              return Card(
+                key: ValueKey<String>(
+                    userId), // utiliser l'ID de l'utilisateur comme clé
+                elevation: 1,
+                child: ListTile(
+                  title: Text(
+                    '$lastname $firstname',
+                    style: TextStyle(fontSize: 18, color: textColor),
                   ),
-                );
-              }),
-              backgroundColor: Colors.red,
-              icon: Icons.delete,
-              borderRadius: BorderRadius.circular(10),
-            ),
-          ],
+                  trailing: const Icon(Icons.drag_handle),
+                  onTap: () {},
+                ),
+              );
+            } else {
+              return Container(); // retourner un conteneur vide si l'index est invalide
+            }
+          },
+          onReorder: (oldIndex, newIndex) => updateKill(oldIndex, newIndex),
         ),
-        child: ListTile(
-          title: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                idKiller,
-                style: TextStyle(
-                  fontSize: 18,
-                  color: familyColors[idKillerFamily],
-                ),
-              ),
-              Text(
-                'KILL',
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black,
-                ),
-              ),
-              Text(
-                idCible,
-                style: TextStyle(
-                  fontSize: 18,
-                  color: familyColors[idCibleFamily],
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
+      );
+    }
   }
 }
+// def set_order(la liste):
+//   for i in range(len(liste)):
+//     if i == len(liste)-1:
+//       new kill(idkiller = liste[i], idCible = liste[i+1])
+//     else:
+//       new kill(idKiller = liste[i], idCible = liste[0])
+ 
+//  Tous les kills en cours deviennent etat échec
+//  Ajout des nouveaux kills avec état en cours
+
+
+
+// def validation_kill(killCompleted):
+//   recup kill.idCible where kill.idKiller == killCompleted.idCible
+//   create new kill(idKiller == killCompleted.idKiller, idCible == kill.idCible)
+
+//   killCompleted.etat = success
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// La table kill récupérée ici c'est que les kills en cours
+
+// def recup_order(table tableKill):
+//  liste  = new list()
+//   liste.add(tableKill[0].idKiller)
+//   string lastCible = tableKill[0].idCible
+
+//   while(lastCible != liste[0]):
+//     kill = tableKill.where(idKiller == lastCible)
+//     liste.add(kill.idKiller)
+//     lastCible = kill.idCible
+//   On obtient une liste d'id utilisateur classé par ordre killer cible

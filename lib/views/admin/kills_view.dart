@@ -6,7 +6,7 @@ class KillsView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Kills"),
+        title: Text("Kills en cours"),
         backgroundColor: Theme.of(context).colorScheme.background,
         actions: [
           Container(

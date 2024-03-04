@@ -1,7 +1,4 @@
 // ignore_for_file: library_prefixes
-
-import 'dart:math';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_app/models/kill.dart';
 import 'package:flutter_app/models/user.dart' as CustomUser;
@@ -57,24 +54,24 @@ class FirestoreService {
     });
   }
 
-  Future<void> createAndAddKills() async {
-    // Récupérer la liste de tous les identifiants d'utilisateurs
-    QuerySnapshot usersSnapshot = await FirebaseFirestore.instance
-        .collection('users')
-        .orderBy('lastname')
-        .get();
-    List<String> userIds = usersSnapshot.docs.map((doc) => doc.id).toList();
+ Future<void> createAndAddKills(List<String> addedUserIds) async {
+  // Récupérer la liste de tous les identifiants d'utilisateurs
+  QuerySnapshot usersSnapshot = await FirebaseFirestore.instance
+      .collection('users')
+      .orderBy('lastname', descending: false)
+      .get();
+  List<String> userIds = usersSnapshot.docs.map((doc) => doc.id).toList();
 
-    // Mélanger aléatoirement la liste des identifiants d'utilisateurs
-    userIds.shuffle();
+  // Associer chaque joueur à un autre joueur en tant que cible
+  for (int i = 0; i < userIds.length; i++) {
+    String idKiller = userIds[i];
+    String idCible = userIds[(i + 1) % userIds.length];
 
-    // Associer chaque joueur à un autre joueur en tant que cible
-    for (int i = 0; i < userIds.length; i++) {
-      String idKiller = userIds[i];
-      String idCible = userIds[(i + 1) %
-          userIds
-              .length]; // Assurez-vous que le dernier joueur a pour cible le premier joueur
+    // Vérifier si ce kill existe déjà dans la base de données
+    bool killExists = await checkIfKillExists(idKiller, idCible);
 
+    // Si le kill n'existe pas déjà, l'ajouter à la base de données
+    if (!killExists) {
       // Créer un objet Kill avec les données appropriées
       Kill kill = Kill(
         idKiller: idKiller,
@@ -89,6 +86,17 @@ class FirestoreService {
       await kills.add(killData);
     }
   }
+}
+
+Future<bool> checkIfKillExists(String idKiller, String idCible) async {
+  QuerySnapshot killSnapshot = await kills
+      .where('idKiller', isEqualTo: idKiller)
+      .where('idCible', isEqualTo: idCible)
+      .get();
+
+  return killSnapshot.docs.isNotEmpty;
+}
+
 
   // READ
   Stream<QuerySnapshot> getObjectStream() {
