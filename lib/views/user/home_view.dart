@@ -228,3 +228,11 @@ class _HomeViewState extends State<HomeView> {
     );
   }
 }
+
+
+
+// def validation_kill(killCompleted):
+//   recup kill.idCible where kill.idKiller == killCompleted.idCible
+//   create new kill(idKiller == killCompleted.idKiller, idCible == kill.idCible)
+
+//   killCompleted.etat = success
