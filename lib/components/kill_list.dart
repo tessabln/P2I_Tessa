@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_app/service/firestore.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+
 
 class KillList extends StatefulWidget {
   @override
@@ -30,11 +30,6 @@ class _KillListState extends State<KillList> {
       temp = false;
     }
     return temp;
-  }
-
-  Future<void> setKillsCreated() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setBool('killsCreated', true);
   }
 
   void updateKill(int oldIndex, int newIndex) {
@@ -92,7 +87,6 @@ class _KillListState extends State<KillList> {
             setState(() {
               isLoading = false;
             });
-            setKillsCreated();
           });
         });
       } else {
