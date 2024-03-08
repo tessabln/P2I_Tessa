@@ -313,11 +313,26 @@ class _HomeViewState extends State<HomeView> {
   }
 
   Future<void> confirmDeath(String notificationId) async {
-    await FirebaseFirestore.instance
-        .collection('notifications')
-        .doc(notificationId)
-        .update({
-      'confirmed': true,
-    });
-  }
+  // Récupérez le document de notification
+  DocumentSnapshot notificationSnapshot = await FirebaseFirestore.instance
+      .collection('notifications')
+      .doc(notificationId)
+      .get();
+
+  // Récupérez l'ID du document kill à partir de la notification
+  String killId = notificationSnapshot['killId'];
+
+  // Mettez à jour le document kill
+  await FirebaseFirestore.instance.collection('kills').doc(killId).update({
+    'etat': KillState.succes.name,
+  });
+
+  // Mettez à jour la notification
+  await FirebaseFirestore.instance
+      .collection('notifications')
+      .doc(notificationId)
+      .update({
+    'confirmed': true,
+  });
+}
 }
