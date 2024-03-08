@@ -1,21 +1,27 @@
 // ignore_for_file: library_private_types_in_public_api
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/components/my_Objcard.dart';
 import 'package:flutter_app/viewModel/home_view_model.dart';
 import 'package:slide_to_act/slide_to_act.dart';
+import 'package:flutter_app/models/kill.dart';
 
 class HomeView extends StatefulWidget {
   @override
   _HomeViewState createState() => _HomeViewState();
 }
 
+final user = FirebaseAuth.instance.currentUser;
+
 DateTime getToday() {
   DateTime now = DateTime.now();
-  return DateTime(
-      now.year, now.month, now.day); // Réinitialise l'heure à 00:00:00
+  return DateTime(now.year, now.month, now.day);
 }
+
+final CollectionReference kills =
+    FirebaseFirestore.instance.collection('kills');
 
 DateTime now = DateTime.now();
 Timestamp currentTimestamp = Timestamp.fromDate(now);
@@ -98,6 +104,52 @@ class _HomeViewState extends State<HomeView> {
             ),
           ),
           Divider(color: Theme.of(context).colorScheme.inversePrimary),
+          Expanded(
+            child: StreamBuilder<QuerySnapshot>(
+              stream: FirebaseFirestore.instance
+                  .collection('notifications')
+                  .where('userId', isEqualTo: user?.uid)
+                  .orderBy('timestamp', descending: true)
+                  .snapshots(),
+              builder: (BuildContext context,
+                  AsyncSnapshot<QuerySnapshot> snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Center(child: CircularProgressIndicator());
+                }
+
+                if (snapshot.hasError) {
+                  return Text('Error: ${snapshot.error}');
+                }
+                print(snapshot.error);
+
+                return snapshot.data!.docs.isEmpty
+                    ? Text('Aucune notification')
+                    : ListView.builder(
+                        itemCount: snapshot.data!.docs.length,
+                        itemBuilder: (context, index) {
+                          DocumentSnapshot notificationSnapshot =
+                              snapshot.data!.docs[index];
+
+                          return ListTile(
+                            title: Text(notificationSnapshot['message']),
+                            subtitle: Text(
+                                'À ${notificationSnapshot['timestamp'].toDate().toIso8601String()}'),
+                            trailing: ElevatedButton(
+                              onPressed: () {
+                                confirmDeath(notificationSnapshot.id);
+                                FirebaseFirestore.instance
+                                    .collection('notifications')
+                                    .doc(notificationSnapshot.id)
+                                    .delete();
+                              },
+                              child: Text('Confirmer'),
+                            ),
+                          );
+                        },
+                      );
+              },
+            ),
+          ),
           StreamBuilder(
             stream: viewModel.getPostsStream(),
             builder: (context, snapshot) {
@@ -108,15 +160,11 @@ class _HomeViewState extends State<HomeView> {
               }
 
               final posts = snapshot.data!.docs;
-
-              // Filtrer les annonces pour ne récupérer que celles avec la date d'aujourd'hui
               final todayPosts = posts.where((post) {
                 Timestamp timestamp = post['TimeStamp'];
                 DateTime postDate = timestamp.toDate();
-                DateTime postDateWithoutTime = DateTime(
-                    postDate.year,
-                    postDate.month,
-                    postDate.day); // Réinitialise l'heure à 00:00:00
+                DateTime postDateWithoutTime =
+                    DateTime(postDate.year, postDate.month, postDate.day);
                 return postDateWithoutTime.isAtSameMomentAs(today);
               }).toList();
 
@@ -212,6 +260,7 @@ class _HomeViewState extends State<HomeView> {
                                     .inversePrimary),
                           ),
                           onPressed: () {
+                            validationKill();
                             Navigator.of(context).pop();
                           },
                         ),
@@ -227,12 +276,48 @@ class _HomeViewState extends State<HomeView> {
       ),
     );
   }
+
+  Future<void> validationKill() async {
+    String? targetUserId;
+
+    QuerySnapshot killsSnapshot = await FirebaseFirestore.instance
+        .collection('kills')
+        .where('idKiller', isEqualTo: user?.uid)
+        .limit(1)
+        .get();
+
+    if (killsSnapshot.docs.isNotEmpty) {
+      targetUserId = killsSnapshot.docs[0]['idCible'];
+    }
+
+    if (targetUserId != null) {
+      QuerySnapshot querySnapshot = await kills
+          .where('idKiller', isEqualTo: user?.uid)
+          .where('idCible', isEqualTo: targetUserId)
+          .get();
+
+      if (querySnapshot.docs.isNotEmpty) {
+        DocumentSnapshot docSnapshot = querySnapshot.docs[0];
+        await docSnapshot.reference.update({
+          'etat': KillState.enValidation.name,
+        });
+
+        await FirebaseFirestore.instance.collection('notifications').add({
+          'userId': targetUserId,
+          'message': 'Tu as été éliminé !',
+          'timestamp': currentTimestamp,
+          'confirmed': false,
+        });
+      }
+    }
+  }
+
+  Future<void> confirmDeath(String notificationId) async {
+    await FirebaseFirestore.instance
+        .collection('notifications')
+        .doc(notificationId)
+        .update({
+      'confirmed': true,
+    });
+  }
 }
-
-
-
-// def validation_kill(killCompleted):
-//   recup kill.idCible where kill.idKiller == killCompleted.idCible
-//   create new kill(idKiller == killCompleted.idKiller, idCible == kill.idCible)
-
-//   killCompleted.etat = success

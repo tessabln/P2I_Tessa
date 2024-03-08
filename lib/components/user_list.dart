@@ -3,7 +3,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 
 class UserList extends StatefulWidget {
   @override
@@ -11,7 +10,6 @@ class UserList extends StatefulWidget {
 }
 
 class _UserListState extends State<UserList> {
-  final user = FirebaseAuth.instance.currentUser;
   late Stream<QuerySnapshot> _userStream;
 
   @override

@@ -23,6 +23,19 @@ class FirestoreService {
   get familyColors => null;
 
   // CREATE
+
+  // Ajouter une notification à Firebase Firestore
+  Future<void> addNotification(String targetUserId, String message) async {
+    final CollectionReference notifications =
+        FirebaseFirestore.instance.collection('notifications');
+
+    await notifications.add({
+      'userId': targetUserId,
+      'message': message,
+      'timestamp': Timestamp.now(),
+    });
+  }
+
   static Future<void> addUser(CustomUser.User user) async {
     await _firestore.collection("users").doc(user.uid).set({
       'lastname': user.lastname,
@@ -104,6 +117,23 @@ class FirestoreService {
     return killSnapshot.docs.isNotEmpty;
   }
 
+  Future<bool> checkIfKillsCreated() async {
+    final snapshot = await FirebaseFirestore.instance.collection('kills').get();
+    bool temp = true;
+    if (snapshot.size == 0) {
+      temp = false;
+    }
+    return temp;
+  }
+
+  // READ
+  Stream<QuerySnapshot> getObjectStream() {
+    return FirebaseFirestore.instance
+        .collection('objects')
+        .orderBy('begindate', descending: true)
+        .snapshots();
+  }
+
   List<String> recupOrder(List<Map<String, dynamic>> tableKill) {
     liste.add(tableKill[0]['idKiller']);
     String lastCible = tableKill[0]['idCible'];
@@ -116,14 +146,6 @@ class FirestoreService {
       lastCible = kill['idCible'];
     }
     return liste;
-  }
-
-  // READ
-  Stream<QuerySnapshot> getObjectStream() {
-    return FirebaseFirestore.instance
-        .collection('objects')
-        .orderBy('begindate', descending: true)
-        .snapshots();
   }
 
   Future<DocumentSnapshot<Map<String, dynamic>>> getUserData() async {
@@ -139,6 +161,17 @@ class FirestoreService {
   }
 
   // UPDATE
+
+  // Écouter les notifications en temps réel
+  Stream<QuerySnapshot> listenToNotifications(String userId) {
+    final CollectionReference notifications =
+        FirebaseFirestore.instance.collection('notifications');
+
+    return notifications
+        .where('userId', isEqualTo: userId)
+        .orderBy('timestamp', descending: true)
+        .snapshots();
+  }
 
   Future<void> setOrder(BuildContext context, List<String> liste) async {
     for (int i = 0; i < liste.length; i++) {

@@ -5,7 +5,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_app/service/firestore.dart';
 
-
 class KillList extends StatefulWidget {
   @override
   _KillListState createState() => _KillListState();
@@ -22,15 +21,6 @@ class _KillListState extends State<KillList> {
   List<String> liste = [];
   List<Map<String, dynamic>> listeUserData = [];
   bool isLoading = true;
-
-  Future<bool> checkIfKillsCreated() async {
-    final snapshot = await FirebaseFirestore.instance.collection('kills').get();
-    bool temp = true;
-    if (snapshot.size == 0){
-      temp = false;
-    }
-    return temp;
-  }
 
   void updateKill(int oldIndex, int newIndex) {
     setState(() {
@@ -80,7 +70,7 @@ class _KillListState extends State<KillList> {
     super.initState();
     userData = firestore.getUserData();
 
-    checkIfKillsCreated().then((value) {
+    firestore.checkIfKillsCreated().then((value) {
       if (!value) {
         firestore.createAndAddKills(addedUserIds).then((_) {
           fetchAndReorderKills().then((_) {

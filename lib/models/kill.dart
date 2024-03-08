@@ -16,12 +16,11 @@ class Kill {
     required this.etat,
   });
 
-    Map<String, dynamic> toJson() {
+  Map<String, dynamic> toJson() {
     return {
       'idKiller': idKiller,
       'idCible': idCible,
-      'etat': etat.toString(),
-  };
+      'etat': etat.name,
+    };
+  }
 }
-}
-  
