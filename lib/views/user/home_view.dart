@@ -104,52 +104,6 @@ class _HomeViewState extends State<HomeView> {
             ),
           ),
           Divider(color: Theme.of(context).colorScheme.inversePrimary),
-          Expanded(
-            child: StreamBuilder<QuerySnapshot>(
-              stream: FirebaseFirestore.instance
-                  .collection('notifications')
-                  .where('userId', isEqualTo: user?.uid)
-                  .orderBy('timestamp', descending: true)
-                  .snapshots(),
-              builder: (BuildContext context,
-                  AsyncSnapshot<QuerySnapshot> snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return Center(child: CircularProgressIndicator());
-                }
-
-                if (snapshot.hasError) {
-                  return Text('Error: ${snapshot.error}');
-                }
-                print(snapshot.error);
-
-                return snapshot.data!.docs.isEmpty
-                    ? Text('Aucune notification')
-                    : ListView.builder(
-                        itemCount: snapshot.data!.docs.length,
-                        itemBuilder: (context, index) {
-                          DocumentSnapshot notificationSnapshot =
-                              snapshot.data!.docs[index];
-
-                          return ListTile(
-                            title: Text(notificationSnapshot['message']),
-                            subtitle: Text(
-                                'À ${notificationSnapshot['timestamp'].toDate().toIso8601String()}'),
-                            trailing: ElevatedButton(
-                              onPressed: () {
-                                confirmDeath(notificationSnapshot.id);
-                                FirebaseFirestore.instance
-                                    .collection('notifications')
-                                    .doc(notificationSnapshot.id)
-                                    .delete();
-                              },
-                              child: Text('Confirmer'),
-                            ),
-                          );
-                        },
-                      );
-              },
-            ),
-          ),
           StreamBuilder(
             stream: viewModel.getPostsStream(),
             builder: (context, snapshot) {
@@ -211,7 +165,7 @@ class _HomeViewState extends State<HomeView> {
               );
             },
           ),
-          const SizedBox(height: 10),
+          const SizedBox(height: 50),
           Padding(
             padding: const EdgeInsets.all(40.0),
             child: SlideAction(
@@ -271,7 +225,7 @@ class _HomeViewState extends State<HomeView> {
               },
             ),
           ),
-          const SizedBox(height: 60),
+          const SizedBox(height: 10),
         ],
       ),
     );
@@ -304,35 +258,11 @@ class _HomeViewState extends State<HomeView> {
 
         await FirebaseFirestore.instance.collection('notifications').add({
           'userId': targetUserId,
-          'message': 'Tu as été éliminé !',
+          'message': 'Tu a été tué !',
           'timestamp': currentTimestamp,
           'confirmed': false,
         });
       }
     }
   }
-
-  Future<void> confirmDeath(String notificationId) async {
-  // Récupérez le document de notification
-  DocumentSnapshot notificationSnapshot = await FirebaseFirestore.instance
-      .collection('notifications')
-      .doc(notificationId)
-      .get();
-
-  // Récupérez l'ID du document kill à partir de la notification
-  String killId = notificationSnapshot['killId'];
-
-  // Mettez à jour le document kill
-  await FirebaseFirestore.instance.collection('kills').doc(killId).update({
-    'etat': KillState.succes.name,
-  });
-
-  // Mettez à jour la notification
-  await FirebaseFirestore.instance
-      .collection('notifications')
-      .doc(notificationId)
-      .update({
-    'confirmed': true,
-  });
-}
 }

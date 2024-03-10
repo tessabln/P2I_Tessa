@@ -19,7 +19,7 @@ class _HomeSwitchState extends State<HomeSwitch> {
   final List<Widget> _views = [
     HomeView(),
     LeaderboardView(),
-    AccountView(),
+    AccountView(notifId: '',),
   ];
 
   @override
