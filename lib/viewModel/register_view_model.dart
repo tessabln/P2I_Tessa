@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/auth/userAuth.dart';
 import 'package:flutter_app/models/user.dart' as User;
+import 'package:flutter_app/models/user.dart';
 import 'package:flutter_app/service/firestore.dart';
 import 'package:flutter_app/views/login_view.dart';
 
@@ -26,6 +27,7 @@ class RegisterViewModel {
     final String password = passwordController.text.trim();
     final String confirmPw = confirmPwController.text.trim();
     final String targetcode = targetcodeController.text.trim();
+    
 
     if (password == confirmPw) {
       try {
@@ -39,7 +41,8 @@ class RegisterViewModel {
             firstname: userfirstname,
             family: userfamily,
             email: email,
-            targetcode: int.parse(targetcode),
+            targetcode: int.parse(targetcode), 
+            status: UserStatus.vivant, 
           );
 
           await FirestoreService.addUser(user);

@@ -11,7 +11,6 @@ class OngoingKillList extends StatefulWidget {
 }
 
 class _KillListState extends State<OngoingKillList> {
-  String selectedStatus = 'enCours';
   final user = FirebaseAuth.instance.currentUser;
   Future<DocumentSnapshot<Map<String, dynamic>>>? userData;
   final FirestoreService firestore = FirestoreService();
@@ -36,9 +35,11 @@ class _KillListState extends State<OngoingKillList> {
     });
   }
 
-  Future<void> fetchAndReorderKills(String status) async {
+  Future<void> fetchAndReorderKills() async {
     QuerySnapshot killSnapshot =
-        await FirebaseFirestore.instance.collection('kills').get(); //        .where('etat',isEqualTo:status) 
+        await FirebaseFirestore.instance.collection('kills')
+        .where('etat', isEqualTo: 'enCours')
+        .get();
     List<Map<String, dynamic>> tableKill = killSnapshot.docs
         .map((doc) => doc.data() as Map<String, dynamic>)
         .toList();
@@ -74,14 +75,14 @@ class _KillListState extends State<OngoingKillList> {
     firestore.checkIfKillsCreated().then((value) {
       if (!value) {
         firestore.createAndAddKills(addedUserIds).then((_) {
-          fetchAndReorderKills(selectedStatus).then((_) {
+          fetchAndReorderKills().then((_) {
             setState(() {
               isLoading = false;
             });
           });
         });
       } else {
-        fetchAndReorderKills(selectedStatus).then((_) {
+        fetchAndReorderKills().then((_) {
           setState(() {
             isLoading = false;
           });
@@ -102,7 +103,7 @@ class _KillListState extends State<OngoingKillList> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Kills"),
+        title: Text("Kills en cours"),
         backgroundColor: Theme.of(context).colorScheme.background,
         actions: [
           Container(
@@ -117,68 +118,39 @@ class _KillListState extends State<OngoingKillList> {
               borderRadius: BorderRadius.circular(8),
             ),
           ),
-          DropdownButton<String>(
-            value: selectedStatus,
-            icon: Icon(Icons.arrow_downward),
-            iconSize: 24,
-            elevation: 16,
-            style: TextStyle(color: Colors.deepPurple),
-            underline: Container(
-              height: 2,
-              color: Colors.deepPurpleAccent,
-            ),
-            onChanged: (String? newValue) {
-              setState(() {
-                selectedStatus = newValue!;
-              });
-              fetchAndReorderKills(selectedStatus);
-            },
-            items: <String>['enCours', 'enValidation', 'succes']
-                .map<DropdownMenuItem<String>>((String value) {
-              return DropdownMenuItem<String>(
-                value: value,
-                child: Text(value),
-              );
-            }).toList(),
-          )
         ],
       ),
       body: isLoading
           ? Center(child: CircularProgressIndicator())
-          : liste.isEmpty
-              ? Center(child: Text('Aucun kill à afficher'))
-              : ReorderableListView.builder(
-                  itemCount: liste.length,
-                  itemBuilder: (context, index) {
-                    if (index < listeUserData.length) {
-                      Map<String, dynamic> userData = listeUserData[index];
-                      String lastname =
-                          userData['lastname'] ?? 'Nom non défini';
-                      String firstname =
-                          userData['firstname'] ?? 'Prénom non défini';
-                      Color textColor =
-                          userData["textColor"] ?? Colors.transparent;
-                      String userId = liste[index];
+          : ReorderableListView.builder(
+              itemCount: liste.length,
+              itemBuilder: (context, index) {
+                if (index < listeUserData.length) {
+                  Map<String, dynamic> userData = listeUserData[index];
+                  String lastname = userData['lastname'] ?? 'Nom non défini';
+                  String firstname =
+                      userData['firstname'] ?? 'Prénom non défini';
+                  Color textColor = userData["textColor"] ?? Colors.transparent;
+                  String userId = liste[index];
 
-                      return Card(
-                        key: ValueKey<String>(userId),
-                        elevation: 1,
-                        child: ListTile(
-                          title: Text(
-                            '$lastname $firstname',
-                            style: TextStyle(fontSize: 18, color: textColor),
-                          ),
-                          trailing: const Icon(Icons.drag_handle),
-                          onTap: () {},
-                        ),
-                      );
-                    } else {
-                      return Container();
-                    }
-                  },
-                  onReorder: (oldIndex, newIndex) =>
-                      updateKill(oldIndex, newIndex),
-                ),
+                  return Card(
+                    key: ValueKey<String>(userId),
+                    elevation: 1,
+                    child: ListTile(
+                      title: Text(
+                        '$lastname $firstname',
+                        style: TextStyle(fontSize: 18, color: textColor),
+                      ),
+                      trailing: const Icon(Icons.drag_handle),
+                      onTap: () {},
+                    ),
+                  );
+                } else {
+                  return Container();
+                }
+              },
+              onReorder: (oldIndex, newIndex) => updateKill(oldIndex, newIndex),
+            ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           firestore.setOrder(context, liste);

@@ -7,6 +7,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_app/components/account_components.dart';
 import 'package:flutter_app/components/my_button.dart';
 import 'package:flutter_app/components/functions.dart';
+import 'package:flutter_app/service/firestore.dart';
 import 'package:flutter_app/views/change_pw_view.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_app/theme/theme_provider.dart';
@@ -14,6 +15,8 @@ import 'package:flutter_app/theme/theme_provider.dart';
 class AccountView extends StatelessWidget {
   final user = FirebaseAuth.instance.currentUser;
   final String notifId;
+  final FirestoreService firestore = FirestoreService();
+
 
   AccountView({required this.notifId});
   @override
@@ -79,7 +82,9 @@ class AccountView extends StatelessWidget {
                         children: [
                           ElevatedButton(
                             onPressed: () async {
-                              await confirmDeath(notificationSnapshot.id);
+                              await firestore
+                                  .confirmDeath(notificationSnapshot.id);
+                              await firestore.death(currentUser.uid);
                               await FirebaseFirestore.instance
                                   .collection('notifications')
                                   .doc(notificationSnapshot.id)
@@ -90,10 +95,11 @@ class AccountView extends StatelessWidget {
                               style: TextStyle(color: Colors.green),
                             ),
                           ),
-                          SizedBox(width: 8),
+                          SizedBox(width: 2),
                           ElevatedButton(
                             onPressed: () async {
-                              await rejectDeath(notificationSnapshot.id);
+                              await firestore
+                                  .rejectDeath(notificationSnapshot.id);
                               await FirebaseFirestore.instance
                                   .collection('notifications')
                                   .doc(notificationSnapshot.id)

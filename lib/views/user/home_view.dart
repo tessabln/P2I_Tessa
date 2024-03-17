@@ -27,6 +27,7 @@ DateTime now = DateTime.now();
 Timestamp currentTimestamp = Timestamp.fromDate(now);
 
 class _HomeViewState extends State<HomeView> {
+
   final HomeViewModel viewModel = HomeViewModel();
 
   @override
@@ -234,9 +235,11 @@ class _HomeViewState extends State<HomeView> {
   Future<void> validationKill() async {
     String? targetUserId;
 
+    // Récupération de l'utilisateur tué
     QuerySnapshot killsSnapshot = await FirebaseFirestore.instance
         .collection('kills')
         .where('idKiller', isEqualTo: user?.uid)
+        .where('etat', isEqualTo: 'enCours')
         .limit(1)
         .get();
 
@@ -252,6 +255,8 @@ class _HomeViewState extends State<HomeView> {
 
       if (querySnapshot.docs.isNotEmpty) {
         DocumentSnapshot docSnapshot = querySnapshot.docs[0];
+
+        // Mise à jour de l'état du kill
         await docSnapshot.reference.update({
           'etat': KillState.enValidation.name,
         });

@@ -65,6 +65,7 @@ class UserTile extends StatelessWidget {
   Widget build(BuildContext context) {
     String lastname = data['lastname'] ?? 'Nom non défini';
     String firstname = data['firstname'] ?? 'Prénom non défini';
+    String status = data['status'] ?? 'Statut non défini';
 
     return Container(
       margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
@@ -127,13 +128,29 @@ class UserTile extends StatelessWidget {
           ],
         ),
         child: ListTile(
-          title: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+          title: Row(
             children: [
-              Text(
-                '$lastname $firstname',
-                style: TextStyle(
-                  fontSize: 18,
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      '$lastname $firstname',
+                      style: TextStyle(
+                        fontSize: 18,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Expanded(
+                child: Text(
+                  'Statut: $status',
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: Colors.grey,
+                  ),
+                  textAlign: TextAlign.end,
                 ),
               ),
             ],

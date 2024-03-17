@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/models/kill.dart';
 import 'package:flutter_app/models/user.dart' as CustomUser;
+import 'package:flutter_app/models/user.dart';
 
 class FirestoreService {
   // get collection
@@ -24,18 +25,6 @@ class FirestoreService {
 
   // CREATE
 
-  // Ajouter une notification à Firebase Firestore
-  Future<void> addNotification(String targetUserId, String message) async {
-    final CollectionReference notifications =
-        FirebaseFirestore.instance.collection('notifications');
-
-    await notifications.add({
-      'userId': targetUserId,
-      'message': message,
-      'timestamp': Timestamp.now(),
-    });
-  }
-
   static Future<void> addUser(CustomUser.User user) async {
     await _firestore.collection("users").doc(user.uid).set({
       'lastname': user.lastname,
@@ -43,7 +32,19 @@ class FirestoreService {
       'family': user.family,
       'email': user.email,
       'code': user.targetcode,
+      'status': user.status.stringValue,
     });
+  }
+
+  addPoints(String idKiller) async {
+    var userSnapshot = await FirebaseFirestore.instance
+        .collection("users")
+        .doc(idKiller)
+        .get();
+    var userData = userSnapshot.data() as Map<String, dynamic>;
+    var family = userData['family'];
+
+    updateFamilyPoints(family, 1);
   }
 
   addGameDetails(String name, DateTime begindate, DateTime endate) async {
@@ -52,16 +53,6 @@ class FirestoreService {
         .doc("CmJ2bdPfGE7SMmoG7dqh")
         .set({
       'name': name,
-      'begindate': begindate,
-      'endate': endate,
-    });
-  }
-
-  Future<void> addObject(
-      String name, String description, DateTime begindate, DateTime endate) {
-    return objects.add({
-      'name': name,
-      'description': description,
       'begindate': begindate,
       'endate': endate,
     });
@@ -127,6 +118,7 @@ class FirestoreService {
   }
 
   // READ
+
   Stream<QuerySnapshot> getObjectStream() {
     return FirebaseFirestore.instance
         .collection('objects')
@@ -158,6 +150,21 @@ class FirestoreService {
         .orderBy('TimeStamp', descending: true)
         .snapshots();
     return postsStream;
+  }
+
+  Future<int> getFamilyPoints(String color) async {
+    var familyQuery = await FirebaseFirestore.instance
+        .collection('families')
+        .where("color", isEqualTo: color)
+        .get();
+
+    if (familyQuery.docs.isNotEmpty) {
+      var familyData = familyQuery.docs.first.data();
+      return familyData['points'] ??
+          0; 
+    } else {
+      throw Exception('Famille non trouvée pour la couleur spécifiée');
+    }
   }
 
   // UPDATE
@@ -219,6 +226,155 @@ class FirestoreService {
         );
       },
     );
+  }
+
+  Future<void> confirmDeath(String notifId) async {
+    DocumentSnapshot notificationSnapshot = await FirebaseFirestore.instance
+        .collection('notifications')
+        .doc(notifId)
+        .get();
+
+    if (notificationSnapshot.exists) {
+      Map<String, dynamic>? notificationData =
+          notificationSnapshot.data() as Map<String, dynamic>?;
+
+      if (notificationData != null && notificationData.containsKey('userId')) {
+        String userId = notificationData['userId'];
+
+        QuerySnapshot killQuery = await FirebaseFirestore.instance
+            .collection('kills')
+            .where('idCible', isEqualTo: userId)
+            .where('etat', isEqualTo: 'enValidation')
+            .get();
+
+        QuerySnapshot killToPassQuery = await FirebaseFirestore.instance
+            .collection('kills')
+            .where('idKiller', isEqualTo: userId)
+            .where('etat', isEqualTo: 'enCours')
+            .get();
+
+        if (killQuery.docs.isNotEmpty) {
+          DocumentSnapshot killDoc = killQuery.docs.first;
+          DocumentSnapshot killToPassDoc = killToPassQuery.docs.first;
+          String killId = killDoc.id;
+          String killToPassId = killToPassDoc.id;
+
+          await addPoints(killDoc['idKiller']);
+
+          // Mettre à jour l'état du kill
+          await FirebaseFirestore.instance
+              .collection('kills')
+              .doc(killId)
+              .update({
+            'etat': KillState.succes.name,
+          });
+
+          await FirebaseFirestore.instance
+              .collection('kills')
+              .doc(killToPassId)
+              .update({
+            'etat': KillState.echec.name,
+          });
+
+          // Créer un nouveau Kill
+          Kill kill = Kill(
+            idKiller: killDoc['idKiller'],
+            idCible: killToPassDoc['idCible'],
+            etat: KillState.enCours,
+          );
+
+          // Convertir l'objet Kill en une Map<String, dynamic>
+          Map<String, dynamic> killData = kill.toJson();
+
+          // Ajouter les données converties en Map à Firestore
+          await kills.add(killData);
+
+          //Mettre à jour la notification pour la marquer comme confirmée
+          await FirebaseFirestore.instance
+              .collection('notifications')
+              .doc(notifId)
+              .update({
+            'confirmed': true,
+          });
+
+          print('La mort a été confirmée avec succès.');
+        } else {
+          print('Aucun kill trouvé pour cet utilisateur.');
+        }
+      }
+    }
+  }
+
+  Future<void> rejectDeath(String notifId) async {
+    DocumentSnapshot notificationSnapshot = await FirebaseFirestore.instance
+        .collection('notifications')
+        .doc(notifId)
+        .get();
+
+    if (notificationSnapshot.exists) {
+      Map<String, dynamic>? notificationData =
+          notificationSnapshot.data() as Map<String, dynamic>?;
+
+      if (notificationData != null && notificationData.containsKey('userId')) {
+        String userId = notificationData['userId'];
+
+        QuerySnapshot killQuery = await FirebaseFirestore.instance
+            .collection('kills')
+            .where('idCible', isEqualTo: userId)
+            .get();
+
+        if (killQuery.docs.isNotEmpty) {
+          String killId = killQuery.docs.first.id;
+
+          // Mettre à jour l'état du kill à "enCours"
+          await FirebaseFirestore.instance
+              .collection('kills')
+              .doc(killId)
+              .update({
+            'etat': KillState.enCours.name,
+          });
+
+          // Mettre à jour la notification pour la marquer comme refusée
+          await FirebaseFirestore.instance
+              .collection('notifications')
+              .doc(notifId)
+              .update({
+            'rejected': true,
+          });
+
+          print('Le refus de la mort a été enregistré avec succès.');
+        } else {
+          print('Aucun kill trouvé pour cet utilisateur.');
+        }
+      }
+    }
+  }
+
+  Future<void> death(String userId) async {
+    try {
+      // Mettre à jour le statut de l'utilisateur connecté à "mort"
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(FirebaseAuth.instance.currentUser!.uid)
+          .update({'status': UserStatus.mort.stringValue});
+    } catch (error) {
+      print('Erreur lors de la confirmation de la mort: $error');
+    }
+  }
+
+  Future<void> updateFamilyPoints(String color, int points) async {
+    var family = await FirebaseFirestore.instance
+        .collection('families')
+        .where("color", isEqualTo: color)
+        .get();
+    var familyId = family.docs.first.id;
+
+    await FirebaseFirestore.instance
+        .collection('families')
+        .doc(familyId)
+        .update({
+      'points': FieldValue.increment(points),
+    });
   }
 
   // DELETE
