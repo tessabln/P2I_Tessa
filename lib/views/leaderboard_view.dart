@@ -21,7 +21,7 @@ class LeaderboardView extends StatelessWidget {
           children: [
             Expanded(
               child: FutureBuilder<int>(
-                future: firestore.getFamilyPoints('Orange'),
+                future: firestore.getFamilyKills('Orange'),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return CircularProgressIndicator();
@@ -38,7 +38,7 @@ class LeaderboardView extends StatelessWidget {
             ),
             Expanded(
               child: FutureBuilder<int>(
-                future: firestore.getFamilyPoints('Jaune'),
+                future: firestore.getFamilyKills('Jaune'),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return CircularProgressIndicator();
@@ -55,7 +55,7 @@ class LeaderboardView extends StatelessWidget {
             ),
             Expanded(
               child: FutureBuilder<int>(
-                future: firestore.getFamilyPoints('Bleue'),
+                future: firestore.getFamilyKills('Bleue'),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return CircularProgressIndicator();
@@ -72,7 +72,7 @@ class LeaderboardView extends StatelessWidget {
             ),
             Expanded(
               child: FutureBuilder<int>(
-                future: firestore.getFamilyPoints('Verte'),
+                future: firestore.getFamilyKills('Verte'),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return CircularProgressIndicator();
@@ -89,7 +89,7 @@ class LeaderboardView extends StatelessWidget {
             ),
             Expanded(
               child: FutureBuilder<int>(
-                future: firestore.getFamilyPoints('Rouge'),
+                future: firestore.getFamilyKills('Rouge'),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return CircularProgressIndicator();
@@ -115,23 +115,187 @@ class LeaderboardView extends StatelessWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            _buildCircle(Color.fromARGB(255, 255, 111, 0), "5"),
-            _buildCircle(Color.fromARGB(255, 255, 208, 0), "10"),
-            _buildCircle(Color.fromARGB(255, 11, 14, 204), "40"),
-            _buildCircle(Color.fromARGB(255, 6, 142, 11), "20"),
-            _buildCircle(Color.fromARGB(255, 146, 9, 9), "25"),
+            Expanded(
+              child: FutureBuilder<int>(
+                future: firestore.getLifeCountForFamily('Orange'),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return CircularProgressIndicator();
+                  } else if (snapshot.hasError) {
+                    return Text('Erreur: ${snapshot.error}');
+                  } else {
+                    return _buildCircle(
+                      Color.fromARGB(255, 255, 111, 0),
+                      snapshot.data.toString(),
+                    );
+                  }
+                },
+              ),
+            ),
+            Expanded(
+              child: FutureBuilder<int>(
+                future: firestore.getLifeCountForFamily('Jaune'),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return CircularProgressIndicator();
+                  } else if (snapshot.hasError) {
+                    return Text('Erreur: ${snapshot.error}');
+                  } else {
+                    return _buildCircle(
+                      Color.fromARGB(255, 255, 208, 0),
+                      snapshot.data.toString(),
+                    );
+                  }
+                },
+              ),
+            ),
+            Expanded(
+              child: FutureBuilder<int>(
+                future: firestore.getLifeCountForFamily('Bleue'),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return CircularProgressIndicator();
+                  } else if (snapshot.hasError) {
+                    return Text('Erreur: ${snapshot.error}');
+                  } else {
+                    return _buildCircle(
+                      Color.fromARGB(255, 11, 14, 204),
+                      snapshot.data.toString(),
+                    );
+                  }
+                },
+              ),
+            ),
+            Expanded(
+              child: FutureBuilder<int>(
+                future: firestore.getLifeCountForFamily('Verte'),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return CircularProgressIndicator();
+                  } else if (snapshot.hasError) {
+                    return Text('Erreur: ${snapshot.error}');
+                  } else {
+                    return _buildCircle(
+                      Color.fromARGB(255, 6, 142, 11),
+                      snapshot.data.toString(),
+                    );
+                  }
+                },
+              ),
+            ),
+            Expanded(
+              child: FutureBuilder<int>(
+                future: firestore.getLifeCountForFamily('Rouge'),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return CircularProgressIndicator();
+                  } else if (snapshot.hasError) {
+                    return Text('Erreur: ${snapshot.error}');
+                  } else {
+                    return _buildCircle(
+                      Color.fromARGB(255, 146, 9, 9),
+                      snapshot.data.toString(),
+                    );
+                  }
+                },
+              ),
+            ),
           ],
         ),
         SizedBox(height: 100),
         Text(
-          "Top kill",
+          "Meilleur killer",
           style: TextStyle(fontSize: 24),
         ),
         SizedBox(height: 20),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            _buildCircle(Color.fromARGB(255, 11, 14, 204), "5"),
+            Expanded(
+              child: FutureBuilder<int>(
+                future: firestore.getBestKillerForFamily('Orange'),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return CircularProgressIndicator();
+                  } else if (snapshot.hasError) {
+                    return Text('Erreur: ${snapshot.error}');
+                  } else {
+                    return _buildCircle(
+                      Color.fromARGB(255, 255, 111, 0),
+                      snapshot.data.toString(),
+                    );
+                  }
+                },
+              ),
+            ),
+            Expanded(
+              child: FutureBuilder<int>(
+                future: firestore.getBestKillerForFamily('Jaune'),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return CircularProgressIndicator();
+                  } else if (snapshot.hasError) {
+                    return Text('Erreur: ${snapshot.error}');
+                  } else {
+                    return _buildCircle(
+                      Color.fromARGB(255, 255, 208, 0),
+                      snapshot.data.toString(),
+                    );
+                  }
+                },
+              ),
+            ),
+            Expanded(
+              child: FutureBuilder<int>(
+                future: firestore.getBestKillerForFamily('Bleue'),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return CircularProgressIndicator();
+                  } else if (snapshot.hasError) {
+                    return Text('Erreur: ${snapshot.error}');
+                  } else {
+                    return _buildCircle(
+                      Color.fromARGB(255, 36, 39, 228),
+                      snapshot.data.toString(),
+                    );
+                  }
+                },
+              ),
+            ),
+            Expanded(
+              child: FutureBuilder<int>(
+                future: firestore.getBestKillerForFamily('Verte'),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return CircularProgressIndicator();
+                  } else if (snapshot.hasError) {
+                    return Text('Erreur: ${snapshot.error}');
+                  } else {
+                    return _buildCircle(
+                      Color.fromARGB(255, 6, 142, 11),
+                      snapshot.data.toString(),
+                    );
+                  }
+                },
+              ),
+            ),
+            Expanded(
+              child: FutureBuilder<int>(
+                future: firestore.getBestKillerForFamily('Rouge'),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return CircularProgressIndicator();
+                  } else if (snapshot.hasError) {
+                    return Text('Erreur: ${snapshot.error}');
+                  } else {
+                    return _buildCircle(
+                      Color.fromARGB(255, 146, 9, 9),
+                      snapshot.data.toString(),
+                    );
+                  }
+                },
+              ),
+            ),
           ],
         ),
       ],

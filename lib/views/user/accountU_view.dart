@@ -17,7 +17,6 @@ class AccountView extends StatelessWidget {
   final String notifId;
   final FirestoreService firestore = FirestoreService();
 
-
   AccountView({required this.notifId});
   @override
   Widget build(BuildContext context) {

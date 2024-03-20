@@ -43,6 +43,7 @@ class RegisterViewModel {
             email: email,
             targetcode: int.parse(targetcode), 
             status: UserStatus.vivant, 
+            nbkills: 0, 
           );
 
           await FirestoreService.addUser(user);

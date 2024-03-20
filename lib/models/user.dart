@@ -5,7 +5,7 @@ enum UserStatus {
 
 extension UserStatusExtension on UserStatus {
   String get stringValue {
-    return this.toString().split('.').last;
+    return toString().split('.').last;
   }
 
   static UserStatus fromString(String status) {
@@ -16,7 +16,6 @@ extension UserStatusExtension on UserStatus {
   }
 }
 
-
 class User {
   final String uid;
   final String lastname;
@@ -24,7 +23,8 @@ class User {
   final String family;
   final String email;
   final int targetcode;
-  final UserStatus status; 
+  final UserStatus status;
+  final int nbkills;
 
   User({
     required this.uid,
@@ -33,6 +33,7 @@ class User {
     required this.family,
     required this.email,
     required this.targetcode,
-    required this.status, 
+    required this.status,
+    required this.nbkills,
   });
 }

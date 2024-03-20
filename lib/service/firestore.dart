@@ -33,10 +33,11 @@ class FirestoreService {
       'email': user.email,
       'code': user.targetcode,
       'status': user.status.stringValue,
+      'nbKills': user.nbkills,
     });
   }
 
-  addPoints(String idKiller) async {
+  addKillsToFamily(String idKiller) async {
     var userSnapshot = await FirebaseFirestore.instance
         .collection("users")
         .doc(idKiller)
@@ -44,7 +45,7 @@ class FirestoreService {
     var userData = userSnapshot.data() as Map<String, dynamic>;
     var family = userData['family'];
 
-    updateFamilyPoints(family, 1);
+    updateFamilyKills(family, 1);
   }
 
   addGameDetails(String name, DateTime begindate, DateTime endate) async {
@@ -152,7 +153,7 @@ class FirestoreService {
     return postsStream;
   }
 
-  Future<int> getFamilyPoints(String color) async {
+  Future<int> getFamilyKills(String color) async {
     var familyQuery = await FirebaseFirestore.instance
         .collection('families')
         .where("color", isEqualTo: color)
@@ -160,12 +161,52 @@ class FirestoreService {
 
     if (familyQuery.docs.isNotEmpty) {
       var familyData = familyQuery.docs.first.data();
-      return familyData['points'] ??
-          0; 
+      return familyData['nbKills'] ?? 0;
     } else {
       throw Exception('Famille non trouvée pour la couleur spécifiée');
     }
   }
+
+  Future<int> getLifeCountForFamily(String family) async {
+    int deathCount = 0;
+
+    // Récupérer tous les utilisateurs
+    var users = await FirebaseFirestore.instance.collection('users').get();
+
+    // Pour chaque utilisateur, vérifier s'il est mort et appartient à la famille spécifiée
+    for (var user in users.docs) {
+      var status = user['status'];
+      var userFamily = user['family'];
+
+      // Vérifier si l'utilisateur est mort et appartient à la famille spécifiée
+      if (status == 'vivant' && userFamily == family) {
+        deathCount++;
+      }
+    }
+
+    return deathCount;
+  }
+
+  Future<int> getBestKillerForFamily(String family) async {
+  int maxKills = 0;
+
+  // Récupérer tous les utilisateurs de la famille spécifiée
+  var users = await FirebaseFirestore.instance
+      .collection('users')
+      .where('family', isEqualTo: family)
+      .get();
+
+  // Parcourir tous les utilisateurs pour trouver le nombre maximal de kills
+  users.docs.forEach((userDoc) {
+    var nbKills = userDoc['nbKills'];
+    if (nbKills > maxKills) {
+      maxKills = nbKills;
+    }
+  });
+
+  return maxKills;
+}
+
 
   // UPDATE
 
@@ -259,7 +300,7 @@ class FirestoreService {
           String killId = killDoc.id;
           String killToPassId = killToPassDoc.id;
 
-          await addPoints(killDoc['idKiller']);
+          await addKillsToFamily(killDoc['idKiller']);
 
           // Mettre à jour l'état du kill
           await FirebaseFirestore.instance
@@ -362,7 +403,7 @@ class FirestoreService {
     }
   }
 
-  Future<void> updateFamilyPoints(String color, int points) async {
+  Future<void> updateFamilyKills(String color, int nbKills) async {
     var family = await FirebaseFirestore.instance
         .collection('families')
         .where("color", isEqualTo: color)
@@ -373,8 +414,39 @@ class FirestoreService {
         .collection('families')
         .doc(familyId)
         .update({
-      'points': FieldValue.increment(points),
+      'nbKills': FieldValue.increment(nbKills),
     });
+  }
+
+  Future<void> updateNbKillsForUser(String userId) async {
+    try {
+      // Récupérer l'utilisateur depuis la base de données
+      DocumentSnapshot userSnapshot = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(userId)
+          .get();
+
+      if (userSnapshot.exists) {
+        // Obtenir les données de l'utilisateur
+        Map<String, dynamic>? userData =
+            userSnapshot.data() as Map<String, dynamic>?;
+
+        if (userData != null) {
+          int currentNbKills =
+              userData.containsKey('nbKills') ? userData['nbKills'] : 0;
+          int updatedNbKills = currentNbKills + 1;
+
+          // Mettre à jour le champ nbKills dans la base de données
+          await FirebaseFirestore.instance
+              .collection('users')
+              .doc(userId)
+              .update({'nbKills': updatedNbKills});
+        }
+      }
+    } catch (error) {
+      print(
+          'Erreur lors de la mise à jour du champ nbKills pour l\'utilisateur : $error');
+    }
   }
 
   // DELETE

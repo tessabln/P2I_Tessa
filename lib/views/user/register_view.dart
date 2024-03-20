@@ -83,7 +83,7 @@ class RegisterView extends StatelessWidget {
                     // Définir la couleur du texte en fonction de la famille sélectionnée
                     switch (family) {
                       case "Bleue":
-                        textColor = Color.fromARGB(255, 1, 0, 128);
+                        textColor = Color.fromARGB(255, 32, 67, 223);
                         break;
                       case "Verte":
                         textColor = Color.fromARGB(255, 43, 144, 63);

@@ -1,9 +1,10 @@
-// ignore_for_file: library_private_types_in_public_api
+// ignore_for_file: library_private_types_in_public_api, use_build_context_synchronously, unnecessary_null_comparison, avoid_unnecessary_containers
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/components/my_Objcard.dart';
+import 'package:flutter_app/service/firestore.dart';
 import 'package:flutter_app/viewModel/home_view_model.dart';
 import 'package:slide_to_act/slide_to_act.dart';
 import 'package:flutter_app/models/kill.dart';
@@ -14,6 +15,7 @@ class HomeView extends StatefulWidget {
 }
 
 final user = FirebaseAuth.instance.currentUser;
+final FirestoreService firestore = FirestoreService();
 
 DateTime getToday() {
   DateTime now = DateTime.now();
@@ -27,8 +29,23 @@ DateTime now = DateTime.now();
 Timestamp currentTimestamp = Timestamp.fromDate(now);
 
 class _HomeViewState extends State<HomeView> {
-
   final HomeViewModel viewModel = HomeViewModel();
+  Map<String, dynamic>? userData;
+
+  @override
+  void initState() {
+    super.initState();
+    getUserData();
+  }
+
+  Future<void> getUserData() async {
+    final snapshot = await viewModel.getUserData();
+    if (snapshot != null && snapshot.exists) {
+      setState(() {
+        userData = snapshot.data();
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -56,7 +73,7 @@ class _HomeViewState extends State<HomeView> {
                   'Bonjour ${userData['firstname']} !',
                   style: TextStyle(
                       fontWeight: FontWeight.normal,
-                      fontSize: 22,
+                      fontSize: 28,
                       color: Theme.of(context).textTheme.bodyLarge!.color),
                 );
               }
@@ -66,8 +83,8 @@ class _HomeViewState extends State<HomeView> {
         actions: [
           Container(
             margin: EdgeInsets.all(8),
-            width: 50,
-            height: 50,
+            width: 60,
+            height: 60,
             decoration: BoxDecoration(
               image: DecorationImage(
                 image: AssetImage("assets/images/logo.png"),
@@ -169,105 +186,152 @@ class _HomeViewState extends State<HomeView> {
           const SizedBox(height: 50),
           Padding(
             padding: const EdgeInsets.all(40.0),
-            child: SlideAction(
-              innerColor: const Color.fromARGB(255, 72, 57, 117),
-              outerColor: Theme.of(context).colorScheme.secondary,
-              elevation: 0,
-              sliderButtonIcon: Icon(Icons.gps_fixed_rounded,
-                  color: Color.fromARGB(255, 255, 255, 255)),
-              text: '                Glisser pour confirmer votre kill !',
-              textStyle: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.bold,
-                  color: Theme.of(context).textTheme.bodyLarge!.color),
-              sliderRotate: false,
-              onSubmit: () {
-                return showDialog(
-                  context: context,
-                  builder: (context) {
-                    return AlertDialog(
-                      title: Text("Confirmer le kill"),
-                      content: Text(
-                          "Êtes-vous sûr de vouloir confirmer votre kill ?"),
-                      actions: <Widget>[
-                        TextButton(
-                          child: Text(
-                            "Annuler",
-                            style: TextStyle(
-                                fontWeight: FontWeight.normal,
-                                fontSize: 16,
-                                color: Theme.of(context)
-                                    .colorScheme
-                                    .inversePrimary),
-                          ),
-                          onPressed: () {
-                            Navigator.of(context).pop();
-                          },
+            child: userData != null && userData?['status'] != 'mort'
+                ? SlideAction(
+                    innerColor: const Color.fromARGB(255, 72, 57, 117),
+                    outerColor: Theme.of(context).colorScheme.secondary,
+                    elevation: 0,
+                    sliderButtonIcon: Icon(Icons.gps_fixed_rounded,
+                        color: Color.fromARGB(255, 255, 255, 255)),
+                    text: '            Glisser pour confirmer votre kill !',
+                    textStyle: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                      color: Theme.of(context).textTheme.bodyLarge!.color,
+                    ),
+                    sliderRotate: false,
+                    onSubmit: () async {
+                      await showDialog(
+                        context: context,
+                        builder: (context) {
+                          return AlertDialog(
+                            title: Text("Confirmer le kill"),
+                            content: Text(
+                                "Êtes-vous sûr de vouloir confirmer votre kill ?"),
+                            actions: <Widget>[
+                              TextButton(
+                                child: Text(
+                                  "Annuler",
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.normal,
+                                    fontSize: 16,
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .inversePrimary,
+                                  ),
+                                ),
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                              ),
+                              TextButton(
+                                child: Text(
+                                  "Confirmer",
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.normal,
+                                    fontSize: 16,
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .inversePrimary,
+                                  ),
+                                ),
+                                onPressed: () async {
+                                  await firestore
+                                      .updateNbKillsForUser(user!.uid);
+                                  await validationKill(context);
+                                  Navigator.of(context).pop();
+
+                                  // Afficher la boîte de dialogue de notification
+                                  await showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return AlertDialog(
+                                        title: Text(
+                                            "Notification à ta cible envoyée !"),
+                                        content: Text(
+                                            "Ta cible va pouvoir confirmer ou refuser ton kill"),
+                                        actions: <Widget>[
+                                          TextButton(
+                                            child: Text(
+                                              "OK",
+                                              style: TextStyle(
+                                                fontWeight: FontWeight.normal,
+                                                fontSize: 16,
+                                                color: Theme.of(context)
+                                                    .colorScheme
+                                                    .inversePrimary,
+                                              ),
+                                            ),
+                                            onPressed: () {
+                                              Navigator.of(context).pop();
+                                            },
+                                          ),
+                                        ],
+                                      );
+                                    },
+                                  );
+                                },
+                              ),
+                            ],
+                          );
+                        },
+                      );
+                    },
+                  )
+                : Container(
+                    child: Center(
+                      child: Text(
+                        'Tu es mort \u{1F480}',
+                        style: TextStyle(
+                          fontSize: 34,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.red,
                         ),
-                        TextButton(
-                          child: Text(
-                            "Confirmer",
-                            style: TextStyle(
-                                fontWeight: FontWeight.normal,
-                                fontSize: 16,
-                                color: Theme.of(context)
-                                    .colorScheme
-                                    .inversePrimary),
-                          ),
-                          onPressed: () {
-                            validationKill();
-                            Navigator.of(context).pop();
-                          },
-                        ),
-                      ],
-                    );
-                  },
-                );
-              },
-            ),
+                      ),
+                    ),
+                  ),
           ),
-          const SizedBox(height: 10),
+          const SizedBox(height: 100),
         ],
       ),
     );
   }
+}
 
-  Future<void> validationKill() async {
-    String? targetUserId;
+Future<void> validationKill(BuildContext context) async {
+  String? targetUserId;
 
-    // Récupération de l'utilisateur tué
-    QuerySnapshot killsSnapshot = await FirebaseFirestore.instance
-        .collection('kills')
+  QuerySnapshot killsSnapshot = await FirebaseFirestore.instance
+      .collection('kills')
+      .where('idKiller', isEqualTo: user?.uid)
+      .where('etat', isEqualTo: 'enCours')
+      .limit(1)
+      .get();
+
+  if (killsSnapshot.docs.isNotEmpty) {
+    targetUserId = killsSnapshot.docs[0]['idCible'];
+  }
+
+  if (targetUserId != null) {
+    QuerySnapshot querySnapshot = await kills
         .where('idKiller', isEqualTo: user?.uid)
-        .where('etat', isEqualTo: 'enCours')
-        .limit(1)
+        .where('idCible', isEqualTo: targetUserId)
         .get();
 
-    if (killsSnapshot.docs.isNotEmpty) {
-      targetUserId = killsSnapshot.docs[0]['idCible'];
-    }
+    if (querySnapshot.docs.isNotEmpty) {
+      DocumentSnapshot docSnapshot = querySnapshot.docs[0];
 
-    if (targetUserId != null) {
-      QuerySnapshot querySnapshot = await kills
-          .where('idKiller', isEqualTo: user?.uid)
-          .where('idCible', isEqualTo: targetUserId)
-          .get();
+      // Mise à jour de l'état du kill
+      await docSnapshot.reference.update({
+        'etat': KillState.enValidation.name,
+      });
 
-      if (querySnapshot.docs.isNotEmpty) {
-        DocumentSnapshot docSnapshot = querySnapshot.docs[0];
-
-        // Mise à jour de l'état du kill
-        await docSnapshot.reference.update({
-          'etat': KillState.enValidation.name,
-        });
-
-        await FirebaseFirestore.instance.collection('notifications').add({
-          'userId': targetUserId,
-          'message': 'Tu a été tué !',
-          'timestamp': currentTimestamp,
-          'confirmed': false,
-        });
-      }
+      await FirebaseFirestore.instance.collection('notifications').add({
+        'userId': targetUserId,
+        'message': 'Tu a été tué !',
+        'timestamp': currentTimestamp,
+        'confirmed': false,
+      });
     }
   }
 }
