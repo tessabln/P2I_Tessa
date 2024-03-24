@@ -19,9 +19,9 @@ class MyButton extends StatelessWidget {
           color: Theme.of(context).colorScheme.secondary,
           borderRadius: BorderRadius.circular(30),
           border: Border.all(
-                  color: const Color.fromARGB(255, 72, 57, 117), 
-                  width: 1,
-                ),
+            color: const Color.fromARGB(255, 72, 57, 117),
+            width: 1,
+          ),
         ),
         padding: const EdgeInsets.all(15),
         child: Center(

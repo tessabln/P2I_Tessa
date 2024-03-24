@@ -36,8 +36,8 @@ class _KillListState extends State<OngoingKillList> {
   }
 
   Future<void> fetchAndReorderKills() async {
-    QuerySnapshot killSnapshot =
-        await FirebaseFirestore.instance.collection('kills')
+    QuerySnapshot killSnapshot = await FirebaseFirestore.instance
+        .collection('kills')
         .where('etat', isEqualTo: 'enCours')
         .get();
     List<Map<String, dynamic>> tableKill = killSnapshot.docs

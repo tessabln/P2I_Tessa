@@ -2,7 +2,7 @@
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_app/auth/userAuth.dart';
+import 'package:flutter_app/authentification/userAuth.dart';
 import 'package:flutter_app/models/user.dart' as User;
 import 'package:flutter_app/models/user.dart';
 import 'package:flutter_app/service/firestore.dart';
@@ -17,8 +17,6 @@ class RegisterViewModel {
   final TextEditingController confirmPwController = TextEditingController();
   final TextEditingController targetcodeController = TextEditingController();
 
-
-
   Future<void> registerUser(BuildContext context) async {
     final String userlastname = userlastnameController.text.trim();
     final String userfirstname = userfirstnameController.text.trim();
@@ -27,7 +25,6 @@ class RegisterViewModel {
     final String password = passwordController.text.trim();
     final String confirmPw = confirmPwController.text.trim();
     final String targetcode = targetcodeController.text.trim();
-    
 
     if (password == confirmPw) {
       try {
@@ -41,9 +38,9 @@ class RegisterViewModel {
             firstname: userfirstname,
             family: userfamily,
             email: email,
-            targetcode: int.parse(targetcode), 
-            status: UserStatus.vivant, 
-            nbkills: 0, 
+            targetcode: int.parse(targetcode),
+            status: UserStatus.vivant,
+            nbkills: 0,
           );
 
           await FirestoreService.addUser(user);

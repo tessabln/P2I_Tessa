@@ -9,11 +9,8 @@ class Post {
   Post({
     required this.message,
     required this.date,
-  })
-
-  {
+  }) {
     formattedDate = DateFormat('yyyy-MM-dd HH:mm:ss').format(date);
-    
   }
 
   factory Post.fromFirestore(DocumentSnapshot doc) {

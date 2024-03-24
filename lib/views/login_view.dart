@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_app/components/my_textfield.dart';
 import 'package:flutter_app/views/forgot_pw_view.dart';
 import 'package:flutter_app/views/user/register_view.dart';
-import 'package:flutter_app/auth/userAuth.dart';
+import 'package:flutter_app/authentification/userAuth.dart';
 
 class LoginView extends StatefulWidget {
   final void Function()? onTap;

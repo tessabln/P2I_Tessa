@@ -70,7 +70,7 @@ class AccountViewA extends StatelessWidget {
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 16,
-                          color: Color.fromARGB(255,255,255,255),
+                          color: Color.fromARGB(255, 255, 255, 255),
                         ),
                       ),
                     ),

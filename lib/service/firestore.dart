@@ -7,7 +7,7 @@ import 'package:flutter_app/models/user.dart' as CustomUser;
 import 'package:flutter_app/models/user.dart';
 
 class FirestoreService {
-  // get collection
+  // get collections
   static FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final CollectionReference games =
       FirebaseFirestore.instance.collection('games');
@@ -67,34 +67,27 @@ class FirestoreService {
   }
 
   Future<void> createAndAddKills(List<String> addedUserIds) async {
-    // Récupérer la liste de tous les identifiants d'utilisateurs
     QuerySnapshot usersSnapshot = await FirebaseFirestore.instance
         .collection('users')
         .orderBy('lastname', descending: false)
         .get();
     List<String> userIds = usersSnapshot.docs.map((doc) => doc.id).toList();
 
-    // Associer chaque joueur à un autre joueur en tant que cible
     for (int i = 0; i < userIds.length; i++) {
       String idKiller = userIds[i];
       String idCible = userIds[(i + 1) % userIds.length];
 
-      // Vérifier si ce kill existe déjà dans la base de données
       bool killExists = await checkIfKillExists(idKiller, idCible);
 
-      // Si le kill n'existe pas déjà, l'ajouter à la base de données
       if (!killExists) {
-        // Créer un objet Kill avec les données appropriées
         Kill kill = Kill(
           idKiller: idKiller,
           idCible: idCible,
           etat: KillState.enCours,
         );
 
-        // Convertir l'objet Kill en une Map<String, dynamic>
         Map<String, dynamic> killData = kill.toJson();
 
-        // Ajouter les données converties en Map à Firestore
         await kills.add(killData);
       }
     }
@@ -169,16 +162,12 @@ class FirestoreService {
 
   Future<int> getLifeCountForFamily(String family) async {
     int deathCount = 0;
-
-    // Récupérer tous les utilisateurs
     var users = await FirebaseFirestore.instance.collection('users').get();
 
-    // Pour chaque utilisateur, vérifier s'il est mort et appartient à la famille spécifiée
     for (var user in users.docs) {
       var status = user['status'];
       var userFamily = user['family'];
 
-      // Vérifier si l'utilisateur est mort et appartient à la famille spécifiée
       if (status == 'vivant' && userFamily == family) {
         deathCount++;
       }
@@ -188,29 +177,25 @@ class FirestoreService {
   }
 
   Future<int> getBestKillerForFamily(String family) async {
-  int maxKills = 0;
+    int maxKills = 0;
 
-  // Récupérer tous les utilisateurs de la famille spécifiée
-  var users = await FirebaseFirestore.instance
-      .collection('users')
-      .where('family', isEqualTo: family)
-      .get();
+    var users = await FirebaseFirestore.instance
+        .collection('users')
+        .where('family', isEqualTo: family)
+        .get();
 
-  // Parcourir tous les utilisateurs pour trouver le nombre maximal de kills
-  users.docs.forEach((userDoc) {
-    var nbKills = userDoc['nbKills'];
-    if (nbKills > maxKills) {
-      maxKills = nbKills;
+    for (var userDoc in users.docs) {
+      var nbKills = userDoc['nbKills'];
+      if (nbKills > maxKills) {
+        maxKills = nbKills;
+      }
     }
-  });
 
-  return maxKills;
-}
-
+    return maxKills;
+  }
 
   // UPDATE
 
-  // Écouter les notifications en temps réel
   Stream<QuerySnapshot> listenToNotifications(String userId) {
     final CollectionReference notifications =
         FirebaseFirestore.instance.collection('notifications');
@@ -231,17 +216,14 @@ class FirestoreService {
         idCible = liste[i + 1];
       }
 
-      // Vérifier si un document avec l'idKiller existe déjà
       QuerySnapshot querySnapshot =
           await kills.where('idKiller', isEqualTo: idKiller).get();
       if (querySnapshot.docs.isNotEmpty) {
-        // Mettre à jour le document existant
         DocumentReference docRef = querySnapshot.docs[0].reference;
         await docRef.update({
           'idCible': idCible,
         });
       } else {
-        // Ajouter un nouveau document
         await kills.add({
           'idKiller': idKiller,
           'idCible': idCible,
@@ -249,7 +231,6 @@ class FirestoreService {
       }
     }
 
-    // afficher une boîte de dialogue pour confirmer que les déplacements ont été enregistrés avec succès
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -302,7 +283,6 @@ class FirestoreService {
 
           await addKillsToFamily(killDoc['idKiller']);
 
-          // Mettre à jour l'état du kill
           await FirebaseFirestore.instance
               .collection('kills')
               .doc(killId)
@@ -317,20 +297,16 @@ class FirestoreService {
             'etat': KillState.echec.name,
           });
 
-          // Créer un nouveau Kill
           Kill kill = Kill(
             idKiller: killDoc['idKiller'],
             idCible: killToPassDoc['idCible'],
             etat: KillState.enCours,
           );
 
-          // Convertir l'objet Kill en une Map<String, dynamic>
           Map<String, dynamic> killData = kill.toJson();
 
-          // Ajouter les données converties en Map à Firestore
           await kills.add(killData);
 
-          //Mettre à jour la notification pour la marquer comme confirmée
           await FirebaseFirestore.instance
               .collection('notifications')
               .doc(notifId)
@@ -367,7 +343,6 @@ class FirestoreService {
         if (killQuery.docs.isNotEmpty) {
           String killId = killQuery.docs.first.id;
 
-          // Mettre à jour l'état du kill à "enCours"
           await FirebaseFirestore.instance
               .collection('kills')
               .doc(killId)
@@ -375,7 +350,6 @@ class FirestoreService {
             'etat': KillState.enCours.name,
           });
 
-          // Mettre à jour la notification pour la marquer comme refusée
           await FirebaseFirestore.instance
               .collection('notifications')
               .doc(notifId)
@@ -393,7 +367,6 @@ class FirestoreService {
 
   Future<void> death(String userId) async {
     try {
-      // Mettre à jour le statut de l'utilisateur connecté à "mort"
       await FirebaseFirestore.instance
           .collection('users')
           .doc(FirebaseAuth.instance.currentUser!.uid)
@@ -420,14 +393,12 @@ class FirestoreService {
 
   Future<void> updateNbKillsForUser(String userId) async {
     try {
-      // Récupérer l'utilisateur depuis la base de données
       DocumentSnapshot userSnapshot = await FirebaseFirestore.instance
           .collection('users')
           .doc(userId)
           .get();
 
       if (userSnapshot.exists) {
-        // Obtenir les données de l'utilisateur
         Map<String, dynamic>? userData =
             userSnapshot.data() as Map<String, dynamic>?;
 
@@ -436,7 +407,6 @@ class FirestoreService {
               userData.containsKey('nbKills') ? userData['nbKills'] : 0;
           int updatedNbKills = currentNbKills + 1;
 
-          // Mettre à jour le champ nbKills dans la base de données
           await FirebaseFirestore.instance
               .collection('users')
               .doc(userId)

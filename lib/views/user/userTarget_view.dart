@@ -1,19 +1,21 @@
 // ignore_for_file: file_names
+// This widget represents the user's target view. It displays details about the user's current target.
 
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class UserTargetView extends StatelessWidget {
-  final Map<String, dynamic> data;
-  final String? userId;
+  final Map<String, dynamic> data; // Data related to the target
+  final String? userId; // ID of the user
 
+  // Map containing family colors
   final Map<String, Color> familyColors = {
-    'Bleue': Color.fromARGB(255, 32, 67, 223),
-    'Rouge': Color.fromARGB(255, 182, 31, 26),
-    'Verte': Color.fromARGB(255, 43, 144, 63),
+    'Blue': Color.fromARGB(255, 32, 67, 223),
+    'Red': Color.fromARGB(255, 182, 31, 26),
+    'Green': Color.fromARGB(255, 43, 144, 63),
     'Orange': Color.fromARGB(255, 247, 118, 6),
-    'Jaune': Color.fromARGB(255, 215, 187, 65),
+    'Yellow': Color.fromARGB(255, 215, 187, 65),
   };
 
   UserTargetView({required this.data, required this.userId});
@@ -45,41 +47,50 @@ class UserTargetView extends StatelessWidget {
               future: FirebaseFirestore.instance
                   .collection('kills')
                   .where('idKiller', isEqualTo: user!.uid)
-                  .where('etat', isEqualTo: 'enCours')
+                  .where('state', isEqualTo: 'inProgress')
                   .limit(1)
                   .get(),
               builder: (context, killsSnapshot) {
                 if (killsSnapshot.connectionState == ConnectionState.waiting) {
-                  return Center(child: CircularProgressIndicator());
+                  return Center(
+                      child:
+                          CircularProgressIndicator()); // Loading indicator while fetching data
                 } else if (killsSnapshot.hasError) {
-                  return Center(child: Text('Erreur: ${killsSnapshot.error}'));
+                  return Center(
+                      child: Text(
+                          'Error: ${killsSnapshot.error}')); // Display error message if any
                 } else {
-                  // Vérifiez si des kills ont été trouvés
                   if (killsSnapshot.data!.docs.isNotEmpty) {
-                    // Récupérer l'idCible du premier kill trouvé
-                    String? idCible = killsSnapshot.data!.docs[0]['idCible'];
-                    // Effectuer une requête pour obtenir les informations de l'utilisateur cible
+                    String? targetId = killsSnapshot.data!.docs[0]
+                        ['targetId']; // ID of the target
+
                     return FutureBuilder<DocumentSnapshot>(
                       future: FirebaseFirestore.instance
                           .collection('users')
-                          .doc(idCible)
+                          .doc(targetId)
                           .get(),
-                      builder: (context, userSnapshot) {
-                        if (userSnapshot.connectionState ==
+                      builder: (context, targetSnapshot) {
+                        if (targetSnapshot.connectionState ==
                             ConnectionState.waiting) {
-                          return Center(child: CircularProgressIndicator());
-                        } else if (userSnapshot.hasError) {
                           return Center(
-                              child: Text('Erreur: ${userSnapshot.error}'));
+                              child:
+                                  CircularProgressIndicator()); // Loading indicator while fetching target data
+                        } else if (targetSnapshot.hasError) {
+                          return Center(
+                              child: Text(
+                                  'Error: ${targetSnapshot.error}')); // Display error message if any
                         } else {
-                          // Si les données de l'utilisateur cible existent
-                          if (userSnapshot.hasData &&
-                              userSnapshot.data!.exists) {
-                            String firstname = userSnapshot.data!['firstname'];
-                            String lastname = userSnapshot.data!['lastname'];
-                            String family = userSnapshot.data!['family'] ?? '';
-                            Color textColor =
-                                familyColors[family] ?? Colors.transparent;
+                          if (targetSnapshot.hasData &&
+                              targetSnapshot.data!.exists) {
+                            String firstname = targetSnapshot
+                                .data!['firstname']; // First name of the target
+                            String lastname = targetSnapshot
+                                .data!['lastname']; // Last name of the target
+                            String family = targetSnapshot.data!['family'] ??
+                                ''; // Family of the target
+                            Color textColor = familyColors[family] ??
+                                Colors
+                                    .transparent; // Text color based on family
 
                             return Center(
                               child: RichText(
@@ -91,28 +102,33 @@ class UserTargetView extends StatelessWidget {
                                   ),
                                   children: <TextSpan>[
                                     TextSpan(
-                                      text: 'Ta cible est : \n',
+                                      text:
+                                          'Your target is: \n', // Text indicating the target
                                       style: TextStyle(
-                                          color: Theme.of(context).colorScheme.inversePrimary), 
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .inversePrimary),
                                     ),
                                     TextSpan(
-                                      text: '$firstname $lastname',
+                                      text:
+                                          '$firstname $lastname', // Displaying target's full name
                                     ),
                                   ],
                                 ),
                               ),
                             );
                           } else {
-                            // Aucune donnée trouvée pour l'utilisateur cible
-                            return Center(child: Text('Aucune cible trouvée'));
+                            return Center(
+                                child: Text(
+                                    'No target found')); // Displayed when no target is found
                           }
                         }
                       },
                     );
                   } else {
-                    // Aucun kill trouvé
                     return Center(
-                        child: Text("Tu es mort.Tu n'as plus de cible."));
+                        child: Text(
+                            "You're dead. You don't have a target anymore.")); // Displayed when user is dead
                   }
                 }
               },

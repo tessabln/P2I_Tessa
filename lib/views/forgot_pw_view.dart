@@ -30,7 +30,8 @@ class ForgotPasswordView extends StatelessWidget {
                   borderRadius: BorderRadius.circular(12),
                 ),
                 hintText: 'Email',
-                contentPadding: EdgeInsets.symmetric(vertical: 4.0, horizontal: 7.0), 
+                contentPadding:
+                    EdgeInsets.symmetric(vertical: 4.0, horizontal: 7.0),
                 fillColor: Theme.of(context).colorScheme.secondary,
                 filled: true,
               ),
@@ -42,12 +43,14 @@ class ForgotPasswordView extends StatelessWidget {
               viewModel.passwordReset(context);
             },
             color: Color.fromARGB(255, 76, 61, 120),
-            child: Text('Réinitialiser mon mot de passe',
-            style: TextStyle(
-                          fontWeight: FontWeight.normal,
-                          fontSize: 14,
-                          color: Color.fromARGB(255, 255, 255, 255),
-                        ),),
+            child: Text(
+              'Réinitialiser mon mot de passe',
+              style: TextStyle(
+                fontWeight: FontWeight.normal,
+                fontSize: 14,
+                color: Color.fromARGB(255, 255, 255, 255),
+              ),
+            ),
           ),
         ],
       ),

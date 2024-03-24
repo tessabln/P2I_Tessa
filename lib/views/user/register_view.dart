@@ -12,7 +12,7 @@ class RegisterView extends StatelessWidget {
 
   final RegisterViewModel viewModel = RegisterViewModel();
 
-  // Liste des options de famille
+  // Families'options list
   final List<String> familyOptions = [
     "Bleue",
     "Verte",
@@ -21,14 +21,12 @@ class RegisterView extends StatelessWidget {
     "Orange"
   ];
 
-  // Valeur sélectionnée par défaut
+  // Default value
   String selectedFamily = "Bleue";
 
-  // Fonction pour mettre à jour la famille sélectionnée
   void updateSelectedFamily(String selectedFamily) {
-    // Mettre à jour la valeur de selectedFamily
     this.selectedFamily = selectedFamily;
-    // Mettre à jour le champ de la famille de l'utilisateur
+
     viewModel.userfamilyController.text = selectedFamily;
   }
 
@@ -44,7 +42,7 @@ class RegisterView extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                // logo
+                // Logo
                 Container(
                   width: 101,
                   height: 104,
@@ -75,12 +73,12 @@ class RegisterView extends StatelessWidget {
 
                 const SizedBox(height: 10),
 
-                // Dropdown pour la sélection de famille
+                // Dropdown for selection
                 DropdownButtonFormField<String>(
                   value: selectedFamily,
                   items: familyOptions.map((String family) {
                     Color textColor;
-                    // Définir la couleur du texte en fonction de la famille sélectionnée
+
                     switch (family) {
                       case "Bleue":
                         textColor = Color.fromARGB(255, 32, 67, 223);
@@ -113,9 +111,8 @@ class RegisterView extends StatelessWidget {
                   }).toList(),
                   onChanged: (String? value) {
                     if (value != null) {
-                      // Mise à jour de selectedFamily avec la valeur sélectionnée
                       selectedFamily = value;
-                      // Appel de la méthode pour mettre à jour la famille dans le ViewModel
+
                       updateSelectedFamily(value);
                     }
                   },

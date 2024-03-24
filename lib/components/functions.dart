@@ -56,5 +56,3 @@ void showLogoutConfirmationDialog(BuildContext context) {
     ),
   );
 }
-
-

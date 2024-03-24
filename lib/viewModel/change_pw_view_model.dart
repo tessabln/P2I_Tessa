@@ -7,7 +7,8 @@ import 'package:flutter_app/components/functions.dart';
 class ChangePasswordViewModel {
   final TextEditingController oldPasswordController = TextEditingController();
   final TextEditingController newPasswordController = TextEditingController();
-  final TextEditingController confirmPasswordController = TextEditingController();
+  final TextEditingController confirmPasswordController =
+      TextEditingController();
   final User? user = FirebaseAuth.instance.currentUser;
 
   Future<void> changePassword(BuildContext context) async {

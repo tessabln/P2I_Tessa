@@ -107,7 +107,7 @@ class _AdminViewState extends State<AdminView> {
                 },
               ),
               const SizedBox(height: 10),
-              // Button for managing targets
+              // Button for managing kills
               MyButton(
                 text: "Gestion des kills",
                 onTap: () {
@@ -122,7 +122,7 @@ class _AdminViewState extends State<AdminView> {
                 },
               ),
               const SizedBox(height: 10),
-              // Button for managing announcements
+              // Button for managing posts
               MyButton(
                 text: "Gestion des annonces",
                 onTap: () {

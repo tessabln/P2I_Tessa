@@ -19,7 +19,9 @@ class _HomeSwitchState extends State<HomeSwitch> {
   final List<Widget> _views = [
     HomeView(),
     LeaderboardView(),
-    AccountView(notifId: '',),
+    AccountView(
+      notifId: '',
+    ),
   ];
 
   @override
@@ -44,7 +46,7 @@ class _HomeSwitchState extends State<HomeSwitch> {
                 iconColor: Theme.of(context).textTheme.bodyLarge!.color,
                 textColor: Theme.of(context).textTheme.bodyLarge!.color,
                 border: Border.all(
-                  color: const Color.fromARGB(255, 72, 57, 117), 
+                  color: const Color.fromARGB(255, 72, 57, 117),
                   width: 2,
                 ),
               ),
@@ -54,7 +56,7 @@ class _HomeSwitchState extends State<HomeSwitch> {
                 iconColor: Theme.of(context).textTheme.bodyLarge!.color,
                 textColor: Theme.of(context).textTheme.bodyLarge!.color,
                 border: Border.all(
-                  color: const Color.fromARGB(255, 72, 57, 117), 
+                  color: const Color.fromARGB(255, 72, 57, 117),
                   width: 2,
                 ),
               ),
@@ -64,7 +66,7 @@ class _HomeSwitchState extends State<HomeSwitch> {
                 iconColor: Theme.of(context).textTheme.bodyLarge!.color,
                 textColor: Theme.of(context).textTheme.bodyLarge!.color,
                 border: Border.all(
-                  color: const Color.fromARGB(255, 72, 57, 117), 
+                  color: const Color.fromARGB(255, 72, 57, 117),
                   width: 2,
                 ),
               ),

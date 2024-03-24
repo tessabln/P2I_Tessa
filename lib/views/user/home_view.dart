@@ -7,7 +7,6 @@ import 'package:flutter_app/components/my_Objcard.dart';
 import 'package:flutter_app/service/firestore.dart';
 import 'package:flutter_app/viewModel/home_view_model.dart';
 import 'package:slide_to_act/slide_to_act.dart';
-import 'package:flutter_app/models/kill.dart';
 
 class HomeView extends StatefulWidget {
   @override
@@ -187,97 +186,7 @@ class _HomeViewState extends State<HomeView> {
           Padding(
             padding: const EdgeInsets.all(40.0),
             child: userData != null && userData?['status'] != 'mort'
-                ? SlideAction(
-                    innerColor: const Color.fromARGB(255, 72, 57, 117),
-                    outerColor: Theme.of(context).colorScheme.secondary,
-                    elevation: 0,
-                    sliderButtonIcon: Icon(Icons.gps_fixed_rounded,
-                        color: Color.fromARGB(255, 255, 255, 255)),
-                    text: '            Glisser pour confirmer votre kill !',
-                    textStyle: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.bold,
-                      color: Theme.of(context).textTheme.bodyLarge!.color,
-                    ),
-                    sliderRotate: false,
-                    onSubmit: () async {
-                      await showDialog(
-                        context: context,
-                        builder: (context) {
-                          return AlertDialog(
-                            title: Text("Confirmer le kill"),
-                            content: Text(
-                                "Êtes-vous sûr de vouloir confirmer votre kill ?"),
-                            actions: <Widget>[
-                              TextButton(
-                                child: Text(
-                                  "Annuler",
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.normal,
-                                    fontSize: 16,
-                                    color: Theme.of(context)
-                                        .colorScheme
-                                        .inversePrimary,
-                                  ),
-                                ),
-                                onPressed: () {
-                                  Navigator.of(context).pop();
-                                },
-                              ),
-                              TextButton(
-                                child: Text(
-                                  "Confirmer",
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.normal,
-                                    fontSize: 16,
-                                    color: Theme.of(context)
-                                        .colorScheme
-                                        .inversePrimary,
-                                  ),
-                                ),
-                                onPressed: () async {
-                                  await firestore
-                                      .updateNbKillsForUser(user!.uid);
-                                  await validationKill(context);
-                                  Navigator.of(context).pop();
-
-                                  // Afficher la boîte de dialogue de notification
-                                  await showDialog(
-                                    context: context,
-                                    builder: (BuildContext context) {
-                                      return AlertDialog(
-                                        title: Text(
-                                            "Notification à ta cible envoyée !"),
-                                        content: Text(
-                                            "Ta cible va pouvoir confirmer ou refuser ton kill"),
-                                        actions: <Widget>[
-                                          TextButton(
-                                            child: Text(
-                                              "OK",
-                                              style: TextStyle(
-                                                fontWeight: FontWeight.normal,
-                                                fontSize: 16,
-                                                color: Theme.of(context)
-                                                    .colorScheme
-                                                    .inversePrimary,
-                                              ),
-                                            ),
-                                            onPressed: () {
-                                              Navigator.of(context).pop();
-                                            },
-                                          ),
-                                        ],
-                                      );
-                                    },
-                                  );
-                                },
-                              ),
-                            ],
-                          );
-                        },
-                      );
-                    },
-                  )
+                ? SlideAction()
                 : Container(
                     child: Center(
                       child: Text(
@@ -295,43 +204,5 @@ class _HomeViewState extends State<HomeView> {
         ],
       ),
     );
-  }
-}
-
-Future<void> validationKill(BuildContext context) async {
-  String? targetUserId;
-
-  QuerySnapshot killsSnapshot = await FirebaseFirestore.instance
-      .collection('kills')
-      .where('idKiller', isEqualTo: user?.uid)
-      .where('etat', isEqualTo: 'enCours')
-      .limit(1)
-      .get();
-
-  if (killsSnapshot.docs.isNotEmpty) {
-    targetUserId = killsSnapshot.docs[0]['idCible'];
-  }
-
-  if (targetUserId != null) {
-    QuerySnapshot querySnapshot = await kills
-        .where('idKiller', isEqualTo: user?.uid)
-        .where('idCible', isEqualTo: targetUserId)
-        .get();
-
-    if (querySnapshot.docs.isNotEmpty) {
-      DocumentSnapshot docSnapshot = querySnapshot.docs[0];
-
-      // Mise à jour de l'état du kill
-      await docSnapshot.reference.update({
-        'etat': KillState.enValidation.name,
-      });
-
-      await FirebaseFirestore.instance.collection('notifications').add({
-        'userId': targetUserId,
-        'message': 'Tu a été tué !',
-        'timestamp': currentTimestamp,
-        'confirmed': false,
-      });
-    }
   }
 }

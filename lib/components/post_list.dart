@@ -117,8 +117,7 @@ class PostTile extends StatelessWidget {
   Widget build(BuildContext context) {
     String message = data['PostMessage'] ?? 'Message non défini';
     Timestamp timestamp = data['TimeStamp'];
-    DateTime date =
-        timestamp.toDate(); 
+    DateTime date = timestamp.toDate();
     String formattedDate = DateFormat('yyyy-MM-dd HH:mm:ss').format(date);
 
     return Container(

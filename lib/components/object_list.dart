@@ -1,4 +1,4 @@
-// ignore_for_file: library_private_types_in_public_api
+// This widget represents a list of objects fetched from Firestore and displayed in a ListView.
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -33,9 +33,11 @@ class _ObjectListState extends State<ObjectList> {
   @override
   void initState() {
     super.initState();
-    _objectStream = FirestoreService().getObjectStream();
+    _objectStream = FirestoreService()
+        .getObjectStream(); // Initializing object stream from Firestore
   }
 
+  // Method to open the dialog for adding a new object
   void openObjectBox() {
     showDialog(
       context: context,
@@ -48,6 +50,7 @@ class _ObjectListState extends State<ObjectList> {
     );
   }
 
+  // Method to update text controllers with selected date and time
   void updateTextController(String begindate, String endate) {
     try {
       DateTime parsedBeginDate =
@@ -61,18 +64,20 @@ class _ObjectListState extends State<ObjectList> {
             DateFormat('yyyy-MM-dd HH:mm:ss').format(parsedEndDate);
       });
     } catch (e) {
-      print("Erreur de format de date: $e");
+      print("Date format error: $e");
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      // Floating action button for adding new objects
       floatingActionButton: FloatingActionButton(
         onPressed: openObjectBox,
         backgroundColor: Color.fromARGB(255, 76, 61, 120),
         child: Icon(Icons.add, color: Color.fromARGB(255, 255, 255, 255)),
       ),
+      // Body containing a StreamBuilder for displaying the list of objects
       body: StreamBuilder<QuerySnapshot>(
         stream: _objectStream,
         builder: (context, snapshot) {
@@ -88,15 +93,17 @@ class _ObjectListState extends State<ObjectList> {
                     document.data() as Map<String, dynamic>?;
 
                 if (data != null) {
-                  return ObjectTile(data: data, objId: objId);
+                  return ObjectTile(
+                      data: data, objId: objId); // Building each object tile
                 } else {
-                  return SizedBox();
+                  return SizedBox(); // Placeholder for empty data
                 }
               },
             );
           } else {
             return Center(
-              child: CircularProgressIndicator(),
+              child:
+                  CircularProgressIndicator(), // Loading indicator while data is being fetched
             );
           }
         },
@@ -105,6 +112,7 @@ class _ObjectListState extends State<ObjectList> {
   }
 }
 
+// Widget representing a single object tile
 class ObjectTile extends StatelessWidget {
   final Map<String, dynamic> data;
   final String objId;
@@ -113,58 +121,75 @@ class ObjectTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    String name = data['name'] ?? 'Nom non défini';
-    String description = data['description'] ?? 'Description non définie';
-    Timestamp? timestamp = data['begindate'];
-    DateTime begindate = timestamp?.toDate() ?? DateTime.now();
-    Timestamp? timestamp2 = data['endate'];
-    DateTime endate = timestamp2?.toDate() ?? DateTime.now();
-    String formattedBeginDate =
-        DateFormat('yyyy-MM-dd HH:mm:ss').format(begindate);
-    String formattedEndDate = DateFormat('yyyy-MM-dd HH:mm:ss').format(endate);
+    String name = data['name'] ??
+        'Nom non défini'; // Default value for object name if not defined
+    String description = data['description'] ??
+        'Description non définie'; // Default value for description
+    Timestamp? timestamp = data['begindate']; // Timestamp for beginning date
+    DateTime begindate = timestamp?.toDate() ??
+        DateTime.now(); // Converting timestamp to DateTime
+    Timestamp? timestamp2 = data['endate']; // Timestamp for end date
+    DateTime endate = timestamp2?.toDate() ??
+        DateTime.now(); // Converting timestamp to DateTime
+    String formattedBeginDate = DateFormat('yyyy-MM-dd HH:mm:ss')
+        .format(begindate); // Formatting begin date
+    String formattedEndDate =
+        DateFormat('yyyy-MM-dd HH:mm:ss').format(endate); // Formatting end date
 
     return Container(
       margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
       padding: EdgeInsets.all(8),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Theme.of(context).colorScheme.inversePrimary, width: 2),
+        border: Border.all(
+            color: Theme.of(context).colorScheme.inversePrimary, width: 2),
       ),
+      // Slidable widget for enabling swipe actions
       child: Slidable(
         endActionPane: ActionPane(
           motion: ScrollMotion(),
           children: [
+            // Slidable action for deleting object
             SlidableAction(
               onPressed: (context) {
                 showDialog(
                   context: context,
                   builder: (context) => AlertDialog(
                     title: Text("Confirmation"),
-                    content: Text("Voulez-vous vraiment supprimer cet objet ?"),
+                    content: Text(
+                        "Voulez-vous vraiment supprimer cet objet ?"), // Confirmation message
                     actions: [
+                      // Button for cancelling deletion
                       TextButton(
                         onPressed: () {
                           Navigator.pop(context);
                         },
-                        child: Text("Annuler",
-                        style: TextStyle(
-                          fontWeight: FontWeight.normal,
-                          fontSize: 16,
-                          color: Theme.of(context).colorScheme.inversePrimary),),
+                        child: Text(
+                          "Annuler",
+                          style: TextStyle(
+                              fontWeight: FontWeight.normal,
+                              fontSize: 16,
+                              color:
+                                  Theme.of(context).colorScheme.inversePrimary),
+                        ),
                       ),
+                      // Button for confirming deletion
                       TextButton(
                         onPressed: () {
                           FirebaseFirestore.instance
                               .collection('objects')
                               .doc(objId)
-                              .delete();
+                              .delete(); // Deleting object from Firestore
                           Navigator.pop(context);
                         },
-                        child: Text("Supprimer",
-                        style: TextStyle(
-                          fontWeight: FontWeight.normal,
-                          fontSize: 16,
-                          color: Theme.of(context).colorScheme.inversePrimary),),
+                        child: Text(
+                          "Supprimer",
+                          style: TextStyle(
+                              fontWeight: FontWeight.normal,
+                              fontSize: 16,
+                              color:
+                                  Theme.of(context).colorScheme.inversePrimary),
+                        ),
                       ),
                     ],
                   ),
@@ -177,6 +202,7 @@ class ObjectTile extends StatelessWidget {
           ],
         ),
         child: ListTile(
+          // Details of the object displayed in ListTile
           title: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [

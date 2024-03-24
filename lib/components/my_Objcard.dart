@@ -19,16 +19,15 @@ class ObjCard extends StatelessWidget {
             children: <Widget>[
               Padding(
                 padding: const EdgeInsets.symmetric(
-                  vertical: 8.0, 
+                  vertical: 8.0,
                   horizontal: 16.0,
                 ),
                 child: Text(
                   "Nom de l'objet",
                   style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 20,
-                    color: Color.fromARGB(255, 255, 255, 255)
-                  ),
+                      fontWeight: FontWeight.bold,
+                      fontSize: 20,
+                      color: Color.fromARGB(255, 255, 255, 255)),
                 ),
               ),
               Padding(
@@ -36,25 +35,23 @@ class ObjCard extends StatelessWidget {
                 child: Text(
                   objectData['name'],
                   style: TextStyle(
-                    fontStyle: FontStyle.normal,
-                    fontSize: 16,
-                    color: Color.fromARGB(255, 255, 255, 255)
-                  ),
+                      fontStyle: FontStyle.normal,
+                      fontSize: 16,
+                      color: Color.fromARGB(255, 255, 255, 255)),
                 ),
               ),
               const SizedBox(height: 20),
               Padding(
                 padding: const EdgeInsets.symmetric(
-                  vertical: 8.0, 
+                  vertical: 8.0,
                   horizontal: 16.0,
                 ),
                 child: Text(
                   "Description de l'objet",
                   style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 20,
-                    color: Color.fromARGB(255, 255, 255, 255)
-                  ),
+                      fontWeight: FontWeight.bold,
+                      fontSize: 20,
+                      color: Color.fromARGB(255, 255, 255, 255)),
                 ),
               ),
               Padding(
@@ -62,10 +59,9 @@ class ObjCard extends StatelessWidget {
                 child: Text(
                   objectData['description'],
                   style: TextStyle(
-                    fontStyle: FontStyle.normal,
-                    fontSize: 16,
-                    color: Color.fromARGB(255, 255, 255, 255)
-                  ),
+                      fontStyle: FontStyle.normal,
+                      fontSize: 16,
+                      color: Color.fromARGB(255, 255, 255, 255)),
                 ),
               ),
             ],

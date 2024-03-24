@@ -44,11 +44,13 @@ class AccountViewComponents {
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
-                child: Text("Annuler",
-                style: TextStyle(
-                  fontSize: 16,
-                  color: Theme.of(context).textTheme.bodyLarge!.color,
-                ),),
+                child: Text(
+                  "Annuler",
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: Theme.of(context).textTheme.bodyLarge!.color,
+                  ),
+                ),
               ),
               TextButton(
                 onPressed: () {
@@ -63,11 +65,13 @@ class AccountViewComponents {
                     );
                   }
                 },
-                child: Text("Confirmer",
-                style: TextStyle(
-                  fontSize: 16,
-                  color: Theme.of(context).textTheme.bodyLarge!.color,
-                ),),
+                child: Text(
+                  "Confirmer",
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: Theme.of(context).textTheme.bodyLarge!.color,
+                  ),
+                ),
               ),
             ],
           );
@@ -137,7 +141,10 @@ class AccountViewComponents {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => UserTargetView(data: {}, userId: '',),
+        builder: (context) => UserTargetView(
+          data: {},
+          userId: '',
+        ),
       ),
     );
   }

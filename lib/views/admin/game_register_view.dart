@@ -8,7 +8,7 @@ import 'package:flutter_app/service/firestore.dart';
 import 'package:intl/intl.dart';
 
 class GameRegisterView extends StatefulWidget {
-  final VoidCallback onTap; // Définir la propriété onTap
+  final VoidCallback onTap;
 
   const GameRegisterView({Key? key, required this.onTap}) : super(key: key);
 
