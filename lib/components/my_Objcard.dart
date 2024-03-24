@@ -54,14 +54,18 @@ class ObjCard extends StatelessWidget {
                       color: Color.fromARGB(255, 255, 255, 255)),
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                child: Text(
-                  objectData['description'],
-                  style: TextStyle(
-                      fontStyle: FontStyle.normal,
-                      fontSize: 16,
-                      color: Color.fromARGB(255, 255, 255, 255)),
+              Flexible(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  child: SingleChildScrollView( // Utiliser SingleChildScrollView pour permettre le défilement si la description est trop longue
+                    child: Text(
+                      objectData['description'],
+                      style: TextStyle(
+                          fontStyle: FontStyle.normal,
+                          fontSize: 16,
+                          color: Color.fromARGB(255, 255, 255, 255)),
+                    ),
+                  ),
                 ),
               ),
             ],

@@ -11,11 +11,11 @@ class UserTargetView extends StatelessWidget {
 
   // Map containing family colors
   final Map<String, Color> familyColors = {
-    'Blue': Color.fromARGB(255, 32, 67, 223),
-    'Red': Color.fromARGB(255, 182, 31, 26),
-    'Green': Color.fromARGB(255, 43, 144, 63),
+    'Bleue': Color.fromARGB(255, 32, 67, 223),
+    'Rouge': Color.fromARGB(255, 182, 31, 26),
+    'Vert': Color.fromARGB(255, 43, 144, 63),
     'Orange': Color.fromARGB(255, 247, 118, 6),
-    'Yellow': Color.fromARGB(255, 215, 187, 65),
+    'Jaune': Color.fromARGB(255, 215, 187, 65),
   };
 
   UserTargetView({required this.data, required this.userId});
@@ -47,7 +47,7 @@ class UserTargetView extends StatelessWidget {
               future: FirebaseFirestore.instance
                   .collection('kills')
                   .where('idKiller', isEqualTo: user!.uid)
-                  .where('state', isEqualTo: 'inProgress')
+                  .where('etat', isEqualTo: 'enCours')
                   .limit(1)
                   .get(),
               builder: (context, killsSnapshot) {
@@ -62,7 +62,7 @@ class UserTargetView extends StatelessWidget {
                 } else {
                   if (killsSnapshot.data!.docs.isNotEmpty) {
                     String? targetId = killsSnapshot.data!.docs[0]
-                        ['targetId']; // ID of the target
+                        ['idCible']; // ID of the target
 
                     return FutureBuilder<DocumentSnapshot>(
                       future: FirebaseFirestore.instance
@@ -103,7 +103,7 @@ class UserTargetView extends StatelessWidget {
                                   children: <TextSpan>[
                                     TextSpan(
                                       text:
-                                          'Your target is: \n', // Text indicating the target
+                                          'Ta cible est : \n', // Text indicating the target
                                       style: TextStyle(
                                           color: Theme.of(context)
                                               .colorScheme
@@ -120,7 +120,7 @@ class UserTargetView extends StatelessWidget {
                           } else {
                             return Center(
                                 child: Text(
-                                    'No target found')); // Displayed when no target is found
+                                    'Aucune cible')); // Displayed when no target is found
                           }
                         }
                       },
@@ -128,7 +128,7 @@ class UserTargetView extends StatelessWidget {
                   } else {
                     return Center(
                         child: Text(
-                            "You're dead. You don't have a target anymore.")); // Displayed when user is dead
+                            'Aucune cible')); // Displayed when user is dead
                   }
                 }
               },

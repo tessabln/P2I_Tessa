@@ -4,9 +4,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/components/my_Objcard.dart';
+import 'package:flutter_app/components/slide_action.dart';
 import 'package:flutter_app/service/firestore.dart';
 import 'package:flutter_app/viewModel/home_view_model.dart';
-import 'package:slide_to_act/slide_to_act.dart';
 
 class HomeView extends StatefulWidget {
   @override
@@ -96,7 +96,7 @@ class _HomeViewState extends State<HomeView> {
       ),
       body: Column(
         children: [
-          const SizedBox(height: 30),
+          const SizedBox(height: 20),
           Expanded(
             child: FutureBuilder<DocumentSnapshot<Map<String, dynamic>>>(
               future: viewModel.getObjectData(),
@@ -186,7 +186,7 @@ class _HomeViewState extends State<HomeView> {
           Padding(
             padding: const EdgeInsets.all(40.0),
             child: userData != null && userData?['status'] != 'mort'
-                ? SlideAction()
+                ? SlideActionWidget(onSubmit: () {  },)
                 : Container(
                     child: Center(
                       child: Text(
