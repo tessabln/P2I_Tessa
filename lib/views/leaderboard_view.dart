@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/service/firestore.dart';
 
@@ -30,6 +31,49 @@ class LeaderboardView extends StatelessWidget {
     }
   }
 
+  // Overriding the build method to return the leaderboard UI
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder<int>(
+      future: firestore.getUserKills(FirebaseAuth.instance.currentUser!.uid),
+      builder: (context, userKillsSnapshot) {
+        if (userKillsSnapshot.connectionState == ConnectionState.waiting) {
+          return CircularProgressIndicator();
+        } else if (userKillsSnapshot.hasError) {
+          return Text('Erreur: ${userKillsSnapshot.error}');
+        } else {
+          final userKills = userKillsSnapshot.data ?? 0;
+
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(height: 20),
+              Container(
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                  border: Border.all(color:Color.fromARGB(255, 76, 61, 120), width: 2),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                padding: EdgeInsets.all(8),
+                child: Text(
+                  'Mes Kills: $userKills',
+                  style: TextStyle(fontSize: 18),
+                ),
+              ),
+              SizedBox(height: 20),
+              SizedBox(height: 60),
+              _buildSection('Nombre de kills', 'kills', userKills),
+              SizedBox(height: 100),
+              _buildSection('Nombre de survivants', 'survivants', userKills),
+              SizedBox(height: 100),
+              _buildSection('Meilleur killer', 'bestKiller', userKills),
+            ],
+          );
+        }
+      },
+    );
+  }
+
   // Method to build a circle widget with a given color and text
   Widget _buildCircle(Color color, String text) {
     return SizedBox(
@@ -58,7 +102,7 @@ class LeaderboardView extends StatelessWidget {
   }
 
   // Method to build a section of the leaderboard with a given title and data type
-  Widget _buildSection(String title, String dataType) {
+  Widget _buildSection(String title, String dataType, int userKills) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -87,21 +131,6 @@ class LeaderboardView extends StatelessWidget {
             );
           }).toList(),
         ),
-      ],
-    );
-  }
-
-  // Overriding the build method to return the leaderboard UI
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        SizedBox(height: 130),
-        _buildSection('Nombre de kills', 'kills'),
-        SizedBox(height: 100),
-        _buildSection('Nombre de survivants', 'survivants'),
-        SizedBox(height: 100),
-        _buildSection('Meilleur killer', 'bestKiller'),
       ],
     );
   }

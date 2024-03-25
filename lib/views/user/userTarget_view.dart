@@ -13,7 +13,7 @@ class UserTargetView extends StatelessWidget {
   final Map<String, Color> familyColors = {
     'Bleue': Color.fromARGB(255, 32, 67, 223),
     'Rouge': Color.fromARGB(255, 182, 31, 26),
-    'Vert': Color.fromARGB(255, 43, 144, 63),
+    'Verte': Color.fromARGB(255, 43, 144, 63),
     'Orange': Color.fromARGB(255, 247, 118, 6),
     'Jaune': Color.fromARGB(255, 215, 187, 65),
   };

@@ -10,10 +10,11 @@ class ObjCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
+      //elevation: 10,
       color: Color.fromARGB(255, 72, 57, 117),
       child: SizedBox.expand(
         child: Padding(
-          padding: const EdgeInsets.all(8.0),
+          padding: const EdgeInsets.all(10.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
@@ -57,7 +58,7 @@ class ObjCard extends StatelessWidget {
               Flexible(
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                  child: SingleChildScrollView( // Utiliser SingleChildScrollView pour permettre le défilement si la description est trop longue
+                  child: SingleChildScrollView( 
                     child: Text(
                       objectData['description'],
                       style: TextStyle(

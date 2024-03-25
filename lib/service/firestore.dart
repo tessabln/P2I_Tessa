@@ -113,6 +113,12 @@ class FirestoreService {
 
   // READ
 
+  Future<int> getUserKills(String userId) async {
+    final userData =
+        await FirebaseFirestore.instance.collection('users').doc(userId).get();
+    return userData.data()?['nbKills'] ?? 0;
+  }
+
   Stream<QuerySnapshot> getObjectStream() {
     return FirebaseFirestore.instance
         .collection('objects')
