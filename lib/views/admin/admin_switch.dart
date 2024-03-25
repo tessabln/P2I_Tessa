@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/views/admin/accountA_view.dart';
 import 'package:flutter_app/views/admin/admin_view.dart';
-import 'package:flutter_app/views/leaderboard_view.dart';
+import 'package:flutter_app/views/admin/leaderboardA_view.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 
 class AdminSwitch extends StatefulWidget {
@@ -22,7 +22,7 @@ class _AdminSwitchState extends State<AdminSwitch> {
       onTap: () {},
     ),
     // View for displaying leaderboard
-    LeaderboardView(),
+    LeaderboardViewA(),
     // View for managing user account
     AccountViewA(),
   ];

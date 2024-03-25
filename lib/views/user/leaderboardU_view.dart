@@ -1,3 +1,5 @@
+// ignore_for_file: file_names
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/service/firestore.dart';
@@ -47,21 +49,25 @@ class LeaderboardView extends StatelessWidget {
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              SizedBox(height: 20),
-              Container(
-                alignment: Alignment.center,
-                decoration: BoxDecoration(
-                  border: Border.all(color:Color.fromARGB(255, 76, 61, 120), width: 2),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                padding: EdgeInsets.all(8),
-                child: Text(
-                  'Mes Kills: $userKills',
-                  style: TextStyle(fontSize: 18),
+              SizedBox(height: 40),
+              Center(
+                child: Container(
+                  alignment: Alignment.center,
+                  constraints: BoxConstraints(maxWidth: 200),
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                        color: Color.fromARGB(255, 76, 61, 120), width: 2),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  padding: EdgeInsets.all(6),
+                  child: Text(
+                    'Mes Kills: $userKills',
+                    style: TextStyle(fontSize: 18),
+                  ),
                 ),
               ),
               SizedBox(height: 20),
-              SizedBox(height: 60),
+              SizedBox(height: 50),
               _buildSection('Nombre de kills', 'kills', userKills),
               SizedBox(height: 100),
               _buildSection('Nombre de survivants', 'survivants', userKills),
