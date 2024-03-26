@@ -22,7 +22,7 @@ class SlideActionWidget extends StatelessWidget {
       elevation: 0,
       sliderButtonIcon: Icon(Icons.gps_fixed_rounded,
           color: Color.fromARGB(255, 255, 255, 255)),
-      text: '              Glisser pour confirmer votre kill !',
+      text: '               Glisser pour confirmer votre kill !',
       textStyle: TextStyle(
         fontSize: 14,
         fontWeight: FontWeight.bold,
