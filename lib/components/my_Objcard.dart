@@ -6,13 +6,12 @@ class ObjCard extends StatelessWidget {
   final Map<String, dynamic> objectData;
 
   ObjCard(this.objectData);
-
   @override
   Widget build(BuildContext context) {
-    return Card(
-      //elevation: 10,
-      color: Color.fromARGB(255, 72, 57, 117),
-      child: SizedBox.expand(
+    return SizedBox(
+      height: 300,
+      child: Card(
+        color: Color.fromARGB(255, 72, 57, 117),
         child: Padding(
           padding: const EdgeInsets.all(10.0),
           child: Column(
@@ -55,10 +54,10 @@ class ObjCard extends StatelessWidget {
                       color: Color.fromARGB(255, 255, 255, 255)),
                 ),
               ),
-              Flexible(
+              Expanded(
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                  child: SingleChildScrollView( 
+                  child: SingleChildScrollView(
                     child: Text(
                       objectData['description'],
                       style: TextStyle(
