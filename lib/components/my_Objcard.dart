@@ -8,10 +8,9 @@ class ObjCard extends StatelessWidget {
   ObjCard(this.objectData);
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: 300,
-      child: Card(
-        color: Color.fromARGB(255, 72, 57, 117),
+    return Card(
+      color: Color.fromARGB(255, 72, 57, 117),
+      child: SizedBox.expand(
         child: Padding(
           padding: const EdgeInsets.all(10.0),
           child: Column(
