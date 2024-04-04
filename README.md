@@ -1,16 +1,16 @@
-# flutter_app
+# The KILLER app
 
-A new Flutter project.
+A Flutter project.
 
 ## Getting Started
 
-This project is a starting point for a Flutter application.
+https://docs.flutter.dev/get-started/install
 
-A few resources to get you started if this is your first Flutter project:
+Installer flutter sur votre ordinateur, complètement grâce à la documentation.
+Puis pour lancer le projet, selectionner le fichier main.dart et puis lancer le projet en cliquant sur le bouton start en haut à droite.
+Sinon, pour plus de facilité cliquer sur le lien de mon application déployée.
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+## Link for my app 
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+[thekiller.netlify.app](https://thekiller.netlify.app/)
+
