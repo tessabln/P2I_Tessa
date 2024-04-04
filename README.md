@@ -4,13 +4,13 @@ A Flutter project.
 
 ## Getting Started
 
-https://docs.flutter.dev/get-started/install
+This project is a starting point for a Flutter application.
 
-Installer flutter sur votre ordinateur, complètement grâce à la documentation.
-Puis pour lancer le projet, selectionner le fichier main.dart et puis lancer le projet en cliquant sur le bouton start en haut à droite.
-Sinon, pour plus de facilité cliquer sur le lien de mon application déployée.
+A few resources to get you started if this is your first Flutter project:
 
-## Link for my app 
+- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
+- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
 
-[thekiller.netlify.app](https://thekiller.netlify.app/)
-
+For help getting started with Flutter development, view the
+[online documentation](https://docs.flutter.dev/), which offers tutorials,
+samples, guidance on mobile development, and a full API reference.
